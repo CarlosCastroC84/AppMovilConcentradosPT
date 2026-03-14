@@ -1,0 +1,107 @@
+<ion-header class="ion-no-border login-header">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <button class="icon-btn" routerLink="/inicio">
+        <span class="material-symbols-outlined">arrow_back</span>
+      </button>
+    </ion-buttons>
+    <ion-title class="header-title">Staff Portal</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="login-container">
+    <!-- Logo/Header Area -->
+    <div class="logo-area">
+      <div class="logo-circle">
+        <span class="material-symbols-outlined logo-icon">agriculture</span>
+      </div>
+      <h1 class="app-title">Concentrados <br /> Puente Tierra</h1>
+      <p class="app-subtitle">OPERACIONES INTERNAS</p>
+    </div>
+
+    <!-- Login Card (Login Normal) -->
+    <div class="login-card" *ngIf="!requiresNewPassword">
+      <h2 class="card-title">Bienvenido</h2>
+      <p class="card-subtitle">Ingresa tus credenciales de Amazon Cognito para continuar.</p>
+
+      <form (submit)="$event.preventDefault(); onLogin()">
+        <!-- Username Input -->
+        <div class="input-group">
+          <label class="input-label">Correo Electrónico</label>
+          <div class="input-wrapper">
+            <input type="email" placeholder="tu@email.com"
+              class="custom-input" [(ngModel)]="username" name="username" autocomplete="username" />
+            <span class="material-symbols-outlined input-icon">person</span>
+          </div>
+        </div>
+
+        <!-- Password Input -->
+        <div class="input-group">
+          <label class="input-label">Contraseña</label>
+          <div class="input-wrapper">
+            <input [type]="showPassword ? 'text' : 'password'" placeholder="••••••••"
+              class="custom-input" [(ngModel)]="password" name="password" autocomplete="current-password" />
+            <span class="material-symbols-outlined input-icon toggle-password"
+              (click)="togglePassword()" style="cursor: pointer;">
+              {{ showPassword ? 'visibility_off' : 'visibility' }}
+            </span>
+          </div>
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" class="submit-btn">
+          <span>Ingresar</span>
+          <span class="material-symbols-outlined btn-icon">login</span>
+        </button>
+      </form>
+
+      <div class="forgot-password">
+        <a href="#">¿Olvidó su contraseña?</a>
+      </div>
+    </div>
+
+    <!-- Cambio de Contraseña Obligatorio -->
+    <div class="login-card" *ngIf="requiresNewPassword">
+      <h2 class="card-title">🔐 Nueva Contraseña</h2>
+      <p class="card-subtitle">Amazon Cognito requiere que establezcas una nueva contraseña para tu cuenta.</p>
+
+      <form (submit)="$event.preventDefault(); onSetNewPassword()">
+        <!-- New Password -->
+        <div class="input-group">
+          <label class="input-label">Nueva Contraseña</label>
+          <div class="input-wrapper">
+            <input [type]="showNewPassword ? 'text' : 'password'" placeholder="Mínimo 8 caracteres"
+              class="custom-input" [(ngModel)]="newPassword" name="newPassword" />
+            <span class="material-symbols-outlined input-icon toggle-password"
+              (click)="toggleNewPassword()" style="cursor: pointer;">
+              {{ showNewPassword ? 'visibility_off' : 'visibility' }}
+            </span>
+          </div>
+        </div>
+
+        <!-- Confirm New Password -->
+        <div class="input-group">
+          <label class="input-label">Confirmar Contraseña</label>
+          <div class="input-wrapper">
+            <input [type]="showNewPassword ? 'text' : 'password'" placeholder="Repite tu nueva contraseña"
+              class="custom-input" [(ngModel)]="confirmNewPassword" name="confirmNewPassword" />
+            <span class="material-symbols-outlined input-icon">lock</span>
+          </div>
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" class="submit-btn">
+          <span>Establecer Contraseña</span>
+          <span class="material-symbols-outlined btn-icon">check_circle</span>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Footer / Warehouse Visual Context -->
+  <div class="footer-bg">
+    <div class="footer-gradient"></div>
+    <div class="footer-image"></div>
+  </div>
+</ion-content>

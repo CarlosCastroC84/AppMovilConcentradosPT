@@ -1,0 +1,132 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <button class="back-btn" routerLink="/catalogo">
+        <span class="material-icons-outlined">arrow_back</span>
+      </button>
+    </ion-buttons>
+    <ion-title class="toolbar-title">Detalle de Producto</ion-title>
+    <ion-buttons slot="end">
+      <button class="cart-btn" routerLink="/mi-pedido">
+        <span class="material-icons-outlined">shopping_cart</span>
+        <span class="cart-dot"></span>
+      </button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="detail-container">
+    <!-- Hero Card -->
+    <div class="hero-card">
+      <div class="hero-blur"></div>
+      <div class="hero-inner">
+        <div class="hero-img-wrap">
+          <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuB9eC2try0dlHkd9DDxpVrzsTVWMlGtDWcBcPEzmHMn4wG6pvQ6wl18w0eLuNqmXgYNvkpCTsSn6V1el4VgbvXHAL6fxFZJyHV7i6EP6ypGZijxkafgDDD7aKxfco9hZ_vF5Z-YocViFim2chFCLvVXNLFnkBQtWp7_SjsuhA91hSDV47f2Qmfg3kC90eTp3TZIVnoDUuJkPdBjK2raNRl3IiKbfZ8dGhbTNdwXydEkOiI5iv87ucivUxeL2jUeYvTCOP2p4KykoQg" alt="Pollito Pre-iniciador" class="hero-img" />
+          <span class="hero-badge">Balanceados</span>
+        </div>
+        <h2 class="hero-title">Pollito Pre-iniciador</h2>
+        <div class="hero-category">
+          <span class="material-icons-outlined cat-icon">category</span>
+          <span>Pollo Engorde</span>
+        </div>
+        <div class="hero-tag">
+          <span>Mayoristas: Preguntar descuentos</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Seleccionar Presentación -->
+    <div class="presentations-section">
+      <h3 class="section-title">Seleccionar Presentación</h3>
+      <div class="presentations-scroll">
+        <label class="pres-card" [class.active]="selectedPresentation === 'bulto'" (click)="selectedPresentation = 'bulto'">
+          <span class="pres-label">Bulto</span>
+          <span class="pres-price">$98.000</span>
+          <span class="pres-weight">40kg</span>
+          <span class="material-icons-outlined pres-check" *ngIf="selectedPresentation === 'bulto'">check_circle</span>
+        </label>
+        <label class="pres-card" [class.active]="selectedPresentation === 'medio'" (click)="selectedPresentation = 'medio'">
+          <span class="pres-label">1/2 Bulto</span>
+          <span class="pres-price">$50.000</span>
+          <span class="pres-weight">20kg</span>
+          <span class="material-icons-outlined pres-check" *ngIf="selectedPresentation === 'medio'">check_circle</span>
+        </label>
+        <label class="pres-card" [class.active]="selectedPresentation === 'arroba'" (click)="selectedPresentation = 'arroba'">
+          <span class="pres-label">Arroba (@)</span>
+          <span class="pres-price">$38.000</span>
+          <span class="pres-weight">12.5kg</span>
+          <span class="material-icons-outlined pres-check" *ngIf="selectedPresentation === 'arroba'">check_circle</span>
+        </label>
+        <label class="pres-card" [class.active]="selectedPresentation === 'libra'" (click)="selectedPresentation = 'libra'">
+          <span class="pres-label">Libra</span>
+          <span class="pres-price">$1.500</span>
+          <span class="pres-weight">500g</span>
+          <span class="material-icons-outlined pres-check" *ngIf="selectedPresentation === 'libra'">check_circle</span>
+        </label>
+      </div>
+    </div>
+
+    <!-- Cantidad -->
+    <div class="quantity-row">
+      <span class="qty-label">Cantidad</span>
+      <div class="qty-controls">
+        <button class="qty-btn minus" (click)="decreaseQty()">
+          <span class="material-icons-outlined">remove</span>
+        </button>
+        <span class="qty-value">{{ quantity }}</span>
+        <button class="qty-btn plus" (click)="increaseQty()">
+          <span class="material-icons-outlined">add</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Descripción / Tabla Nutricional -->
+    <div class="tabs-card">
+      <div class="tabs-header">
+        <button class="tab-btn active">Descripción</button>
+        <button class="tab-btn">Tabla Nutricional</button>
+      </div>
+      <div class="tab-content">
+        <p class="desc-text">
+          Alimento balanceado completo diseñado específicamente para la etapa inicial de pollos de engorde. Formulado para maximizar el desarrollo temprano, fortalecer el sistema inmune y garantizar un crecimiento acelerado y saludable en las primeras semanas de vida.
+        </p>
+        <h4 class="benefits-title">
+          <span class="material-icons-outlined benefits-icon">verified</span>
+          Beneficios Clave
+        </h4>
+        <ul class="benefits-list">
+          <li>
+            <span class="bullet"></span>
+            <span>Alta digestibilidad para pollitos recién nacidos.</span>
+          </li>
+          <li>
+            <span class="bullet"></span>
+            <span>Enriquecido con vitaminas y probióticos esenciales.</span>
+          </li>
+          <li>
+            <span class="bullet"></span>
+            <span>Promueve un sistema óseo fuerte.</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</ion-content>
+
+<!-- Bottom Action Bar -->
+<ion-footer class="ion-no-border">
+  <div class="bottom-bar">
+    <div class="bottom-buttons">
+      <button class="bottom-btn whatsapp">
+        <span class="material-icons-outlined">chat</span>
+        Comprar
+      </button>
+      <button class="bottom-btn add-order">
+        <span class="material-icons-outlined">add_shopping_cart</span>
+        Agregar al Pedido
+      </button>
+    </div>
+    <button class="quote-link">¿Necesitas una cotización formal? Haz clic aquí</button>
+  </div>
+</ion-footer>

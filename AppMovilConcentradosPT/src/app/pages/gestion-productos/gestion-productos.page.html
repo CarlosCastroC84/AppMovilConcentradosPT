@@ -1,0 +1,153 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar>
+    <div class="nav-row">
+      <div class="nav-left">
+        <button class="menu-btn" routerLink="/panel-admin">
+          <span class="material-icons-round">arrow_back</span>
+        </button>
+        <h1 class="nav-title">Gestión de Productos</h1>
+      </div>
+      <div class="nav-right">
+        <button class="notif-btn" (click)="cargarProductos()">
+          <span class="material-icons-round">refresh</span>
+        </button>
+        <div class="avatar">{{ currentUserInitials }}</div>
+      </div>
+    </div>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <main class="gestion-main">
+    <div class="action-row">
+      <button class="action-btn outline" (click)="cargarProductos()" [disabled]="loading">
+        <span class="material-icons-round">sync</span>
+        Actualizar
+      </button>
+      <button class="action-btn primary" (click)="startCreate()" [disabled]="saving">
+        <span class="material-icons-round">add</span>
+        Nuevo Producto
+      </button>
+    </div>
+
+    <section class="editor-card" *ngIf="formVisible">
+      <div class="editor-header">
+        <div>
+          <h2 class="editor-title">{{ editingProductId ? 'Editar producto' : 'Crear producto' }}</h2>
+          <p class="editor-subtitle">Los cambios se guardan directamente en la API AWS.</p>
+        </div>
+      </div>
+
+      <div class="form-grid">
+        <label class="field-group">
+          <span class="field-label">ID</span>
+          <input class="field-input" [(ngModel)]="form.id" placeholder="Se genera si lo dejas vacío" [readonly]="!!editingProductId" />
+        </label>
+
+        <label class="field-group">
+          <span class="field-label">Nombre</span>
+          <input class="field-input" [(ngModel)]="form.nombre" placeholder="Ej. Pollito Pre-iniciador" />
+        </label>
+
+        <label class="field-group">
+          <span class="field-label">Categoría</span>
+          <input class="field-input" [(ngModel)]="form.categoria" placeholder="Ganadería, Pollo Engorde..." />
+        </label>
+
+        <label class="field-group">
+          <span class="field-label">Presentación</span>
+          <input class="field-input" [(ngModel)]="form.presentacion" placeholder="Bulto 40 kg" />
+        </label>
+
+        <label class="field-group">
+          <span class="field-label">Precio</span>
+          <input class="field-input" type="number" [(ngModel)]="form.precio" placeholder="78000" />
+        </label>
+
+        <label class="field-group">
+          <span class="field-label">Stock</span>
+          <input class="field-input" type="number" [(ngModel)]="form.stock" placeholder="Opcional" />
+        </label>
+
+        <label class="field-group full-width">
+          <span class="field-label">URL Imagen</span>
+          <input class="field-input" [(ngModel)]="form.imagenUrl" placeholder="https://..." />
+        </label>
+      </div>
+
+      <div class="field-actions">
+        <button class="secondary-btn" (click)="cancelEdit()" [disabled]="saving">Cancelar</button>
+        <button class="primary-btn" (click)="saveProduct()" [disabled]="saving">
+          <span class="material-icons-round">{{ editingProductId ? 'save' : 'add_box' }}</span>
+          {{ saving ? 'Guardando...' : (editingProductId ? 'Guardar Cambios' : 'Crear Producto') }}
+        </button>
+      </div>
+    </section>
+
+    <div class="search-filters">
+      <div class="search-wrap">
+        <span class="material-icons-round search-icon">search</span>
+        <input type="text" class="search-input" [(ngModel)]="searchTerm" placeholder="Buscar producto..." />
+      </div>
+      <div class="filter-chips">
+        <button class="chip" [class.active]="activeFilter === 'todos'" (click)="setFilter('todos')">Todos</button>
+        <button class="chip" [class.active]="activeFilter === 'ganaderia'" (click)="setFilter('ganaderia')">Ganadería</button>
+        <button class="chip" [class.active]="activeFilter === 'pollo'" (click)="setFilter('pollo')">Pollo Engorde</button>
+        <button class="chip" [class.active]="activeFilter === 'porcicultura'" (click)="setFilter('porcicultura')">Porcicultura</button>
+        <button class="chip" [class.active]="activeFilter === 'acuicultura'" (click)="setFilter('acuicultura')">Acuicultura</button>
+      </div>
+    </div>
+
+    <div class="feedback-card" *ngIf="loading">
+      <ion-spinner name="crescent"></ion-spinner>
+      <p>Cargando productos desde AWS...</p>
+    </div>
+
+    <div class="feedback-card error" *ngIf="!loading && error">
+      <span class="material-icons-round">error</span>
+      <p>{{ error }}</p>
+      <button class="secondary-btn" (click)="cargarProductos()">Reintentar</button>
+    </div>
+
+    <div class="products-list" *ngIf="!loading && !error">
+      <div class="feedback-card" *ngIf="filteredProducts.length === 0">
+        <span class="material-icons-round">inventory_2</span>
+        <p>No hay productos para el filtro actual.</p>
+      </div>
+
+      <div class="product-card" *ngFor="let product of filteredProducts; trackBy: trackByProduct" [class.inactive]="!isActive(product)">
+        <div class="card-body">
+          <div class="prod-emoji" [ngClass]="getCategoryTone(product)">{{ getCategoryEmoji(product) }}</div>
+          <div class="prod-info">
+            <div class="prod-top-row">
+              <div>
+                <h3 class="prod-name" [class.dimmed]="!isActive(product)">{{ product.nombre }}</h3>
+                <p class="prod-category">{{ product.categoria || 'Sin categoría' }} • {{ product.presentacion }}</p>
+              </div>
+              <label class="toggle">
+                <input type="checkbox" [checked]="isActive(product)" (change)="toggleProductState(product, $event)" />
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            <div class="price-tags">
+              <span class="price-tag">{{ product.presentacion }}: <strong>{{ product.precio | currency:'COP':'symbol-narrow':'1.0-0' }}</strong></span>
+              <span class="price-tag muted" *ngIf="product.stock !== undefined">Stock: <strong>{{ product.stock }}</strong></span>
+            </div>
+            <div class="inactive-label" *ngIf="!isActive(product)">Producto inactivo</div>
+          </div>
+        </div>
+        <div class="card-actions">
+          <button class="card-action muted" (click)="showHistory(product)">
+            <span class="material-icons-round">history</span> Historial
+          </button>
+          <button class="card-action primary" (click)="startEdit(product)">
+            <span class="material-icons-round">edit</span> Editar
+          </button>
+          <button class="card-action danger" (click)="confirmDelete(product)">
+            <span class="material-icons-round">delete</span> Eliminar
+          </button>
+        </div>
+      </div>
+    </div>
+  </main>
+</ion-content>

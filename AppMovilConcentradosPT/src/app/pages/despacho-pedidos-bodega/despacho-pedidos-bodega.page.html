@@ -1,0 +1,133 @@
+<!-- Top App Bar -->
+<ion-header class="ion-no-border sticky-header">
+  <div class="header-content">
+    <button class="icon-btn" routerLink="/bandeja-alistamiento">
+      <span class="material-symbols-outlined">arrow_back</span>
+    </button>
+    <h2 class="header-title">Despacho de Pedidos</h2>
+    <button class="icon-btn text-primary">
+      <span class="material-symbols-outlined">help</span>
+    </button>
+  </div>
+</ion-header>
+
+<ion-content>
+  <main class="despacho-main pb-8">
+    
+    <!-- Header Section -->
+    <div class="header-section mb-6 mt-2">
+      <div class="flex-row items-start justify-between">
+        <div class="flex-col">
+          <h1 class="order-title">Pedido #4582</h1>
+          <div class="status-badge flex-row items-center gap-1 mt-2">
+            <span class="status-dot"></span>
+            Alistado
+          </div>
+        </div>
+        <div class="icon-box">
+          <span class="material-symbols-outlined text-2xl">inventory_2</span>
+        </div>
+      </div>
+      
+      <p class="info-text mt-4">
+        <span class="material-symbols-outlined icon-small">person</span>
+        Cliente: Juan Pérez
+      </p>
+      <p class="info-text mt-1">
+        <span class="material-symbols-outlined icon-small">schedule</span>
+        12 Oct, 10:30 AM
+      </p>
+    </div>
+
+    <div class="divider mb-6"></div>
+
+    <!-- Delivery Method Selector -->
+    <div class="mb-6">
+      <label class="input-label mb-3">Método de Entrega</label>
+      <div class="delivery-selector">
+        <label class="delivery-option">
+          <input type="radio" name="delivery_method" value="Domicilio" class="sr-only custom-radio" checked>
+          <div class="delivery-card">
+            <span class="material-symbols-outlined icon-medium">local_shipping</span>
+            Domicilio
+          </div>
+        </label>
+        
+        <label class="delivery-option">
+          <input type="radio" name="delivery_method" value="Recoge" class="sr-only custom-radio">
+          <div class="delivery-card">
+            <span class="material-symbols-outlined icon-medium">storefront</span>
+            Recoge en Tienda
+          </div>
+        </label>
+      </div>
+    </div>
+
+    <!-- Form Inputs -->
+    <div class="form-container mb-8">
+      
+      <div class="form-group mb-5">
+        <label class="input-label mb-2">Nombre del Transportador</label>
+        <div class="input-wrapper">
+          <div class="input-icon-left">
+            <span class="material-symbols-outlined">badge</span>
+          </div>
+          <input type="text" class="custom-input pl-10" placeholder="Ej. Carlos Rodriguez">
+        </div>
+      </div>
+
+      <div class="form-group mb-5">
+        <label class="input-label mb-2">Placa / Número de Guía</label>
+        <div class="input-wrapper">
+          <div class="input-icon-left">
+            <span class="material-symbols-outlined">pin</span>
+          </div>
+          <input type="text" class="custom-input pl-10" placeholder="Ej. ABC-123 o #990022">
+        </div>
+      </div>
+
+      <div class="form-group mb-5">
+        <label class="input-label mb-2">Notas Adicionales (Opcional)</label>
+        <textarea class="custom-textarea" placeholder="Comentarios sobre el estado del paquete..." rows="3"></textarea>
+      </div>
+
+    </div>
+
+    <!-- Order Summary Card -->
+    <div class="summary-card mb-8">
+      <h3 class="summary-title mb-3">Resumen de carga</h3>
+      
+      <div class="summary-item mb-3">
+        <div class="item-icon-box">
+          <span class="material-symbols-outlined item-icon-color">shopping_bag</span>
+        </div>
+        <div class="flex-1 flex-col justify-center">
+          <p class="item-name">Alimento Concentrado 20kg</p>
+          <p class="item-meta">Cant: 2 • Saco Grande</p>
+        </div>
+      </div>
+
+      <div class="summary-item">
+        <div class="item-icon-box">
+          <span class="material-symbols-outlined item-icon-color">medication</span>
+        </div>
+        <div class="flex-1 flex-col justify-center">
+          <p class="item-name">Vitamina B12 Inyectable</p>
+          <p class="item-meta">Cant: 5 • Frasco 100ml</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Action Button -->
+    <div class="action-section px-2 mt-auto">
+      <button class="btn-dispatch mb-3">
+        <span>Despachar Pedido</span>
+        <span class="material-symbols-outlined">send</span>
+      </button>
+      <p class="helper-text text-center">
+        Esta acción notificará al cliente y cambiará el estado a DESPACHADO.
+      </p>
+    </div>
+
+  </main>
+</ion-content>

@@ -1,0 +1,183 @@
+<!-- Header / Top Bar -->
+<ion-header class="ion-no-border sticky-header">
+  <div class="header-content">
+    <div class="flex-row items-center gap-3">
+      <button class="icon-btn" routerLink="/panel-admin">
+        <span class="material-symbols-outlined">arrow_back</span>
+      </button>
+      <h1 class="header-title">Gestión de Usuarios</h1>
+    </div>
+    <button class="fab-btn-small shadow-glow">
+      <span class="material-symbols-outlined">add</span>
+    </button>
+  </div>
+  
+  <!-- Search & Filter Area (Sticky right below header) -->
+  <div class="search-filter-area">
+    <div class="search-wrapper mb-4">
+      <div class="search-icon-left">
+        <span class="material-symbols-outlined">search</span>
+      </div>
+      <input type="text" class="custom-search-input pl-10" placeholder="Buscar por nombre o rol...">
+    </div>
+    
+    <div class="filters-scroll">
+      <button class="filter-chip active">Todos</button>
+      <button class="filter-chip">Administradores</button>
+      <button class="filter-chip">Ventas</button>
+      <button class="filter-chip">Bodega</button>
+    </div>
+    
+    <div class="flex-row items-center justify-between mt-2">
+      <p class="stats-text">Mostrando 12 usuarios</p>
+      <button class="action-link flex-row items-center gap-1">
+        <span class="material-symbols-outlined icon-xs">history</span>
+        Audit Log
+      </button>
+    </div>
+  </div>
+</ion-header>
+
+<ion-content>
+  <main class="usuarios-main pb-24">
+    <!-- User List -->
+    <div class="users-list">
+      
+      <!-- User Card 1: Active Admin -->
+      <article class="user-card admin-border group">
+        <div class="card-left-border border-admin"></div>
+        <div class="card-header pb-3">
+          <div class="flex-row gap-3">
+            <div class="avatar-wrapper">
+              <div class="avatar-img" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDEK0W3Pkilpl-NByKutWSkIUi4jxX7QQX-wmg2sIVCu8Fnl7nG6brEma3p8l2Imk1wWu1156dSkp3QBVj0T9tM9Ro0vWPcF5iQS271Pl-ghQ1AYpmLk-zfCte4TQmCEpy87X6CfmIfvUo49XG-i4zhuzHt8W8RWbL06TpDBctBSHxCot75qIafy-PWZhHkQyVgDGdTgLq5bZ0427aOel6ArFWOrZshgcypx6hwLIcwvjYJnOv3VFLnpJsPThOSgOZahJqBMM5KFLQ');"></div>
+              <span class="status-indicator online"></span>
+            </div>
+            <div class="user-info">
+              <h3 class="user-name">Carlos Rodriguez</h3>
+              <div class="flex-row items-center gap-2 mt-1">
+                <span class="role-badge badge-admin">ADMIN</span>
+                <span class="user-email">carlos.r@puentetierra.com</span>
+              </div>
+            </div>
+          </div>
+          <div class="flex-col items-end gap-2">
+            <button class="more-btn"><span class="material-symbols-outlined">more_vert</span></button>
+          </div>
+        </div>
+        
+        <div class="card-footer pt-3 divider-top flex-row items-center justify-between">
+          <div class="flex-row items-center gap-2">
+            <span class="status-label">Estado</span>
+            <label class="toggle-switch">
+              <input type="checkbox" checked>
+              <span class="slider round bg-admin"></span>
+            </label>
+          </div>
+          <button class="action-btn">
+            <span class="material-symbols-outlined">lock_reset</span>
+            Reset Pass
+          </button>
+        </div>
+      </article>
+
+      <!-- User Card 2: Sales -->
+      <article class="user-card sales-border group">
+        <div class="card-left-border border-sales"></div>
+        <div class="card-header pb-3">
+          <div class="flex-row gap-3">
+            <div class="avatar-wrapper">
+              <div class="avatar-img" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuC_85B4rPZZ77p0Jsef1Vh0UAqbOXKXcbx3SU-eX7wpxWAiTsxvxKrWq9r9hvFc_EtPsdvRVkL4LU6OyqTA4e_QtbmtlF5-b6C-JOIPHlpZjh2T8eC0agYdM7lP9tI7CutjPl9yLpfMcmNIMVSN7k68gKZu9oX984sH9e3s5cypvWuaC46X9HLejKNG-Q9IwtoHf3XzxualDJ976xvoGacK8uX9wWp5YUyzGXwe39cHmdI_e_P1fr8-pNGdEoPR14hPGmzrQqchQGc');"></div>
+              <span class="status-indicator online"></span>
+            </div>
+            <div class="user-info">
+              <h3 class="user-name">Maria Gonzalez</h3>
+              <div class="flex-row items-center gap-2 mt-1">
+                <span class="role-badge badge-sales">VENTAS</span>
+                <span class="user-email">maria.g@puentetierra.com</span>
+              </div>
+            </div>
+          </div>
+          <div class="flex-col items-end gap-2">
+            <button class="more-btn"><span class="material-symbols-outlined">more_vert</span></button>
+          </div>
+        </div>
+        
+        <div class="card-footer pt-3 divider-top flex-row items-center justify-between">
+          <div class="flex-row items-center gap-2">
+            <span class="status-label">Estado</span>
+            <label class="toggle-switch">
+              <input type="checkbox" checked>
+              <span class="slider round bg-sales"></span>
+            </label>
+          </div>
+          <button class="action-btn">
+            <span class="material-symbols-outlined">lock_reset</span>
+            Reset Pass
+          </button>
+        </div>
+      </article>
+
+      <!-- User Card 3: Inactive Warehouse -->
+      <article class="user-card warehouse-border group inactive-opacity">
+        <div class="card-left-border border-warehouse shadow-sm"></div>
+        <div class="card-header pb-3">
+          <div class="flex-row gap-3">
+            <div class="avatar-wrapper">
+              <div class="avatar-img grayscale" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBNH82Q2KNUpcqCQf90_6-0ajLIX-ecyCm8sSPNg487Rlb2c3MWLffWalRMrULIg7c_QqrfrVgmMc7UOKceCqygZV6VQK8OMrXw1MMw4VJQSzq6RwKyyjf6YLLHfaGAHWeFz4_lmaJs2fpp_FQ7eaWVQhK073MDxskBao4SSUkVSxdMa9HChEvLzV9y1mfH5xuSK45eQ93K7YtOGzVMRkHSvtsPdIDyDQdA5vIknXMwtWuxXAqYRl7l_0zA145wk2FY6VK6y3wEe1I');"></div>
+              <span class="status-indicator offline"></span>
+            </div>
+            <div class="user-info">
+              <h3 class="user-name text-opacity-70">Juan Perez</h3>
+              <div class="flex-row items-center gap-2 mt-1">
+                <span class="role-badge badge-warehouse">BODEGA</span>
+                <span class="user-email">juan.p@puentetierra.com</span>
+              </div>
+            </div>
+          </div>
+          <div class="flex-col items-end gap-2">
+            <button class="more-btn"><span class="material-symbols-outlined">more_vert</span></button>
+          </div>
+        </div>
+        
+        <div class="card-footer pt-3 divider-top flex-row items-center justify-between">
+          <div class="flex-row items-center gap-2">
+            <span class="status-label">Estado</span>
+            <label class="toggle-switch">
+              <input type="checkbox">
+              <span class="slider round bg-warehouse"></span>
+            </label>
+          </div>
+          <button class="action-btn">
+            <span class="material-symbols-outlined">lock_reset</span>
+            Reset Pass
+          </button>
+        </div>
+      </article>
+
+    </div>
+  </main>
+</ion-content>
+
+<!-- Bottom Navigation Bar (Admin Role) -->
+<ion-footer class="ion-no-border">
+  <div class="admin-tab-bar shadow-top">
+    <a class="tab-item" routerLink="/panel-admin">
+      <span class="material-symbols-outlined">home</span>
+      <span class="tab-label">Inicio</span>
+    </a>
+    <a class="tab-item">
+      <span class="material-symbols-outlined">shopping_cart</span>
+      <span class="tab-label">Pedidos</span>
+    </a>
+    <a class="tab-item active" routerLink="/gestion-usuarios-admin">
+      <div class="icon-bubble">
+        <span class="material-symbols-outlined">group</span>
+      </div>
+      <span class="tab-label">Usuarios</span>
+    </a>
+    <a class="tab-item" routerLink="/configuracion-general">
+      <span class="material-symbols-outlined">settings</span>
+      <span class="tab-label">Config</span>
+    </a>
+  </div>
+</ion-footer>

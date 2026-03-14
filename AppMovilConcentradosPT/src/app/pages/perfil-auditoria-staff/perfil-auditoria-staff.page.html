@@ -1,0 +1,129 @@
+<!-- Header -->
+<ion-header class="ion-no-border sticky-header">
+  <div class="header-content">
+    <button class="icon-btn" routerLink="/panel-admin">
+      <span class="material-symbols-outlined">arrow_back</span>
+    </button>
+    <h2 class="header-title pr-10">Mi Perfil</h2>
+  </div>
+</ion-header>
+
+<ion-content>
+  <main class="profile-main pb-24">
+    <!-- Profile Section -->
+    <section class="profile-header flex-col items-center px-6 py-4">
+      <div class="avatar-container relative mb-4">
+        <div class="avatar-img" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBIZ7-ErA1GSjuGq-jSTEyzSvXfVlBUI3FZbeh14F9PnMIUyTbisnwsxzFGdOri2HVjPdmdYjZkWAClcEMJpph3vvjuQJwYUa0DPHA4-upnKVmM3DKRot4xN0s5Xo9EFwTdIL2DYqxbdaxq42NaX-H70yhPEbg7b7L5nQl-rYd_XATSMkBUL3y6UzbkzLCTSgPk1UKVtSOaAEuyDvzQQqvZE5qGbnk5tkcQ0HWVZuK-nkZ0XVgtkbvjn79rUII9q6OHCswT_K62GYg");'></div>
+        <div class="verified-badge">
+          <span class="material-symbols-outlined text-sm">verified_user</span>
+        </div>
+      </div>
+      
+      <div class="flex-col items-center text-center space-y-1">
+        <h1 class="user-name">Juan Pérez</h1>
+        <p class="user-email">juan.perez@empresa.com</p>
+        <div class="role-badge mt-2">
+          <span class="role-text">Rol: ADMIN</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Action Button -->
+    <div class="px-6 py-4">
+      <button class="btn-logout w-full flex-row items-center justify-center gap-2" routerLink="/login-operativo">
+        <span class="material-symbols-outlined text-xl">logout</span>
+        <span>Cerrar Sesión</span>
+      </button>
+    </div>
+
+    <!-- Audit Log Section -->
+    <section class="audit-section flex-1 px-4">
+      <div class="audit-header flex-row items-center justify-between py-4 mb-4">
+        <h3 class="section-title flex-row items-center gap-2">
+          <span class="material-symbols-outlined text-primary">history</span>
+          Auditoría Reciente
+        </h3>
+        <button class="link-btn">Ver todo</button>
+      </div>
+
+      <!-- Audit Feed Items -->
+      <div class="feed-container flex-col gap-3">
+        <!-- Item 1 -->
+        <article class="feed-item">
+          <div class="icon-box bg-blue-light text-blue">
+            <span class="material-symbols-outlined">shopping_cart</span>
+          </div>
+          <div class="feed-content flex-1 flex-col gap-1">
+            <div class="flex-row justify-between items-start">
+              <p class="feed-title">Orden Confirmada #123</p>
+              <span class="feed-time">2 min</span>
+            </div>
+            <p class="feed-desc">Ventas - Usuario confirmó el pedido y el pago fue procesado.</p>
+          </div>
+        </article>
+
+        <!-- Item 2 -->
+        <article class="feed-item">
+          <div class="icon-box bg-green-light text-green">
+            <span class="material-symbols-outlined">inventory_2</span>
+          </div>
+          <div class="feed-content flex-1 flex-col gap-1">
+            <div class="flex-row justify-between items-start">
+              <p class="feed-title">Stock Actualizado</p>
+              <span class="feed-time">15 min</span>
+            </div>
+            <p class="feed-desc">Inventario - Se añadieron 50 unidades de "Camisa Basic".</p>
+          </div>
+        </article>
+
+        <!-- Item 3 -->
+        <article class="feed-item">
+          <div class="icon-box bg-orange-light text-orange">
+            <span class="material-symbols-outlined">person_add</span>
+          </div>
+          <div class="feed-content flex-1 flex-col gap-1">
+            <div class="flex-row justify-between items-start">
+              <p class="feed-title">Nuevo Cliente</p>
+              <span class="feed-time">1h</span>
+            </div>
+            <p class="feed-desc">CRM - Registro de cliente "Maria Gomez".</p>
+          </div>
+        </article>
+
+        <!-- Item 4 -->
+        <article class="feed-item opacity-75">
+          <div class="icon-box bg-red-light text-red">
+            <span class="material-symbols-outlined">error</span>
+          </div>
+          <div class="feed-content flex-1 flex-col gap-1">
+            <div class="flex-row justify-between items-start">
+              <p class="feed-title">Error de Sincronización</p>
+              <span class="feed-time">3h</span>
+            </div>
+            <p class="feed-desc">Sistema - Fallo al conectar con la API de envíos.</p>
+          </div>
+        </article>
+      </div>
+    </section>
+  </main>
+</ion-content>
+
+<!-- Bottom Navigation -->
+<ion-footer class="ion-no-border">
+  <div class="admin-tab-bar shadow-top">
+    <a class="tab-item" routerLink="/panel-admin">
+      <span class="material-symbols-outlined">home</span>
+      <span class="tab-label">Inicio</span>
+    </a>
+    <a class="tab-item">
+      <span class="material-symbols-outlined">qr_code_scanner</span>
+      <span class="tab-label">Escanear</span>
+    </a>
+    <a class="tab-item active" routerLink="/perfil-auditoria-staff">
+      <div class="icon-bubble">
+        <span class="material-symbols-outlined fill-current text-[24px]">person</span>
+      </div>
+      <span class="tab-label">Perfil</span>
+    </a>
+  </div>
+</ion-footer>

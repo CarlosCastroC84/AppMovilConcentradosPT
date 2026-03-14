@@ -1,0 +1,169 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar class="orange-toolbar">
+    <div class="header-row">
+      <div class="header-left">
+        <button class="header-btn" routerLink="/panel-admin">
+          <span class="material-icons-round">arrow_back</span>
+        </button>
+        <h1 class="header-title">Pedidos</h1>
+      </div>
+      <div class="header-right">
+        <button class="header-btn notif" (click)="cargarPedidos()">
+          <span class="material-icons-round">refresh</span>
+          <span class="notif-dot" *ngIf="pendingOrders > 0"></span>
+        </button>
+        <div class="avatar">{{ currentUserInitials }}</div>
+      </div>
+    </div>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <main class="pedidos-main">
+    <div class="kpi-row">
+      <div class="kpi-card">
+        <span class="kpi-label">Pendientes</span>
+        <div class="kpi-bottom">
+          <span class="kpi-value yellow">{{ pendingOrders }}</span>
+          <span class="material-icons-round kpi-bg-icon yellow-bg">pending_actions</span>
+        </div>
+      </div>
+      <div class="kpi-card">
+        <span class="kpi-label">Ventas Hoy</span>
+        <div class="kpi-bottom">
+          <span class="kpi-value green">{{ formatPrice(salesToday) }}</span>
+          <span class="material-icons-round kpi-bg-icon green-bg">attach_money</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="filter-section">
+      <div class="filter-header">
+        <h2 class="filter-title">Filtrar Pedidos</h2>
+        <button class="reset-btn" (click)="resetFilters()">
+          <span class="material-icons-round">refresh</span> Reset
+        </button>
+      </div>
+      <div class="filter-card">
+        <div class="search-wrap">
+          <span class="material-icons-round search-icon">search</span>
+          <input type="text" class="search-input" [(ngModel)]="searchTerm" placeholder="Buscar cliente, pedido o zona..." />
+        </div>
+        <div class="select-row">
+          <div class="select-group">
+            <label class="select-label">Fecha</label>
+            <select class="select-input" [(ngModel)]="dateFilter">
+              <option value="TODOS">Todos</option>
+              <option value="HOY">Hoy</option>
+              <option value="SEMANA">Esta semana</option>
+              <option value="MES">Este mes</option>
+            </select>
+          </div>
+          <div class="select-group">
+            <label class="select-label">Estado</label>
+            <select class="select-input" [(ngModel)]="statusFilter">
+              <option value="TODOS">Todos</option>
+              <option *ngFor="let option of statusOptions" [value]="option.value">{{ option.label }}</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="orders-section">
+      <div class="orders-header">
+        <h3 class="orders-title">Recientes</h3>
+        <span class="orders-count">Mostrando {{ filteredOrders.length }} de {{ orders.length }}</span>
+      </div>
+
+      <div class="feedback-card" *ngIf="loading">
+        <ion-spinner name="crescent"></ion-spinner>
+        <p>Cargando pedidos desde AWS...</p>
+      </div>
+
+      <div class="feedback-card error" *ngIf="!loading && error">
+        <span class="material-icons-round">error</span>
+        <p>{{ error }}</p>
+        <button class="order-btn detail" (click)="cargarPedidos()">Reintentar</button>
+      </div>
+
+      <div class="feedback-card" *ngIf="!loading && !error && filteredOrders.length === 0">
+        <span class="material-icons-round">receipt_long</span>
+        <p>No hay pedidos para el filtro actual.</p>
+      </div>
+
+      <div class="order-card" *ngFor="let order of filteredOrders; trackBy: trackByOrder" [ngClass]="getOrderCardClass(order)">
+        <div class="order-top">
+          <div>
+            <h3 class="order-client">{{ getCustomerDisplayName(order) }}</h3>
+            <p class="order-meta">#{{ order.id }} • {{ getCustomerPhone(order) || 'Sin teléfono' }}</p>
+            <p class="order-meta secondary">{{ getCustomerLocation(order) || 'Ubicación no registrada' }}</p>
+          </div>
+          <div class="status-select-wrap" [ngClass]="getStatusTone(order.status)">
+            <select
+              class="status-select"
+              [ngClass]="getStatusTone(order.status)"
+              [ngModel]="order.status"
+              (ngModelChange)="onStatusChange(order, $event)"
+              [disabled]="updatingOrderId === order.id || deletingOrderId === order.id">
+              <option *ngFor="let option of statusOptions" [value]="option.value">{{ option.label }}</option>
+            </select>
+            <span class="material-icons-round select-arrow">expand_more</span>
+          </div>
+        </div>
+
+        <div class="order-summary">
+          <div class="summary-col">
+            <span class="summary-label">Total</span>
+            <span class="summary-value">{{ formatPrice(order.total || 0) }}</span>
+          </div>
+          <div class="summary-col right">
+            <span class="summary-label">Items</span>
+            <span class="summary-items">{{ getItemCount(order) }}</span>
+          </div>
+        </div>
+
+        <div class="order-actions">
+          <button class="order-btn" [class.whatsapp]="!!getCustomerPhone(order)" [class.whatsapp-outline]="!getCustomerPhone(order)" (click)="openWhatsApp(order)">
+            <span class="material-icons-round">chat</span>
+            WhatsApp
+          </button>
+          <button class="order-btn detail" (click)="viewOrderDetails(order)">
+            <span class="material-icons-round">visibility</span>
+            Detalle
+          </button>
+          <button class="order-btn danger" (click)="confirmDelete(order)" [disabled]="deletingOrderId === order.id">
+            <span class="material-icons-round">delete</span>
+            Eliminar
+          </button>
+        </div>
+      </div>
+    </div>
+  </main>
+</ion-content>
+
+<ion-footer class="ion-no-border">
+  <div class="admin-tab-bar">
+    <a class="admin-tab" routerLink="/panel-admin">
+      <span class="material-icons-round">dashboard</span>
+      <span class="admin-tab-label">Inicio</span>
+    </a>
+    <a class="admin-tab" routerLink="/gestion-productos">
+      <span class="material-icons-round">inventory_2</span>
+      <span class="admin-tab-label">Productos</span>
+    </a>
+    <div class="admin-tab-center">
+      <button class="admin-fab" (click)="cargarPedidos()">
+        <span class="material-icons-round">sync</span>
+      </button>
+    </div>
+    <a class="admin-tab active">
+      <span class="material-icons-round">receipt_long</span>
+      <span class="admin-tab-label">Pedidos</span>
+    </a>
+    <a class="admin-tab" routerLink="/panel-admin">
+      <span class="material-icons-round">settings</span>
+      <span class="admin-tab-label">Ajustes</span>
+    </a>
+  </div>
+</ion-footer>

@@ -1,0 +1,147 @@
+<ion-content class="inicio-content" [fullscreen]="true">
+  <!-- Header con Logo y Buscador -->
+  <div class="header-section">
+    <div class="header-inner">
+      <div class="top-bar-row">
+        <div class="spacer"></div>
+        <img src="assets/Logos_dpt.png" alt="Logo Concentrados Puente Tierra" class="header-logo" />
+        <button class="admin-login-btn" routerLink="/login-operativo" title="Acceso Admin">
+          <span class="material-icons-outlined">admin_panel_settings</span>
+        </button>
+      </div>
+      <h1 class="header-title">Tienda Virtual</h1>
+      <p class="header-slogan">"Nutriendo tu granja, fortaleciendo tu futuro"</p>
+
+      <!-- Buscador -->
+      <div class="search-wrapper">
+        <span class="material-icons-outlined search-icon">search</span>
+        <input type="text" placeholder="Buscar producto..." class="search-input" />
+      </div>
+    </div>
+  </div>
+
+  <!-- Contenido principal -->
+  <div class="main-content">
+    <!-- Banner Promocional -->
+    <div class="promo-banner">
+      <div class="promo-blur-top"></div>
+      <div class="promo-blur-bottom"></div>
+      <div class="promo-content">
+        <span class="promo-badge">Oferta Especial</span>
+        <h2 class="promo-title">Descuentos para Mayoristas</h2>
+        <p class="promo-desc">Precios especiales por bulto y cantidad.</p>
+        <button class="promo-btn" routerLink="/mayoristas">
+          Cotizar Ahora
+          <span class="material-icons-outlined promo-btn-icon">arrow_forward</span>
+        </button>
+      </div>
+      <img
+        src="https://lh3.googleusercontent.com/aida-public/AB6AXuAmTppmJ6iaaJrfooN_INf8tVVyGzxAiVU_Tw2xx4XbPQsoFN-VsORAYXlcjYInQtJiuo-FOn5FC1l14CQd4VOIogpto6vw3J9hvLJf2S14yAxeublQIBVkGgGtAFOL6VgpNJfqu9I8y8RIuXFAnlQ4_THDYlP9YmAVfnOqrln_8v4h0W-GTpBHdUx7HBjfdoATElRgKeb0o5TOP_G3CNlCnl2ICka1but2x2O27BaxZ969WEquYhQk0OdYdxM094PW2QYhiK2VaB0"
+        alt="Granja" class="promo-img" />
+    </div>
+
+    <!-- Acciones Rápidas -->
+    <div class="quick-actions">
+      <button class="action-card" routerLink="/catalogo">
+        <div class="action-icon-wrap orange">
+          <span class="material-icons-outlined action-icon">menu_book</span>
+        </div>
+        <span class="action-label">Ver Catálogo</span>
+      </button>
+      <button class="action-card">
+        <div class="action-icon-wrap green">
+          <span class="material-icons-outlined action-icon green-icon">shopping_cart</span>
+        </div>
+        <span class="action-label">Hacer Pedido</span>
+      </button>
+    </div>
+
+    <!-- Categorías -->
+    <div class="categories-section">
+      <div class="section-header">
+        <h3 class="section-title">Categorías</h3>
+        <a routerLink="/catalogo" class="section-link">Ver todo</a>
+      </div>
+      <div class="categories-scroll">
+        <div class="category-item">
+          <div class="category-img-wrap">
+            <img
+              src="https://lh3.googleusercontent.com/aida-public/AB6AXuBPDAkhq8aeYtslLDrTtFY2qCGmA7hQsSZ2WFPKvR_M0A4oKW0i4FJFsE4kSfV1a8CK1OG_C7ST8CRP2riLagwR7gZeXcH2l6jxYurpwank5Qb_gF2AjC9maoX447RViqwWnaajY36Kiewta_ewuL-5y52exrGVKQ3rCcyL6RvTL2p7JN9TEW8lB7jp_qKMnuJmjtUvOmcYqqK1lCnsSaRrAnlymBP7KNd-KvWIGNd7dyl6fkB8N2M9QsdNDwE2pYPaLG9lV8txXyA"
+              alt="Ganadería" class="category-img" />
+            <div class="category-overlay"></div>
+            <span class="category-label">Ganadería</span>
+          </div>
+        </div>
+        <div class="category-item">
+          <div class="category-img-wrap">
+            <img
+              src="https://lh3.googleusercontent.com/aida-public/AB6AXuCZ2Rf_FpyLzrbPki9LpQtrOAYHNSPyCJEpuTk6JuMLdj6EQvTd4DZn8l3G7bKavvR6TU0I_OGnzI8XvGM0J0fSDOU5AB5Pa6fjHIuShAHl9Mh2whaeibrxQAnIJT1yUnUrFZWLGcPTDijJCn07F1dx7zr-NE6zLAgJ7mS2rXCYYbipc3M50PGXkmnJE1-tFGTVvpWoLMjQ3XTYUMV71TMMNjMDNd6WaVoRjK9NocwO5JKLtloG2nZE7IXJJNl1dKATFwdEYTN5NJI"
+              alt="Avicultura" class="category-img" />
+            <div class="category-overlay"></div>
+            <span class="category-label">Avicultura</span>
+          </div>
+        </div>
+        <div class="category-item">
+          <div class="category-img-wrap">
+            <img
+              src="https://lh3.googleusercontent.com/aida-public/AB6AXuAUCRN3yydkx1ZU8YcnQI7Q8e6Jdt5g-FsT3hjyitI0lZSJccpxi1-a_KopIWjVrV6YvNefT_lb9fE4Uv4XExcPl8thhoDYeRrNP8RfkwiZDyISit0dP8YPFre7qXZWeAcmGbC6YRfLILm47roBAntKSWet2WiNPt1PvJO2bF7VfWpGFj6LVMVd6CdKBGgC607v-FAi1-sgj1q0Sfuze-dWeZoXDVXT1wobAmeemdQ7n2r9BrSlttzO9ZpUR-KWv1JxuZDYagC2AjU"
+              alt="Porcicultura" class="category-img" />
+            <div class="category-overlay"></div>
+            <span class="category-label">Porcicultura</span>
+          </div>
+        </div>
+        <div class="category-item">
+          <div class="category-img-wrap">
+            <img
+              src="https://lh3.googleusercontent.com/aida-public/AB6AXuBu6AT_950MGa05h2xxNPcG1lBZD3AM7eMWrqUggn8D07eU11wi4tSUMQRqfLuqufMcIpP5i1Ii5PngCbAcTvKQGuuGzHqKKXO3x688opWd8fs09yT11GAjRnKHNDSflYPU_Tf84T93OvPXyZ5L2XSxglZh3WWceF_UW7TrgAkcvNfGWC2jUB-RtrEbgfIAlAOR5mp2hpSuDzezAzVt1mcOinmEEJY6CKRUVXLjaQyg4Uts7hfJ_ONBAOkxjo-lTIlDgkmMR32Xno8"
+              alt="Equinos" class="category-img" />
+            <div class="category-overlay"></div>
+            <span class="category-label">Equinos</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sección de Ayuda -->
+    <div class="help-section" routerLink="/atencion-cliente">
+      <h3 class="help-title">¿Necesitas Ayuda?</h3>
+      <div class="help-buttons">
+        <button class="help-btn whatsapp">
+          <span class="material-icons-outlined">chat</span>
+          WhatsApp
+        </button>
+        <button class="help-btn call">
+          <span class="material-icons-outlined">call</span>
+          Llamar
+        </button>
+      </div>
+    </div>
+  </div>
+</ion-content>
+
+<!-- Tab Bar de Navegación -->
+<ion-footer class="ion-no-border">
+  <div class="tab-bar">
+    <a class="tab-item active" routerLink="/inicio">
+      <span class="material-icons-outlined">home</span>
+      <span class="tab-label">Inicio</span>
+    </a>
+    <a class="tab-item" routerLink="/catalogo">
+      <span class="material-icons-outlined">category</span>
+      <span class="tab-label">Productos</span>
+    </a>
+    <div class="tab-center">
+      <a class="tab-center-btn" routerLink="/mi-pedido">
+        <span class="material-icons-outlined">add_shopping_cart</span>
+      </a>
+    </div>
+    <a class="tab-item" href="#">
+      <span class="material-icons-outlined">receipt_long</span>
+      <span class="tab-label">Pedidos</span>
+    </a>
+    <a class="tab-item" href="#">
+      <span class="material-icons-outlined">person</span>
+      <span class="tab-label">Perfil</span>
+    </a>
+  </div>
+</ion-footer>

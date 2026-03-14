@@ -1,0 +1,236 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar>
+    <div class="nav-row">
+      <button class="nav-btn" routerLink="/inicio">
+        <span class="material-symbols-outlined">arrow_back</span>
+      </button>
+      <h1 class="nav-title">Mayoristas</h1>
+      <button class="nav-btn primary">
+        <span class="material-symbols-outlined">help_outline</span>
+      </button>
+    </div>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <main class="mayoristas-main">
+    <!-- Hero Banner -->
+    <div class="hero-card">
+      <div class="hero-content">
+        <h2 class="hero-title">Socios de tu Granja</h2>
+        <p class="hero-subtitle">Precios especiales por volumen</p>
+        <div class="hero-badge">
+          <span class="material-symbols-outlined">verified</span>
+          <span>Descuentos exclusivos</span>
+        </div>
+      </div>
+      <div class="hero-glow-1"></div>
+      <div class="hero-glow-2"></div>
+    </div>
+
+    <!-- Category Filters -->
+    <div class="categories-scroll">
+      <button class="cat-btn">
+        <div class="cat-icon-box active"><span class="material-symbols-outlined">grass</span></div>
+        <span class="cat-label">Ganadería</span>
+      </button>
+      <button class="cat-btn">
+        <div class="cat-icon-box"><span class="material-symbols-outlined">egg</span></div>
+        <span class="cat-label">Pollo</span>
+      </button>
+      <button class="cat-btn">
+        <div class="cat-icon-box"><span class="material-symbols-outlined">pest_control_rodent</span></div>
+        <span class="cat-label">Porcinos</span>
+      </button>
+      <button class="cat-btn">
+        <div class="cat-icon-box"><span class="material-symbols-outlined">water</span></div>
+        <span class="cat-label">Peces</span>
+      </button>
+      <button class="cat-btn">
+        <div class="cat-icon-box"><span class="material-symbols-outlined">pets</span></div>
+        <span class="cat-label">Equinos</span>
+      </button>
+    </div>
+
+    <!-- Lista de Precios -->
+    <section class="price-list-section">
+      <div class="section-header">
+        <h3 class="section-title">Lista de Precios</h3>
+        <span class="update-badge">Actualizado: Hoy</span>
+      </div>
+
+      <!-- Tabla Ganadería -->
+      <div class="price-card">
+        <div class="price-card-header">
+          <div class="price-card-title">
+            <span class="material-symbols-outlined">verified_user</span>
+            <h4>Ganadería</h4>
+          </div>
+          <div class="price-card-img">
+            <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuCCvb4hr0ll_rOrW8T2onErDnHuGcUdQ_acv4GlGUIxAaDc-0s3Qnc_0OivtwfoEPGDOMS-DaTh7ggU-lfjXEdNDiXbzHfOghwFZpHLloFTTaZ6G2ZSYnV7hvpXxoYVHO-zkwEXsPY9ZllZf4sp8N0ZZEbCtEzAibuccPFVUnL785R_6jU2utjc3S3_GCleg4IqJgULuuAgnOLe8dh1dWZBGx_2te7GBunYBawRJ6MXWYIYRkdkUeG9PzU3dj6HO5Dpf18Kh_uTjdo" alt="Ganadería" />
+          </div>
+        </div>
+        <div class="price-card-body">
+          <table class="price-table">
+            <thead>
+              <tr>
+                <th class="text-left">Producto</th>
+                <th class="text-right">Bulto</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="text-left">Vaca 20</td>
+                <td class="text-right font-bold text-primary">$78.000</td>
+              </tr>
+              <tr>
+                <td class="text-left">Cremosa FD</td>
+                <td class="text-right font-bold text-primary">$63.000</td>
+              </tr>
+              <tr>
+                <td class="text-left">Superternera</td>
+                <td class="text-right font-bold text-primary">$79.000</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Tabla Pollo Engorde -->
+      <div class="price-card">
+        <div class="price-card-header">
+          <div class="price-card-title">
+            <span class="material-symbols-outlined">verified_user</span>
+            <h4>Pollo Engorde</h4>
+          </div>
+          <div class="price-card-img">
+            <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuBbhQaBhrf1k2MdmSLeAhep0jUfFyHpqoBhccpz8JDsxRIDirMLOmEQ42W6ah4WU1L4dFP7y3S-IKx13loxndjktBx1206_eHprR5I4vBFIZF1260450DTcDJ-aAm2XnEdLyJIhnnYpvoYi8M0FtT4YWlgGEdAytdl9Rq-0FjT_A5Ese_6i61MZ7QnhUjsxqEiwsLfeVQ8wbEPDMRRodI5txvwO9Pxl6FGAiEQ96QWohi-q4Z5teReUuU4qb5dim39_kM-ZqUMojMM" alt="Pollo Engorde" />
+          </div>
+        </div>
+        <div class="price-card-body overflow-x-auto">
+          <table class="price-table min-w-[300px]">
+            <thead>
+              <tr>
+                <th class="text-left w-1/3">Producto</th>
+                <th class="text-right">Bulto</th>
+                <th class="text-right">1/2 Bulto</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="text-left">Pollito Pre-iniciador</td>
+                <td class="text-right font-bold text-primary">$98.000</td>
+                <td class="text-right text-muted">$50.000</td>
+              </tr>
+              <tr>
+                <td class="text-left">Super Pollito</td>
+                <td class="text-right font-bold text-primary">$99.000</td>
+                <td class="text-right text-muted">$51.000</td>
+              </tr>
+              <tr>
+                <td class="text-left">Pollo Engorde</td>
+                <td class="text-right font-bold text-primary">$79.000</td>
+                <td class="text-right text-muted">$41.000</td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="table-hint">Desliza para ver más precios por unidad (@, lb)</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Formulario Cotización -->
+    <section class="quote-section">
+      <div class="section-header-icon">
+        <span class="material-icons text-primary">request_quote</span>
+        <h3 class="section-title">Cotización Mayorista</h3>
+      </div>
+      <div class="quote-card border-top-primary">
+        <form class="quote-form">
+          <div class="form-group">
+            <label class="form-label">Nombre de Granja / Empresa</label>
+            <div class="input-icon-wrap">
+              <span class="material-icons input-icon">store</span>
+              <input type="text" class="form-input with-icon" placeholder="Ej. Granja La Esperanza" />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Productos de Interés</label>
+            
+            <div class="product-row">
+              <select class="form-select flex-grow">
+                <option>Seleccionar Producto...</option>
+                <option>Vaca 20 (Bulto)</option>
+                <option>Pollito Pre-iniciador (Bulto)</option>
+                <option>Cerdito Iniciación (Bulto)</option>
+                <option>Mojarra 45 HNA (Bulto)</option>
+              </select>
+              <input type="number" class="form-input w-20 text-center" placeholder="Cant." />
+            </div>
+
+            <div class="product-row mt-3">
+              <select class="form-select flex-grow">
+                <option selected>Cerdito Pre-iniciador (Bulto)</option>
+                <option>Vaca 20 (Bulto)</option>
+                <option>Pollito Pre-iniciador (Bulto)</option>
+                <option>Cerdito Iniciación (Bulto)</option>
+                <option>Mojarra 45 HNA (Bulto)</option>
+              </select>
+              <input type="number" class="form-input w-20 text-center" value="10" />
+              <button class="delete-btn" type="button">
+                <span class="material-symbols-outlined">delete_outline</span>
+              </button>
+            </div>
+
+            <button class="add-btn" type="button">
+              <span class="material-symbols-outlined">add_circle_outline</span> Agregar otro producto
+            </button>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Notas Adicionales</label>
+            <textarea class="form-input" rows="2" placeholder="Detalles de entrega, preguntas..."></textarea>
+          </div>
+
+          <div class="form-actions mt-4">
+            <button class="action-btn wapp-btn" type="button">
+              <span class="material-symbols-outlined">whatsapp</span> Enviar a WhatsApp
+            </button>
+            <button class="action-btn save-btn" type="button">
+              Guardar Solicitud
+            </button>
+          </div>
+          <p class="form-hint">Un asesor comercial confirmará la disponibilidad y el precio final.</p>
+        </form>
+      </div>
+    </section>
+  </main>
+</ion-content>
+
+<!-- Bottom Navigation Tab Bar -->
+<ion-footer class="ion-no-border">
+  <div class="bottom-tab-bar">
+    <a class="tab-item" routerLink="/inicio">
+      <span class="material-symbols-outlined">home</span>
+      <span class="tab-label">Inicio</span>
+    </a>
+    <a class="tab-item" routerLink="/catalogo">
+      <span class="material-symbols-outlined">inventory_2</span>
+      <span class="tab-label">Productos</span>
+    </a>
+    <div class="tab-center">
+      <button class="cart-fab bg-primary shadow-primary" routerLink="/mi-pedido">
+        <span class="material-symbols-outlined">add_shopping_cart</span>
+      </button>
+    </div>
+    <a class="tab-item active">
+      <span class="material-symbols-outlined">storefront</span>
+      <span class="tab-label font-bold">Mayorista</span>
+    </a>
+    <a class="tab-item">
+      <span class="material-symbols-outlined">person</span>
+      <span class="tab-label">Perfil</span>
+    </a>
+  </div>
+</ion-footer>

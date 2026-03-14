@@ -1,0 +1,204 @@
+<!-- Top App Bar -->
+<ion-header class="ion-no-border sticky-header">
+  <div class="header-content">
+    <button class="icon-btn" routerLink="/panel-admin">
+      <span class="material-symbols-outlined">arrow_back</span>
+    </button>
+    <h1 class="header-title">Configuración</h1>
+    <button class="btn-text-primary">Guardar</button>
+  </div>
+</ion-header>
+
+<ion-content>
+  <main class="config-main pb-24">
+    <!-- Header Image / Branding -->
+    <div class="hero-banner mb-6">
+      <div class="hero-bg" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuD1P9MooHslIDCD-RJmrUY1g22J8LWe7H6Nr8jlxYagBX5MhdV40apSVsdoXMVgRiniTfKCsZFRub7KOPzDZgxxwhku5FeLDXb4WtJRKM22nq_O20rxSpeHj1Q4znuT2mbR-y3Y7CDd7YtpfJijFV_NtY_CMjrbJKoFRBQcQus6ccok79DcBZ1yckGXL_zb11SsSPF2ytld-YEvHrLqdG514M-G827Hs_fNR8TFSywlnrp7vrrqB3xkLzIhGpqmmO9tLQW14Wrm63o');"></div>
+      <div class="hero-gradient"></div>
+      <div class="hero-content">
+        <p class="hero-subtitle">Perfil de Negocio</p>
+        <h2 class="hero-title">Concentrados Puente Tierra</h2>
+      </div>
+    </div>
+
+    <!-- Contact Information Section -->
+    <section class="config-section mb-6">
+      <div class="section-header">
+        <span class="material-symbols-outlined">perm_contact_calendar</span>
+        <h3 class="section-title">Información de Contacto</h3>
+      </div>
+      
+      <div class="card-container">
+        <!-- WhatsApp Input -->
+        <div class="input-group">
+          <label class="input-label">Número de WhatsApp</label>
+          <div class="input-wrapper">
+            <span class="material-symbols-outlined icon-left">chat</span>
+            <input type="tel" class="custom-input pl-10" value="+57 310 123 4567">
+          </div>
+          <p class="helper-text mt-1">Este número recibirá los pedidos.</p>
+        </div>
+        
+        <!-- Phone Input -->
+        <div class="input-group mt-4">
+          <label class="input-label">Teléfono Fijo</label>
+          <div class="input-wrapper">
+            <span class="material-symbols-outlined icon-left">call</span>
+            <input type="tel" class="custom-input pl-10" value="(601) 234 5678">
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Hours & Operation -->
+    <section class="config-section mb-6">
+      <div class="section-header">
+        <span class="material-symbols-outlined">schedule</span>
+        <h3 class="section-title">Horarios de Atención</h3>
+      </div>
+      
+      <div class="card-container">
+        <div class="grid-2-cols gap-4 mb-4">
+          <div class="input-group">
+            <label class="input-label">Apertura</label>
+            <input type="time" class="custom-input" value="06:00">
+          </div>
+          <div class="input-group">
+            <label class="input-label">Cierre</label>
+            <input type="time" class="custom-input" value="18:00">
+          </div>
+        </div>
+        
+        <div class="toggle-row bg-primary-light p-3">
+          <div class="flex-col">
+            <span class="toggle-title">Abierto Domingos y Festivos</span>
+            <span class="toggle-subtitle">Horario reducido (8am - 2pm)</span>
+          </div>
+          <label class="toggle-switch">
+            <input type="checkbox" checked>
+            <span class="slider round"></span>
+          </label>
+        </div>
+      </div>
+    </section>
+
+    <!-- Coverage Area -->
+    <section class="config-section mb-6">
+      <div class="section-header justify-between">
+        <div class="flex-row items-center gap-2">
+          <span class="material-symbols-outlined text-primary">map</span>
+          <h3 class="section-title text-primary m-0">Zona de Cobertura</h3>
+        </div>
+        <button class="btn-icon bg-primary-light">
+          <span class="material-symbols-outlined text-primary">add</span>
+        </button>
+      </div>
+      
+      <div class="card-container no-padding overflow-hidden mb-2">
+        
+        <!-- Coverage Item 1 -->
+        <div class="coverage-item group">
+          <div class="flex-row items-center gap-3">
+            <div class="location-icon-box bg-orange-light text-primary">
+              <span class="material-symbols-outlined">location_on</span>
+            </div>
+            <div>
+              <p class="item-title">Puente Tierra</p>
+              <p class="item-subtitle">Vereda Principal</p>
+            </div>
+          </div>
+          <button class="btn-delete"><span class="material-symbols-outlined">delete</span></button>
+        </div>
+        
+        <!-- Coverage Item 2 -->
+        <div class="coverage-item group">
+          <div class="flex-row items-center gap-3">
+            <div class="location-icon-box bg-slate-light text-muted">
+              <span class="material-symbols-outlined">location_on</span>
+            </div>
+            <div>
+              <p class="item-title">El Silencio</p>
+              <p class="item-subtitle">Municipio Vecino</p>
+            </div>
+          </div>
+          <button class="btn-delete"><span class="material-symbols-outlined">delete</span></button>
+        </div>
+        
+        <!-- Coverage Item 3 -->
+        <div class="coverage-item group no-border-bottom">
+          <div class="flex-row items-center gap-3">
+            <div class="location-icon-box bg-slate-light text-muted">
+              <span class="material-symbols-outlined">location_on</span>
+            </div>
+            <div>
+              <p class="item-title">La Cumbre</p>
+              <p class="item-subtitle">Zona Rural</p>
+            </div>
+          </div>
+          <button class="btn-delete"><span class="material-symbols-outlined">delete</span></button>
+        </div>
+        
+      </div>
+      
+      <!-- Map Preview -->
+      <div class="map-preview">
+        <div class="map-bg" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAjOaSXqilTxG9TRliwU_YZvezX85i9FSqUIRtumArAT0po_Ql3dAYDLw0jtsEGTgpnyaZLIWqyq--oE0ToRvtM8GtX3iLcDJIJ1LoNd_6hLckg0wuuHoRahqfRJ5n9buwdUX045YBI-HG3JBWiOxFbFhluSvAB5arh0ILXSgx34t_Mrcb7GNXnf97mpE6sMpie8peXK_XaK3d4CCMl2oRmfs1xQNd2sneBTTy8ImandOYicBk2rIlSIUx5rJ6dB5GufkMXGCpM5Ic');"></div>
+        <div class="map-overlay">
+          <button class="btn-edit-map">
+            <span class="material-symbols-outlined">edit_location</span>
+            Editar Mapa
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- WhatsApp Templates -->
+    <section class="config-section mb-6">
+      <div class="section-header justify-between">
+        <div class="flex-row items-center gap-2">
+          <span class="material-symbols-outlined text-primary">forum</span>
+          <h3 class="section-title text-primary m-0">Plantillas de WhatsApp</h3>
+        </div>
+        <button class="link-btn">Ver todas</button>
+      </div>
+      
+      <div class="card-container">
+        <p class="helper-text mb-4">Mensajes predefinidos para agilizar las respuestas del equipo de ventas.</p>
+        
+        <!-- Template Item 1 -->
+        <div class="template-box mb-3">
+          <div class="template-header mb-2">
+            <span class="badge badge-primary">BIENVENIDA</span>
+            <button class="btn-edit-icon"><span class="material-symbols-outlined">edit</span></button>
+          </div>
+          <p class="template-text">"¡Hola! Gracias por contactar a Concentrados Puente Tierra. ¿En qué podemos ayudarte hoy?"</p>
+        </div>
+        
+        <!-- Template Item 2 -->
+        <div class="template-box">
+          <div class="template-header mb-2">
+            <span class="badge badge-success">CONFIRMACIÓN</span>
+            <button class="btn-edit-icon"><span class="material-symbols-outlined">edit</span></button>
+          </div>
+          <p class="template-text">"Tu pedido ha sido confirmado. Lo estaremos despachando mañana a primera hora. ¡Gracias por tu compra!"</p>
+        </div>
+      </div>
+    </section>
+  </main>
+</ion-content>
+
+<!-- Bottom Actions Sticky -->
+<ion-footer class="ion-no-border">
+  <div class="action-bar-bottom">
+    <div class="grid-2-cols gap-4">
+      <button class="btn-secondary">
+        <span class="material-symbols-outlined">visibility</span>
+        Vista Previa
+      </button>
+      <button class="btn-primary">
+        <span class="material-symbols-outlined">save</span>
+        Guardar
+      </button>
+    </div>
+  </div>
+</ion-footer>

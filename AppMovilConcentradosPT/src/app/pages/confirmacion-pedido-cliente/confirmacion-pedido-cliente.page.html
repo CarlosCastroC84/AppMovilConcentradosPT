@@ -1,0 +1,92 @@
+<!-- Top App Bar -->
+<ion-header class="ion-no-border sticky-header">
+  <div class="header-content">
+    <button class="icon-btn" routerLink="/inicio">
+      <span class="material-symbols-outlined">close</span>
+    </button>
+  </div>
+</ion-header>
+
+<ion-content>
+  <main class="confirm-main pb-24 flex-col items-center justify-center min-h-full">
+    
+    <!-- Success Graphic -->
+    <div class="success-graphic-container mb-8 animation-scale-up">
+      <div class="circle-outer">
+        <div class="circle-inner bg-primary">
+          <span class="material-symbols-outlined icon-huge text-white">check_circle</span>
+        </div>
+      </div>
+      <!-- Decorative particles -->
+      <div class="particle p1"></div>
+      <div class="particle p2"></div>
+      <div class="particle p3"></div>
+      <div class="particle p4"></div>
+    </div>
+
+    <!-- Text Content -->
+    <div class="text-center mb-8 animation-fade-up px-4">
+      <h1 class="title-primary mb-2">¡Pedido Confirmado!</h1>
+      <p class="text-subtitle">Tu orden ha sido recibida y está siendo procesada por nuestro equipo.</p>
+    </div>
+
+    <!-- Order Details Card -->
+    <div class="order-card mb-8 animation-fade-up delay-1 px-4 w-full">
+      <div class="card-inner bg-surface">
+        <div class="card-header pb-3 border-b border-muted align-center justify-between">
+          <span class="label-muted">N° de Pedido</span>
+          <span class="value-highlight text-primary">{{ pedidoId }}</span>
+        </div>
+        
+        <div class="card-body pt-4 space-y-4">
+          <div class="detail-row">
+            <div class="flex-row items-center gap-2">
+              <span class="material-symbols-outlined text-muted icon-sm">calendar_today</span>
+              <span class="detail-label">Fecha estimada de entrega</span>
+            </div>
+            <span class="detail-value">Mañana, 08:00 AM - 12:00 PM</span>
+          </div>
+
+          <div class="detail-row">
+            <div class="flex-row items-center gap-2">
+              <span class="material-symbols-outlined text-muted icon-sm">location_on</span>
+              <span class="detail-label">Dirección de entrega</span>
+            </div>
+            <span class="detail-value">Finca La Esperanza, Vereda El Salado</span>
+          </div>
+          
+          <div class="detail-row">
+            <div class="flex-row items-center gap-2">
+              <span class="material-symbols-outlined text-muted icon-sm">payments</span>
+              <span class="detail-label">Método de pago</span>
+            </div>
+            <span class="detail-value">Efectivo contra entrega</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Follow up instructions -->
+    <div class="instructions-box bg-primary-light mb-8 animation-fade-up delay-2 px-4 py-3 rounded-lg flex-row items-start gap-3 w-full max-w-sm">
+      <span class="material-symbols-outlined text-primary mt-1">info</span>
+      <p class="instruction-text text-sm flex-1 m-0">
+        Te enviaremos actualizaciones sobre el estado de tu pedido a través de WhatsApp.
+      </p>
+    </div>
+
+  </main>
+</ion-content>
+
+<!-- Bottom Actions Sticky -->
+<ion-footer class="ion-no-border">
+  <div class="action-bar-bottom animation-fade-up delay-3">
+    <div class="flex-col gap-3 w-full">
+      <button class="btn-primary" routerLink="/inicio">
+        Volver al Inicio
+      </button>
+      <button class="btn-secondary">
+        Ver mis pedidos
+      </button>
+    </div>
+  </div>
+</ion-footer>

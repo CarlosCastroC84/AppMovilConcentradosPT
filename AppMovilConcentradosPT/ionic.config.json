@@ -1,0 +1,7 @@
+{
+  "name": "AppMovilConcentradosPT",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular-standalone"
+}

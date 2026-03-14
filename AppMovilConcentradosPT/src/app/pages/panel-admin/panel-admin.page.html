@@ -1,0 +1,190 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar>
+    <div class="nav-row">
+      <div class="nav-left">
+        <button class="menu-btn">
+          <span class="material-icons-round">menu</span>
+        </button>
+        <div class="nav-brand">
+          <span class="brand-label">PUENTE TIERRA</span>
+          <span class="brand-sub">Dashboard</span>
+        </div>
+      </div>
+      <div class="nav-right">
+        <button class="notif-btn">
+          <span class="material-icons-round">notifications</span>
+          <span class="notif-dot" *ngIf="pedidosPendientes > 0"></span>
+        </button>
+        <div class="avatar" (click)="cerrarSesion()" style="cursor: pointer;" title="Cerrar Sesión">PT</div>
+      </div>
+    </div>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <main class="admin-main">
+    <!-- Greeting -->
+    <div class="greeting">
+      <h1 class="greeting-title">Hola, {{ currentUser }} 👋</h1>
+      <p class="greeting-sub">Resumen de actividad de hoy.</p>
+    </div>
+
+    <!-- KPI Cards (Datos Reales) -->
+    <div class="kpi-scroll">
+      <div class="kpi-card">
+        <div class="kpi-top">
+          <div class="kpi-icon green">
+            <span class="material-icons-round">attach_money</span>
+          </div>
+        </div>
+        <h3 class="kpi-label">Ventas Total</h3>
+        <p class="kpi-value">{{ formatPrice(totalVentasHoy) }}</p>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-top">
+          <div class="kpi-icon orange">
+            <span class="material-icons-round">shopping_bag</span>
+          </div>
+          <span class="kpi-badge orange" *ngIf="pedidosPendientes > 0">{{ pedidosPendientes }}</span>
+        </div>
+        <h3 class="kpi-label">Pedidos</h3>
+        <p class="kpi-value">{{ pedidos.length }}</p>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-top">
+          <div class="kpi-icon blue">
+            <span class="material-icons-round">inventory_2</span>
+          </div>
+        </div>
+        <h3 class="kpi-label">Productos</h3>
+        <p class="kpi-value">{{ totalProductos }}</p>
+      </div>
+    </div>
+
+    <!-- Acciones Rápidas -->
+    <h2 class="section-title">Acciones Rápidas</h2>
+    <div class="actions-grid">
+      <button class="action-item" routerLink="/gestion-productos">
+        <div class="action-icon-wrap">
+          <span class="material-icons-round primary-icon">add_box</span>
+        </div>
+        <span class="action-text">Nuevo<br/>Producto</span>
+      </button>
+      <button class="action-item" routerLink="/gestion-pedidos">
+        <div class="action-icon-wrap">
+          <span class="material-icons-round blue-icon">local_shipping</span>
+        </div>
+        <span class="action-text">Despacho</span>
+      </button>
+      <button class="action-item">
+        <div class="action-icon-wrap">
+          <span class="material-icons-round green-icon">people</span>
+        </div>
+        <span class="action-text">Clientes</span>
+      </button>
+      <button class="action-item" routerLink="/catalogo">
+        <div class="action-icon-wrap">
+          <span class="material-icons-round purple-icon">storefront</span>
+        </div>
+        <span class="action-text">Catálogo</span>
+      </button>
+    </div>
+
+    <!-- Pedidos Recientes (Datos Reales de DynamoDB) -->
+    <div class="section-header">
+      <h2 class="section-title m0">Pedidos Recientes</h2>
+      <a routerLink="/gestion-pedidos" class="see-all">Ver todo</a>
+    </div>
+
+    <!-- Loading -->
+    <div *ngIf="loadingPedidos" style="text-align: center; padding: 20px;">
+      <ion-spinner name="crescent"></ion-spinner>
+      <p style="color: #999; font-size: 0.85rem;">Cargando pedidos de AWS...</p>
+    </div>
+
+    <!-- Sin pedidos -->
+    <div *ngIf="!loadingPedidos && pedidos.length === 0" class="orders-card" style="text-align: center; padding: 30px;">
+      <span class="material-icons-round" style="font-size: 48px; color: #ccc;">receipt_long</span>
+      <p style="color: #999; margin-top: 10px;">Aún no hay pedidos registrados en DynamoDB</p>
+    </div>
+
+    <!-- Lista de Pedidos Reales -->
+    <div class="orders-card" *ngIf="!loadingPedidos && pedidos.length > 0">
+      <div *ngFor="let pedido of pedidos; let last = last"
+           class="order-row" [class.border-b]="!last">
+        <div class="order-top">
+          <div class="order-left">
+            <div class="order-emoji">📦</div>
+            <div>
+              <h4 class="order-id">#{{ pedido.id }}</h4>
+              <p class="order-detail">{{ pedido.customerName }}</p>
+            </div>
+          </div>
+          <span class="order-badge" [ngClass]="getStatusColor(pedido.status)">
+            {{ getStatusLabel(pedido.status) }}
+          </span>
+        </div>
+        <div class="order-bottom">
+          <span class="order-price">{{ formatPrice(pedido.total || 0) }}</span>
+          <span class="order-time">{{ tiempoRelativo(pedido.createdAt) }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Productos en Catálogo (Datos Reales) -->
+    <h2 class="section-title">Productos en Catálogo</h2>
+
+    <div *ngIf="loadingProductos" style="text-align: center; padding: 20px;">
+      <ion-spinner name="crescent"></ion-spinner>
+    </div>
+
+    <div class="prices-list" *ngIf="!loadingProductos">
+      <div class="price-card" *ngFor="let prod of productos">
+        <div class="price-emoji-wrap">
+          <span class="price-emoji">🐮</span>
+        </div>
+        <div class="price-info">
+          <h4 class="price-name">{{ prod.nombre }}</h4>
+          <div class="price-row">
+            <span class="new-price dark">{{ formatPrice(prod.precio || 0) }}</span>
+          </div>
+          <p class="price-note green-text">{{ prod.presentacion }} • {{ prod.categoria }}</p>
+        </div>
+        <button class="edit-btn" routerLink="/gestion-productos">
+          <span class="material-icons-round">edit</span>
+        </button>
+      </div>
+
+      <div *ngIf="productos.length === 0" style="text-align: center; padding: 20px;">
+        <p style="color: #999;">No hay productos en la base de datos</p>
+      </div>
+    </div>
+  </main>
+</ion-content>
+
+<!-- Admin Tab Bar -->
+<ion-footer class="ion-no-border">
+  <div class="admin-tab-bar">
+    <a class="admin-tab active">
+      <span class="material-icons-round">dashboard</span>
+      <span class="admin-tab-label">Inicio</span>
+    </a>
+    <a class="admin-tab" routerLink="/catalogo">
+      <span class="material-icons-round">inventory</span>
+      <span class="admin-tab-label">Productos</span>
+    </a>
+    <div class="admin-tab-center">
+      <button class="admin-fab" routerLink="/gestion-productos">
+        <span class="material-icons-round">add</span>
+      </button>
+    </div>
+    <a class="admin-tab" routerLink="/gestion-pedidos">
+      <span class="material-icons-round">receipt_long</span>
+      <span class="admin-tab-label">Pedidos</span>
+    </a>
+    <a class="admin-tab" (click)="cerrarSesion()" style="cursor: pointer;">
+      <span class="material-icons-round">logout</span>
+      <span class="admin-tab-label">Salir</span>
+    </a>
+  </div>
+</ion-footer>

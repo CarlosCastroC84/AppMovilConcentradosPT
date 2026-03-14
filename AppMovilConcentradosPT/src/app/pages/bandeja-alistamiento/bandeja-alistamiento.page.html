@@ -1,0 +1,223 @@
+<!-- Header -->
+<ion-header class="ion-no-border">
+  <div class="header-content">
+    <div class="header-top-row">
+      <div class="flex-row items-center gap-2">
+        <button class="icon-btn" routerLink="/inicio">
+          <span class="material-symbols-outlined">arrow_back</span>
+        </button>
+        <h1 class="header-title">Alistamiento Bodega</h1>
+      </div>
+      <button class="notif-btn">
+        <span class="material-symbols-outlined">notifications</span>
+        <span class="notif-dot"></span>
+      </button>
+    </div>
+    
+    <!-- Search Bar -->
+    <div class="search-wrap mt-3">
+      <span class="material-symbols-outlined search-icon">search</span>
+      <input type="text" class="search-input" placeholder="Buscar pedido #, cliente o zona...">
+    </div>
+  </div>
+
+  <!-- Filters Scroll -->
+  <div class="filters-scroll">
+    <button class="filter-chip active">Todo</button>
+    <button class="filter-chip">
+      Alta Prioridad
+      <span class="filter-badge">4</span>
+    </button>
+    <button class="filter-chip">Zona Norte</button>
+    <button class="filter-chip">Zona Sur</button>
+  </div>
+</ion-header>
+
+<ion-content>
+  <main class="bandeja-main pb-24">
+    
+    <!-- Summary Stats -->
+    <div class="stats-grid mb-6">
+      <div class="stat-card">
+        <p class="stat-label">Pendientes</p>
+        <div class="stat-body mt-1">
+          <span class="stat-value">12</span>
+          <span class="material-symbols-outlined text-primary">pending_actions</span>
+        </div>
+      </div>
+      <div class="stat-card">
+        <p class="stat-label">En Proceso</p>
+        <div class="stat-body mt-1">
+          <span class="stat-value">5</span>
+          <span class="material-symbols-outlined text-green">trolley</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Group: Alta Prioridad -->
+    <h2 class="group-title">Alta Prioridad</h2>
+    
+    <!-- Card 1: High Priority (Urgente) -->
+    <article class="order-card card-urgent mb-4">
+      <div class="card-header mb-3">
+        <div class="flex-row items-center gap-2">
+          <span class="status-badge badge-urgent">Urgente</span>
+          <span class="time-text">Hace 15 min</span>
+        </div>
+        <button class="more-btn"><span class="material-symbols-outlined">more_vert</span></button>
+      </div>
+      
+      <div class="customer-info mb-4">
+        <div class="customer-icon icon-orange">
+          <span class="material-symbols-outlined">storefront</span>
+        </div>
+        <div>
+          <h3 class="customer-name">Ferretería El Centro</h3>
+          <p class="order-number">Pedido #10234</p>
+        </div>
+      </div>
+
+      <div class="details-grid mb-4">
+        <div class="detail-box">
+          <span class="material-symbols-outlined detail-icon">location_on</span>
+          <div class="flex-col">
+            <span class="detail-label">Ubicación</span>
+            <span class="detail-value">Pasillo 4, B</span>
+          </div>
+        </div>
+        <div class="detail-box">
+          <span class="material-symbols-outlined detail-icon">inventory_2</span>
+          <div class="flex-col">
+            <span class="detail-label">Items</span>
+            <span class="detail-value">24 Unidades</span>
+          </div>
+        </div>
+      </div>
+
+      <button class="action-btn btn-primary" routerLink="/checklist-alistamiento">
+        <span class="material-symbols-outlined">play_arrow</span>
+        Iniciar Alistamiento
+      </button>
+    </article>
+
+    <!-- Card 2: High Priority -->
+    <article class="order-card card-high mb-4">
+      <div class="card-header mb-3">
+        <div class="flex-row items-center gap-2">
+          <span class="status-badge badge-high">Prioridad Alta</span>
+          <span class="time-text">Hace 45 min</span>
+        </div>
+        <button class="more-btn"><span class="material-symbols-outlined">more_vert</span></button>
+      </div>
+      
+      <div class="customer-info mb-4">
+        <div class="customer-icon icon-orange">
+          <span class="material-symbols-outlined">agriculture</span>
+        </div>
+        <div>
+          <h3 class="customer-name">Agroinsumos La Colina</h3>
+          <p class="order-number">Pedido #10239</p>
+        </div>
+      </div>
+
+      <div class="details-grid mb-4">
+        <div class="detail-box">
+          <span class="material-symbols-outlined detail-icon">location_on</span>
+          <div class="flex-col">
+            <span class="detail-label">Ubicación</span>
+            <span class="detail-value">Pasillo 2, A</span>
+          </div>
+        </div>
+        <div class="detail-box">
+          <span class="material-symbols-outlined detail-icon">inventory_2</span>
+          <div class="flex-col">
+            <span class="detail-label">Items</span>
+            <span class="detail-value">8 Unidades</span>
+          </div>
+        </div>
+      </div>
+
+      <button class="action-btn btn-secondary" routerLink="/checklist-alistamiento">
+        <span class="material-symbols-outlined">visibility</span>
+        Ver Detalles
+      </button>
+    </article>
+
+    <!-- Group: Normal -->
+    <h2 class="group-title mt-6">Normal</h2>
+    
+    <!-- Card 3: Normal Priority -->
+    <article class="order-card card-normal mb-4">
+      <div class="card-header mb-3">
+        <div class="flex-row items-center gap-2">
+          <span class="status-badge badge-normal">Normal</span>
+          <span class="time-text">Hace 2 horas</span>
+        </div>
+        <button class="more-btn"><span class="material-symbols-outlined">more_vert</span></button>
+      </div>
+      
+      <div class="customer-info mb-4">
+        <div class="customer-icon icon-gray">
+          <span class="material-symbols-outlined">person</span>
+        </div>
+        <div>
+          <h3 class="customer-name">Juan Pérez (Particular)</h3>
+          <p class="order-number">Pedido #10245</p>
+        </div>
+      </div>
+
+      <div class="details-grid mb-4">
+        <div class="detail-box">
+          <span class="material-symbols-outlined detail-icon">location_on</span>
+          <div class="flex-col">
+            <span class="detail-label">Ubicación</span>
+            <span class="detail-value">Zona Carga</span>
+          </div>
+        </div>
+        <div class="detail-box">
+          <span class="material-symbols-outlined detail-icon">inventory_2</span>
+          <div class="flex-col">
+            <span class="detail-label">Items</span>
+            <span class="detail-value">2 Bultos</span>
+          </div>
+        </div>
+      </div>
+
+      <button class="action-btn btn-secondary">
+        <span class="material-symbols-outlined">visibility</span>
+        Ver Detalles
+      </button>
+    </article>
+
+  </main>
+</ion-content>
+
+<!-- Bottom Navigation (Bodega Staff) -->
+<ion-footer class="ion-no-border">
+  <div class="bodega-tab-bar">
+    <a class="tab-item active" routerLink="/bandeja-alistamiento">
+      <div class="icon-wrap">
+        <span class="material-symbols-outlined">checklist</span>
+      </div>
+      <span class="tab-label">Alistamiento</span>
+    </a>
+    <a class="tab-item">
+      <div class="icon-wrap">
+        <span class="material-symbols-outlined">warehouse</span>
+      </div>
+      <span class="tab-label">Inventario</span>
+    </a>
+    <a class="tab-item">
+      <div class="icon-wrap">
+        <span class="material-symbols-outlined">local_shipping</span>
+      </div>
+      <span class="tab-label">Despachos</span>
+    </a>
+    <a class="tab-item" routerLink="/configuracion-general">
+      <div class="icon-wrap">
+        <span class="material-symbols-outlined">account_circle</span>
+      </div>
+      <span class="tab-label">Perfil</span>
+    </a>
+  </div>
+</ion-footer>

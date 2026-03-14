@@ -1,0 +1,198 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar>
+    <div class="header-row">
+      <div class="header-left">
+        <button class="back-btn" routerLink="/inicio">
+          <span class="material-icons-round">arrow_back</span>
+        </button>
+        <h1 class="header-title">Atención al Cliente</h1>
+      </div>
+      <div class="avatar-circle">
+        <span class="material-icons-round">person</span>
+      </div>
+    </div>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <main class="main-content">
+    <!-- Hero -->
+    <section class="hero-section">
+      <div class="hero-icon-circle">
+        <span class="material-icons-round hero-icon">support_agent</span>
+      </div>
+      <h2 class="hero-title">¿En qué podemos ayudarte?</h2>
+      <p class="hero-desc">Estamos aquí para resolver tus dudas sobre pedidos, productos y servicios.</p>
+    </section>
+
+    <!-- Crear Nueva Solicitud -->
+    <section>
+      <button class="new-request-btn" (click)="openModal()">
+        <span class="material-icons-round">add_circle_outline</span>
+        Crear Nueva Solicitud
+      </button>
+    </section>
+
+    <!-- Mis Solicitudes -->
+    <section>
+      <div class="section-header">
+        <h3 class="section-title">Mis solicitudes</h3>
+        <a href="#" class="section-link">Ver todas</a>
+      </div>
+      <div class="requests-list">
+        <!-- Request 1 -->
+        <div class="request-card">
+          <div class="request-left">
+            <div class="request-icon blue">
+              <span class="material-icons-round">inventory_2</span>
+            </div>
+            <div>
+              <p class="request-name">Pedido #10234 - Bultos Vaca</p>
+              <p class="request-time">Hace 2 horas</p>
+            </div>
+          </div>
+          <span class="status-badge yellow">En proceso</span>
+        </div>
+        <!-- Request 2 -->
+        <div class="request-card">
+          <div class="request-left">
+            <div class="request-icon green">
+              <span class="material-icons-round">request_quote</span>
+            </div>
+            <div>
+              <p class="request-name">Cotización Alimento Pollo</p>
+              <p class="request-time">Ayer</p>
+            </div>
+          </div>
+          <span class="status-badge green">Cerrada</span>
+        </div>
+        <!-- Request 3 -->
+        <div class="request-card">
+          <div class="request-left">
+            <div class="request-icon gray">
+              <span class="material-icons-round">help_outline</span>
+            </div>
+            <div>
+              <p class="request-name">Consulta sobre cobertura</p>
+              <p class="request-time">20 Oct 2023</p>
+            </div>
+          </div>
+          <span class="status-badge gray">Recibida</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section>
+      <h3 class="section-title faq-title">Preguntas Frecuentes</h3>
+      <div class="faq-list">
+        <details class="faq-item">
+          <summary class="faq-summary">
+            <div class="faq-left">
+              <span class="material-icons-round faq-icon">schedule</span>
+              <span class="faq-question">Horarios de atención</span>
+            </div>
+            <span class="material-icons-round faq-arrow">expand_more</span>
+          </summary>
+          <div class="faq-answer">
+            Lunes a Viernes: 7:00 AM - 5:00 PM<br/>
+            Sábados: 8:00 AM - 12:00 PM<br/>
+            Domingos y Festivos: Cerrado
+          </div>
+        </details>
+        <details class="faq-item">
+          <summary class="faq-summary">
+            <div class="faq-left">
+              <span class="material-icons-round faq-icon">local_shipping</span>
+              <span class="faq-question">Zonas de Cobertura</span>
+            </div>
+            <span class="material-icons-round faq-arrow">expand_more</span>
+          </summary>
+          <div class="faq-answer">
+            Realizamos entregas en toda la zona de Puente Tierra y veredas aledañas. Para pedidos mayores a 10 bultos, el envío es gratuito en el casco urbano.
+          </div>
+        </details>
+        <details class="faq-item">
+          <summary class="faq-summary">
+            <div class="faq-left">
+              <span class="material-icons-round faq-icon">payments</span>
+              <span class="faq-question">Medios de Pago</span>
+            </div>
+            <span class="material-icons-round faq-arrow">expand_more</span>
+          </summary>
+          <div class="faq-answer">
+            Aceptamos efectivo contra entrega, transferencias Bancolombia, Nequi y Daviplata.
+          </div>
+        </details>
+      </div>
+    </section>
+  </main>
+</ion-content>
+
+<!-- Modal Nueva Solicitud -->
+<div class="modal-overlay" *ngIf="showModal" (click)="closeModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3 class="modal-title">Nueva Solicitud</h3>
+      <button class="modal-close" (click)="closeModal()">
+        <span class="material-icons-round">close</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label">Nombre Completo</label>
+        <div class="input-with-icon">
+          <span class="material-icons-round input-icon">person</span>
+          <input type="text" class="form-input" placeholder="Tu nombre" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Teléfono</label>
+        <div class="input-with-icon">
+          <span class="material-icons-round input-icon">phone</span>
+          <input type="tel" class="form-input" placeholder="300 000 0000" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Tipo de Solicitud</label>
+        <div class="input-with-icon">
+          <span class="material-icons-round input-icon">category</span>
+          <select class="form-input form-select">
+            <option>Pedido</option>
+            <option>Cotización</option>
+            <option>Queja o Reclamo</option>
+            <option>Asesoría Técnica</option>
+            <option>Otro</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Mensaje (Opcional)</label>
+        <textarea class="form-textarea" placeholder="Describe brevemente tu solicitud..." rows="3"></textarea>
+      </div>
+      <button class="submit-btn">Enviar Solicitud</button>
+    </div>
+  </div>
+</div>
+
+<!-- Tab Bar -->
+<ion-footer class="ion-no-border">
+  <div class="tab-bar">
+    <a class="tab-item" routerLink="/inicio">
+      <span class="material-icons-round">home</span>
+      <span class="tab-label">Inicio</span>
+    </a>
+    <a class="tab-item" routerLink="/catalogo">
+      <span class="material-icons-round">shopping_bag</span>
+      <span class="tab-label">Productos</span>
+    </a>
+    <a class="tab-item active">
+      <span class="material-icons-round">support_agent</span>
+      <span class="tab-label">Soporte</span>
+    </a>
+    <a class="tab-item" href="#">
+      <span class="material-icons-round">person</span>
+      <span class="tab-label">Perfil</span>
+    </a>
+  </div>
+</ion-footer>

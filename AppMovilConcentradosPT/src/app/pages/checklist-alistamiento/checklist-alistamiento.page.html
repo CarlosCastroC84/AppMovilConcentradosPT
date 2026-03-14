@@ -1,0 +1,145 @@
+<!-- Header & Context -->
+<ion-header class="ion-no-border sticky-header">
+  <div class="header-content">
+    <div class="header-top-row">
+      <button class="icon-btn" routerLink="/bandeja-alistamiento">
+        <span class="material-symbols-outlined">arrow_back</span>
+      </button>
+      <h2 class="header-title">Checklist de Alistamiento</h2>
+      <!-- Spacer for centering -->
+      <div style="width: 40px;"></div>
+    </div>
+    
+    <!-- Order Context -->
+    <div class="order-context">
+      <span class="order-label">Orden #4829</span>
+      <div class="order-details-row">
+        <h1 class="customer-title">Agropecuaria La Finca</h1>
+        <span class="status-badge px-2">Por Alistar</span>
+      </div>
+    </div>
+  </div>
+</ion-header>
+
+<ion-content>
+  <main class="checklist-main pb-32">
+    <!-- Items List -->
+    <div class="items-section mb-6">
+      <p class="section-subtitle">Items a Recoger (5)</p>
+      
+      <!-- Item 1 -->
+      <label class="item-card">
+        <div class="checkbox-wrap">
+          <input type="checkbox" class="custom-checkbox" />
+        </div>
+        <div class="item-info">
+          <span class="item-name">Concentrado Cerdos Inicio</span>
+          <div class="item-meta">
+            <span class="meta-weight">40kg</span>
+            <span class="dot-separator"></span>
+            <span class="meta-qty text-primary">CANT: 2</span>
+          </div>
+        </div>
+        <div class="status-icon-wrap">
+          <span class="material-symbols-outlined icon-pending">inventory_2</span>
+          <span class="material-symbols-outlined icon-checked">check</span>
+        </div>
+      </label>
+
+      <!-- Item 2 -->
+      <label class="item-card">
+        <div class="checkbox-wrap">
+          <input type="checkbox" class="custom-checkbox" />
+        </div>
+        <div class="item-info">
+          <span class="item-name">Concentrado Cerdos Engorde</span>
+          <div class="item-meta">
+            <span class="meta-weight">40kg</span>
+            <span class="dot-separator"></span>
+            <span class="meta-qty text-primary">CANT: 10</span>
+          </div>
+        </div>
+        <div class="status-icon-wrap">
+          <span class="material-symbols-outlined icon-pending">inventory_2</span>
+          <span class="material-symbols-outlined icon-checked">check</span>
+        </div>
+      </label>
+
+      <!-- Item 3 -->
+      <label class="item-card">
+        <div class="checkbox-wrap">
+          <input type="checkbox" class="custom-checkbox" />
+        </div>
+        <div class="item-info">
+          <span class="item-name">Sal Mineralizada 5%</span>
+          <div class="item-meta">
+            <span class="meta-weight">20kg</span>
+            <span class="dot-separator"></span>
+            <span class="meta-qty text-primary">CANT: 5</span>
+          </div>
+        </div>
+        <div class="status-icon-wrap">
+          <span class="material-symbols-outlined icon-pending">inventory_2</span>
+          <span class="material-symbols-outlined icon-checked">check</span>
+        </div>
+      </label>
+
+      <!-- Item 4 -->
+      <label class="item-card">
+        <div class="checkbox-wrap">
+          <input type="checkbox" class="custom-checkbox" />
+        </div>
+        <div class="item-info">
+          <span class="item-name">Melaza</span>
+          <div class="item-meta">
+            <span class="meta-weight">5 Galones</span>
+            <span class="dot-separator"></span>
+            <span class="meta-qty text-primary">CANT: 1</span>
+          </div>
+        </div>
+        <div class="status-icon-wrap">
+          <span class="material-symbols-outlined icon-pending">inventory_2</span>
+          <span class="material-symbols-outlined icon-checked">check</span>
+        </div>
+      </label>
+
+      <!-- Item 5 -->
+      <label class="item-card">
+        <div class="checkbox-wrap">
+          <input type="checkbox" class="custom-checkbox" />
+        </div>
+        <div class="item-info">
+          <span class="item-name">Bulto Maíz Amarillo</span>
+          <div class="item-meta">
+            <span class="meta-weight">50kg</span>
+            <span class="dot-separator"></span>
+            <span class="meta-qty text-primary">CANT: 3</span>
+          </div>
+        </div>
+        <div class="status-icon-wrap">
+          <span class="material-symbols-outlined icon-pending">inventory_2</span>
+          <span class="material-symbols-outlined icon-checked">check</span>
+        </div>
+      </label>
+    </div>
+
+    <!-- Notes Section -->
+    <div class="notes-section">
+      <h3 class="notes-title">Notas de Picking</h3>
+      <div class="textarea-wrap">
+        <textarea class="notes-textarea" placeholder="Ej: Faltante de 2 bultos de maíz, se sustituyó por marca alternativa..."></textarea>
+        <span class="material-symbols-outlined notes-icon">edit_note</span>
+      </div>
+    </div>
+  </main>
+</ion-content>
+
+<!-- Fixed Bottom Action Bar -->
+<ion-footer class="ion-no-border">
+  <div class="action-bar-bg">
+    <button class="action-btn-main">
+      <span>Marcar como ALISTADO</span>
+      <span class="material-symbols-outlined">check_circle</span>
+    </button>
+  </div>
+</ion-footer>

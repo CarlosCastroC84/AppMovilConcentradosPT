@@ -1,0 +1,182 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar class="glass-toolbar">
+    <div class="nav-row">
+      <div class="nav-left">
+        <button class="icon-btn" routerLink="/panel-admin">
+          <span class="material-icons">arrow_back</span>
+        </button>
+        <h1 class="nav-title">Configuración</h1>
+      </div>
+      <div class="nav-brand">
+        <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuAMfXBy6rqNSIHIhFSYjVX4gB1O7rR0Xpwhabg3XO2zgw50SixskFKJmKjUEWQkXMc9DH0VaNXJai9SJfJajMwwE10nlTs6bFBPXYT0KjHt2ZJocsxer1TGSto3EyXzwab36qYwdDkRHqB6CSkWEaMOW8T9c6j7p0O5MG-seLz7UdqtsokDHb29e40mngSlWh7RF08MngtLMWv7yRzOcFt5LNXwV50PkaMw_idRmD4SgcibqS2BQrxbAxGzpLl-bRx7Nd-Lswla-hU" alt="Puente Tierra Logo" />
+      </div>
+    </div>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <main class="config-main">
+    
+    <!-- Información de Contacto -->
+    <section class="config-section">
+      <div class="section-header">
+        <h2 class="section-title">
+          <span class="material-icons text-primary">storefront</span>
+          Información de Contacto
+        </h2>
+      </div>
+      <div class="section-body">
+        <div class="form-group">
+          <label class="form-label">WhatsApp Central</label>
+          <div class="input-wrap">
+            <span class="material-icons input-icon">chat</span>
+            <input type="text" class="form-input with-icon" value="+57 310 123 4567" placeholder="+57 300 000 0000" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Teléfono Fijo</label>
+          <div class="input-wrap">
+            <span class="material-icons input-icon">phone</span>
+            <input type="tel" class="form-input with-icon" value="(601) 234 5678" placeholder="(601) 000 0000" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Horario de Atención</label>
+          <div class="time-grid">
+            <div class="time-col">
+              <span class="time-label">Apertura</span>
+              <input type="time" class="form-input" value="07:00" />
+            </div>
+            <div class="time-col">
+              <span class="time-label">Cierre</span>
+              <input type="time" class="form-input" value="18:00" />
+            </div>
+          </div>
+          <div class="checkbox-row mt-3">
+            <input type="checkbox" id="weekends" class="custom-checkbox" checked />
+            <label for="weekends" class="checkbox-label">Abierto Sábados (Medio día)</label>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Zonas de Cobertura -->
+    <section class="config-section">
+      <div class="section-header flex-between">
+        <h2 class="section-title">
+          <span class="material-icons text-primary">map</span>
+          Zonas de Cobertura
+        </h2>
+        <button class="add-btn text-primary">
+          <span class="material-icons">add</span> Agregar
+        </button>
+      </div>
+      <ul class="list-container">
+        <li class="list-item">
+          <div class="item-info">
+            <span class="item-name">Puente Tierra</span>
+            <span class="item-badge green-badge">Gratis</span>
+          </div>
+          <button class="delete-btn"><span class="material-icons">delete_outline</span></button>
+        </li>
+        <li class="list-item">
+          <div class="item-info">
+            <span class="item-name">Dagua (Centro)</span>
+            <span class="item-price">$5.000 COP</span>
+          </div>
+          <button class="delete-btn"><span class="material-icons">delete_outline</span></button>
+        </li>
+        <li class="list-item">
+          <div class="item-info">
+            <span class="item-name">Borrero Ayerbe</span>
+            <span class="item-price">$8.000 COP</span>
+          </div>
+          <button class="delete-btn"><span class="material-icons">delete_outline</span></button>
+        </li>
+        <li class="list-item">
+          <div class="item-info">
+            <span class="item-name">El Queremal</span>
+            <span class="item-price">$12.000 COP</span>
+          </div>
+          <button class="delete-btn"><span class="material-icons">delete_outline</span></button>
+        </li>
+      </ul>
+    </section>
+
+    <!-- Plantillas WhatsApp -->
+    <section class="config-section">
+      <div class="section-header">
+        <h2 class="section-title">
+          <span class="material-icons text-primary">message</span>
+          Plantillas WhatsApp
+        </h2>
+        <p class="section-subtitle">Mensajes automáticos para clientes</p>
+      </div>
+      <div class="section-body">
+        <div class="template-card">
+          <div class="template-header">
+            <span class="template-title text-primary">Saludo Inicial</span>
+            <span class="material-icons edit-icon">edit</span>
+          </div>
+          <p class="template-text">"¡Hola! Gracias por contactar a Distribuidora Puente Tierra. ¿En qué podemos ayudarte hoy?"</p>
+        </div>
+        <div class="template-card">
+          <div class="template-header">
+            <span class="template-title text-primary">Confirmación Pedido</span>
+            <span class="material-icons edit-icon">edit</span>
+          </div>
+          <p class="template-text">"Tu pedido de [PRODUCTO] ha sido confirmado. Valor total: [VALOR]. Estaremos entregando en breve."</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Gestión de Usuarios -->
+    <section class="config-section mb-6">
+      <div class="section-header">
+        <h2 class="section-title">
+          <span class="material-icons text-primary">admin_panel_settings</span>
+          Gestión de Usuarios
+        </h2>
+      </div>
+      <div class="section-body">
+        <div class="user-row">
+          <div class="user-info">
+            <div class="user-avatar blue-avatar">
+              <span class="material-icons">person</span>
+            </div>
+            <div class="user-details">
+              <p class="user-name">Admin Principal</p>
+              <p class="user-role">Acceso total</p>
+            </div>
+          </div>
+          <span class="status-badge orange-badge">Activo</span>
+        </div>
+        <div class="user-row">
+          <div class="user-info">
+            <div class="user-avatar gray-avatar">
+              <span class="material-icons">support_agent</span>
+            </div>
+            <div class="user-details">
+              <p class="user-name">Vendedor 1</p>
+              <p class="user-role">Solo pedidos</p>
+            </div>
+          </div>
+          <button class="edit-btn">Editar</button>
+        </div>
+        <button class="invite-btn mt-3">
+          <span class="material-icons">person_add</span> Invitar nuevo usuario
+        </button>
+      </div>
+    </section>
+  </main>
+</ion-content>
+
+<!-- Bottom Action Bar -->
+<ion-footer class="ion-no-border">
+  <div class="bottom-action-bar">
+    <button class="action-btn cancel-btn">Cancelar</button>
+    <button class="action-btn save-btn">
+      <span class="material-icons">save</span> Guardar Cambios
+    </button>
+  </div>
+</ion-footer>

@@ -1,0 +1,183 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar class="glass-toolbar">
+    <div class="nav-row">
+      <button class="nav-btn" routerLink="/panel-admin">
+        <span class="material-symbols-outlined nav-icon">menu</span>
+      </button>
+      <h1 class="nav-title truncate">Dashboard Ventas</h1>
+      <button class="help-btn">Ayuda</button>
+    </div>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <main class="dashboard-main pb-24">
+    <!-- KPI Cards -->
+    <section class="kpi-grid">
+      <div class="kpi-card col-span-2 sm:col-span-1">
+        <div class="kpi-header">
+          <p class="kpi-label">Pedidos Hoy</p>
+          <span class="material-symbols-outlined kpi-icon text-primary">shopping_cart</span>
+        </div>
+        <p class="kpi-value">15</p>
+        <div class="kpi-trend text-green">
+          <span class="material-symbols-outlined text-sm mr-1">trending_up</span>
+          <span>+2 vs ayer</span>
+        </div>
+      </div>
+      
+      <div class="kpi-card">
+        <div class="kpi-header">
+          <p class="kpi-label">Por Confirmar</p>
+          <span class="material-symbols-outlined kpi-icon text-orange">assignment_late</span>
+        </div>
+        <p class="kpi-value">4</p>
+        <div class="kpi-trend text-orange font-medium mt-1">
+          Requieren acción
+        </div>
+      </div>
+
+      <div class="kpi-card">
+        <div class="kpi-header">
+          <p class="kpi-label">En Alistamiento</p>
+          <span class="material-symbols-outlined kpi-icon text-blue">inventory_2</span>
+        </div>
+        <p class="kpi-value">2</p>
+        <div class="kpi-trend text-muted mt-1">
+          Procesando...
+        </div>
+      </div>
+    </section>
+
+    <!-- Recent Orders Header -->
+    <section class="mt-6">
+      <div class="section-header mb-4">
+        <h3 class="section-title">Órdenes Recientes <span class="text-sm font-normal text-slate-500 ml-1">(RECIBIDO)</span></h3>
+        <a class="view-all-link" routerLink="/gestion-pedidos">Ver todas</a>
+      </div>
+
+      <!-- Order Card 1 -->
+      <article class="order-card group mb-4">
+        <div class="order-bg" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAwAqGM4ib3IyL3PwkAEcbATZpOZRtqDH0XWGKQt2d_BT8QQs_-oJV4XHKuIV9iuYSMtOkWAqpaPMZdLfjvkM-T4VbLA1t-7jHKnND824OhgPooZjXMOlhTIqJdsEDX_q0DfUbDmWDIdvt9F65O9TLpcqaUKrNnKGMH2xLVxBzNE0gCqVOOskV-SLtmP7EURM_jSdUGMyKZXQh7d5sSXuJE3jCap74CxQIa3UlEHzHtd1sapAX--rAii8DgUdExlz_yKlTzc0PGoMA');"></div>
+        <div class="order-content">
+          <div class="mb-4">
+            <div class="order-top-row">
+              <span class="order-badge">#3842</span>
+              <span class="order-time">Hace 15 min</span>
+            </div>
+            <h4 class="order-customer">Supermercado El Éxito</h4>
+            <p class="order-items">
+              <span class="material-symbols-outlined text-base">package_2</span>
+              12 sacos - Concentrado Bovino
+            </p>
+            <p class="order-address">Calle 45 # 12-34, Bogotá</p>
+          </div>
+          <div class="order-actions">
+            <button class="action-btn-secondary">
+              <span class="material-symbols-outlined">visibility</span> Detalles
+            </button>
+            <button class="action-btn-primary">
+              <span class="material-symbols-outlined">check_circle</span> Confirmar
+            </button>
+          </div>
+        </div>
+      </article>
+
+      <!-- Order Card 2 -->
+      <article class="order-card group mb-4">
+        <div class="order-bg" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBf75T0AhIIO1HO22f5QwR_RXg5JwZc21xZpGPW1s-dBRZAyomPW-d9dnuU16XpxEU0Rj6xQ789bCls4dP2HO9H3bX6CeY2_OXwWHFkSA8l-UNg1pOLqgBteBPbx1b9gsFP16UPlbSBJTkbNASpua78eOPhZCXGu4CKJC4_u_qsOBNEBXMJxoHvDSEH70asDOtTMfseBYFycsAGQF71ACAz1Af10LnGSASXppUmpaDNmIDFbHsrjgcp0JXWZF69T-GPCtqDopnxR9g');"></div>
+        <div class="order-content">
+          <div class="mb-4">
+            <div class="order-top-row">
+              <span class="order-badge">#3841</span>
+              <span class="order-time">Hace 45 min</span>
+            </div>
+            <h4 class="order-customer">Agropecuaria La Finca</h4>
+            <p class="order-items">
+              <span class="material-symbols-outlined text-base">package_2</span>
+              50 bultos - Maíz Amarillo
+            </p>
+            <p class="order-address">Km 5 Vía La Calera</p>
+          </div>
+          <div class="order-actions">
+            <button class="action-btn-secondary">
+              <span class="material-symbols-outlined">visibility</span> Detalles
+            </button>
+            <button class="action-btn-primary">
+              <span class="material-symbols-outlined">check_circle</span> Confirmar
+            </button>
+          </div>
+        </div>
+      </article>
+
+      <!-- Order Card 3 -->
+      <article class="order-card group mb-4">
+        <div class="order-bg" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCC72ePsA5uciG0_A4c1N1onX2kIESHMCDABuGmc3HhXL1h7xwzkvijcBSLEoslWAcKt656g7nG0k7H2ruHp6EuMoRKhl_h3dAO42JyDOmUJnpRCJdcIxmFAGtemcK0PgSky-k21eyZu99gH4F0iHsuF1HQD8rhjddhx_Q7aQIzVtvw4LzmlQYiTusUULpbB-s-iKV6KcLuHAI4PZMRuY_RbNfcxJCQ0B7EiiW5ZZ-fYgSRCCaYl0uUkw3ABcI4gfbcIVQNOZMzXWQ');"></div>
+        <div class="order-content">
+          <div class="mb-4">
+            <div class="order-top-row">
+              <span class="order-badge">#3840</span>
+              <span class="order-time">Hace 1h 20m</span>
+            </div>
+            <h4 class="order-customer">Distribuidora El Campo</h4>
+            <p class="order-items">
+              <span class="material-symbols-outlined text-base">package_2</span>
+              25 sacos - Alimento Pollos
+            </p>
+            <p class="order-address">Zona Industrial Cazucá</p>
+          </div>
+          <div class="order-actions">
+            <button class="action-btn-secondary">
+              <span class="material-symbols-outlined">visibility</span> Detalles
+            </button>
+            <button class="action-btn-primary">
+              <span class="material-symbols-outlined">check_circle</span> Confirmar
+            </button>
+          </div>
+        </div>
+      </article>
+
+    </section>
+  </main>
+</ion-content>
+
+<!-- Bottom Navigation Tab Bar (Admin version) -->
+<ion-footer class="ion-no-border">
+  <div class="bottom-tab-bar">
+    <a class="tab-item active" routerLink="/dashboard-ventas">
+      <div class="icon-wrap">
+        <span class="material-symbols-outlined">home</span>
+      </div>
+      <span class="tab-label">Inicio</span>
+    </a>
+    <a class="tab-item" routerLink="/gestion-pedidos">
+      <div class="icon-wrap relative">
+        <span class="material-symbols-outlined">assignment</span>
+        <span class="badge-dot"></span>
+      </div>
+      <span class="tab-label">Pedidos</span>
+    </a>
+    
+    <div class="tab-center">
+      <a class="fab-wrapper" routerLink="/catalogo">
+        <button class="cart-fab bg-primary shadow-primary">
+          <span class="material-symbols-outlined">add</span>
+        </button>
+        <span class="fab-label">Nueva Venta</span>
+      </a>
+    </div>
+
+    <a class="tab-item">
+      <div class="icon-wrap">
+        <span class="material-symbols-outlined">groups</span>
+      </div>
+      <span class="tab-label">Clientes</span>
+    </a>
+    <a class="tab-item" routerLink="/configuracion-general">
+      <div class="icon-wrap">
+        <span class="material-symbols-outlined">account_circle</span>
+      </div>
+      <span class="tab-label">Perfil</span>
+    </a>
+  </div>
+</ion-footer>

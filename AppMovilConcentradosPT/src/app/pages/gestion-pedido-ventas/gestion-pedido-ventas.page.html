@@ -1,0 +1,166 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar class="glass-toolbar">
+    <div class="nav-row">
+      <button class="icon-btn" routerLink="/gestion-pedidos">
+        <span class="material-symbols-outlined nav-icon">arrow_back</span>
+      </button>
+      <h1 class="nav-title">Pedido #4829</h1>
+      <button class="nav-action-btn">Editar</button>
+    </div>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <main class="pedido-main pb-28">
+    
+    <!-- Customer Card -->
+    <div class="customer-card">
+      <div class="flex-row items-center gap-4">
+        <div class="customer-avatar" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuArv5-avm0-iY5j0MSNMDLziiJ8fCHNt0_JzHTNGhYkrtGHkfd2WG_1vsmld3MonVIhGE6VWiCxYAKGLVv7dbR6bqp9AJMZVqAADcSItgg2F7zrfrgdSWMtM3ZLXpO-KZ55LFD01XJ2x1xHZLXLpPBcx0M1tHsAltklDAY9GkrHLVvlSm7lZ2bzEh78GjZHM4mq26WRQZZSyFMdqog0bOHKzG71z6daBZVKevfIC4Inx-hKxKuVUneHJJ-xABq3B85ftvChlYLJv0A');"></div>
+        <div class="customer-info">
+          <h2 class="customer-name">Agropecuaria El Sol</h2>
+          <span class="customer-type">Cliente Frecuente • Zona Norte</span>
+          <div class="date-badge mt-1">
+            <span class="material-symbols-outlined">calendar_today</span>
+            <span>24 Oct, 2023</span>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Priority Selector -->
+      <div class="priority-selector mt-4">
+        <span class="priority-label">Prioridad</span>
+        <div class="priority-group">
+          <button class="priority-btn">Baja</button>
+          <button class="priority-btn active">Media</button>
+          <button class="priority-btn high">Alta</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Products Section -->
+    <div class="products-section mt-6">
+      <div class="section-header">
+        <h3 class="section-title">Productos (3)</h3>
+        <button class="add-product-btn">
+          <span class="material-symbols-outlined">add_circle</span> Agregar
+        </button>
+      </div>
+
+      <!-- Product Item 1 -->
+      <div class="product-item">
+        <div class="product-content">
+          <div class="product-img" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDH6yfEGFstJNWMwgCa5kaJRlu2Iqsj0SVZ8aYaq_n3uTSrkzDmnOL0RsucuBDYWvHqWY-5FsnPRLLCofKrpw5iwGtHeayWay18yjQZkdSyMHQ5_Fm2IaooIHY6x9SOeRtlZr1aXE8Emp0rc4bkRgoPT-6f_8Mv79wGE57aDcK9caC0oBmTzK2VbRiQ-q0ZIrSKSMzMjC7Jo3QLkc_TnL4wXSqDlauNSZnHv_rqvv1ZEr7hgaNp7Mo6ZuCOERSNj9TCUkgKFtnGYn4');"></div>
+          <div class="product-details">
+            <div class="flex-row justify-between items-start">
+              <h4 class="product-name">Concentrado Cerdo Engorde</h4>
+              <button class="delete-btn"><span class="material-symbols-outlined">delete</span></button>
+            </div>
+            <div class="product-options">
+              <select class="variant-select">
+                <option>Saco 40kg</option>
+                <option>Saco 20kg</option>
+                <option>Granel</option>
+              </select>
+              <div class="divider-v"></div>
+              <div class="price-input-wrap">
+                <span>$</span>
+                <input type="number" class="price-input" value="25.00" />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="quantity-footer">
+          <span class="qty-label">Cantidad</span>
+          <div class="qty-controls">
+            <button class="qty-btn calc-btn shadow-sm"><span class="material-symbols-outlined">remove</span></button>
+            <span class="qty-value">50</span>
+            <button class="qty-btn add-btn bg-primary text-white shadow-primary"><span class="material-symbols-outlined">add</span></button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Product Item 2 -->
+      <div class="product-item">
+        <div class="product-content">
+          <div class="product-img" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDMlGyg_Yov3Hs7iLFyke6mSZYq9gXW_OwByLJiB_ny06gngcpHTQ1snDwSCMEPKTnPaxC5TG0fUxwa2GVa-jzo34-A7xlMGC4WbeMD1yhXM3b2TmJPmnE1-hi53GmS7R-JLIf2JuYVnzk3hfsaQihnb1xpE4jcBxvuQxyMBql2rEq23o95xLl9IbqmtD5kdLshJtElXzyjsI9te11MpCVPzz_Nsd4gM4L7ihnw1XhlW5ejSUOst8-yRMR83BZYv2dtViiBiDVdIeY');"></div>
+          <div class="product-details">
+            <div class="flex-row justify-between items-start">
+              <h4 class="product-name">Suplemento Mineral Bovino</h4>
+              <button class="delete-btn"><span class="material-symbols-outlined">delete</span></button>
+            </div>
+            <div class="product-options">
+              <select class="variant-select">
+                <option>Bolsa 5kg</option>
+                <option>Bolsa 10kg</option>
+              </select>
+              <div class="divider-v"></div>
+              <div class="price-input-wrap">
+                <span>$</span>
+                <input type="number" class="price-input" value="12.50" />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="quantity-footer">
+          <span class="qty-label">Cantidad</span>
+          <div class="qty-controls">
+            <button class="qty-btn calc-btn shadow-sm"><span class="material-symbols-outlined">remove</span></button>
+            <span class="qty-value">12</span>
+            <button class="qty-btn add-btn bg-primary text-white shadow-primary"><span class="material-symbols-outlined">add</span></button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Notes Section -->
+    <div class="notes-section mt-6">
+      <label class="section-subtitle">Notas Internas</label>
+      <textarea class="notes-textarea" placeholder="Instrucciones especiales para bodega o logística..." rows="3"></textarea>
+    </div>
+
+    <!-- WhatsApp Shortcuts -->
+    <div class="wapp-section mt-6">
+      <label class="section-subtitle flex-row items-center gap-2">
+        <span class="material-symbols-outlined text-wapp">chat</span> Acciones Rápidas WhatsApp
+      </label>
+      <div class="wapp-grid mt-3">
+        <button class="wapp-btn confirm-btn">
+          <span class="material-symbols-outlined">check_circle</span> Confirmación
+        </button>
+        <button class="wapp-btn change-btn">
+          <span class="material-symbols-outlined">published_with_changes</span> Sustitución
+        </button>
+      </div>
+    </div>
+
+    <!-- Totals -->
+    <div class="totals-section mt-6">
+      <div class="total-row">
+        <span>Subtotal</span>
+        <span>$1,400.00</span>
+      </div>
+      <div class="total-row">
+        <span>Impuestos (IVA)</span>
+        <span>$210.00</span>
+      </div>
+      <div class="total-row grand-total mt-2">
+        <span>Total</span>
+        <span class="text-primary">$1,610.00</span>
+      </div>
+    </div>
+
+  </main>
+</ion-content>
+
+<!-- Sticky Bottom Actions -->
+<ion-footer class="ion-no-border">
+  <div class="sticky-action-bar">
+    <button class="action-btn-secondary">
+      <span class="material-symbols-outlined">inventory_2</span> A Bodega
+    </button>
+    <button class="action-btn-primary">
+      <span class="material-symbols-outlined">check</span> Confirmar Pedido
+    </button>
+  </div>
+</ion-footer>
