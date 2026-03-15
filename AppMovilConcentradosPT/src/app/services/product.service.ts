@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
+import { map, switchMap } from 'rxjs/operators';
 import { Product } from '../models/product.model';
 import { environment } from '../../environments/environment';
 import { unwrapApiArray, unwrapApiEntity, unwrapApiResponse } from '../utils/api-response.util';
@@ -26,19 +26,13 @@ export class ProductService {
 
   createProduct(productData: Product): Observable<Product> {
     return this.http.post<unknown>(this.apiUrl, productData).pipe(
-      map(response => {
-        const product = unwrapApiEntity<Product | null>(response, ['producto', 'product', 'item', 'data']);
-        return product && typeof product === 'object' && 'id' in product ? product : productData;
-      })
+      switchMap(response => this.resolveMutationProduct(response, productData))
     );
   }
 
   updateProduct(productData: Product): Observable<Product> {
     return this.http.put<unknown>(this.apiUrl, productData).pipe(
-      map(response => {
-        const product = unwrapApiEntity<Product | null>(response, ['producto', 'product', 'item', 'data']);
-        return product && typeof product === 'object' && 'id' in product ? product : productData;
-      })
+      switchMap(response => this.resolveMutationProduct(response, productData))
     );
   }
 
@@ -49,6 +43,25 @@ export class ProductService {
       map(response => {
         unwrapApiResponse(response);
         return void 0;
+      })
+    );
+  }
+
+  private resolveMutationProduct(response: unknown, fallbackProduct: Product): Observable<Product> {
+    const product = unwrapApiEntity<Product | null>(response, ['producto', 'product', 'item', 'data']);
+
+    if (product && typeof product === 'object' && 'id' in product) {
+      return of(product);
+    }
+
+    return this.getProducts().pipe(
+      map(products => {
+        const persistedProduct = products.find(item => item.id === fallbackProduct.id);
+        if (!persistedProduct) {
+          throw new Error('La API no confirmó el guardado del producto en DynamoDB.');
+        }
+
+        return persistedProduct;
       })
     );
   }

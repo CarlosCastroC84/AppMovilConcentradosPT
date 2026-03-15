@@ -4,17 +4,22 @@ import { FormsModule } from '@angular/forms';
 import { IonicModule, AlertController, ToastController } from '@ionic/angular';
 import { RouterModule } from '@angular/router';
 import { Product } from '../../models/product.model';
+import { CatalogMasterItem } from '../../models/catalog-master-item.model';
 import { ProductService } from '../../services/product.service';
 import { AuthService } from '../../services/auth.service';
+import { CatalogMasterService } from '../../services/catalog-master.service';
+import { CatalogProductView, enrichCatalogProduct } from '../../utils/catalog-product.util';
 
 interface ProductFormModel {
   id: string;
   nombre: string;
   categoria: string;
+  marca: string;
   presentacion: string;
   precio: number | null;
   stock: number | null;
   imagenUrl: string;
+  imagenKey: string;
 }
 
 @Component({
@@ -25,8 +30,11 @@ interface ProductFormModel {
   imports: [IonicModule, CommonModule, FormsModule, RouterModule]
 })
 export class GestionProductosPage implements OnInit {
+  readonly fallbackImage = 'assets/Logos_dpt.png';
+
   private productService = inject(ProductService);
   private authService = inject(AuthService);
+  private catalogMasterService = inject(CatalogMasterService);
   private toastController = inject(ToastController);
   private alertController = inject(AlertController);
 
@@ -36,17 +44,35 @@ export class GestionProductosPage implements OnInit {
   loading = true;
   saving = false;
   error: string | null = null;
-  products: Product[] = [];
+  catalogsLoading = true;
+  catalogsError: string | null = null;
+  products: CatalogProductView[] = [];
+  categorias: CatalogMasterItem[] = [];
+  marcas: CatalogMasterItem[] = [];
+  presentaciones: CatalogMasterItem[] = [];
   formVisible = false;
   editingProductId: string | null = null;
   form: ProductFormModel = this.createEmptyForm();
 
   async ngOnInit() {
     await this.loadCurrentUser();
+    this.cargarCatalogos();
     this.cargarProductos();
   }
 
-  get filteredProducts(): Product[] {
+  get categoriaOptions(): CatalogMasterItem[] {
+    return this.withCurrentOption(this.categorias, this.form.categoria);
+  }
+
+  get marcaOptions(): CatalogMasterItem[] {
+    return this.withCurrentOption(this.marcas, this.form.marca);
+  }
+
+  get presentacionOptions(): CatalogMasterItem[] {
+    return this.withCurrentOption(this.presentaciones, this.form.presentacion);
+  }
+
+  get filteredProducts(): CatalogProductView[] {
     const term = this.searchTerm.trim().toLowerCase();
 
     return [...this.products]
@@ -65,12 +91,30 @@ export class GestionProductosPage implements OnInit {
 
     this.productService.getProducts().subscribe({
       next: products => {
-        this.products = products;
+        this.products = products.map(product => enrichCatalogProduct(product));
         this.loading = false;
       },
       error: (error: Error) => {
         this.error = error.message || 'No fue posible cargar los productos.';
         this.loading = false;
+      }
+    });
+  }
+
+  cargarCatalogos() {
+    this.catalogsLoading = true;
+    this.catalogsError = null;
+
+    this.catalogMasterService.getCatalogosProducto().subscribe({
+      next: ({ categorias, marcas, presentaciones }) => {
+        this.categorias = this.sortCatalogItems(categorias);
+        this.marcas = this.sortCatalogItems(marcas);
+        this.presentaciones = this.sortCatalogItems(presentaciones);
+        this.catalogsLoading = false;
+      },
+      error: (error: Error) => {
+        this.catalogsError = error.message || 'No fue posible cargar categorías, marcas y presentaciones.';
+        this.catalogsLoading = false;
       }
     });
   }
@@ -87,10 +131,12 @@ export class GestionProductosPage implements OnInit {
       id: product.id,
       nombre: product.nombre,
       categoria: product.categoria || '',
+      marca: product.marca || '',
       presentacion: product.presentacion,
       precio: product.precio,
       stock: product.stock ?? null,
-      imagenUrl: product.imagenUrl || ''
+      imagenUrl: product.imagenUrl || '',
+      imagenKey: product.imagenKey || ''
     };
     this.formVisible = true;
   }
@@ -117,11 +163,13 @@ export class GestionProductosPage implements OnInit {
       id: this.form.id.trim() || this.slugify(this.form.nombre),
       nombre: this.form.nombre.trim(),
       categoria: this.form.categoria.trim() || undefined,
+      marca: this.form.marca.trim() || undefined,
       presentacion: this.form.presentacion.trim(),
       precio: Number(this.form.precio),
       estado: existingProduct?.estado || 'ACTIVO',
       stock: this.form.stock === null ? undefined : Number(this.form.stock),
       imagenUrl: this.form.imagenUrl.trim() || undefined,
+      imagenKey: this.form.imagenKey.trim() || undefined,
       createdAt: existingProduct?.createdAt || timestamp,
       updatedAt: timestamp
     };
@@ -133,7 +181,7 @@ export class GestionProductosPage implements OnInit {
 
     request$.subscribe({
       next: savedProduct => {
-        this.upsertProduct(savedProduct);
+        this.upsertProduct(enrichCatalogProduct(savedProduct));
         this.cancelEdit();
         this.saving = false;
         this.showToast(
@@ -159,7 +207,7 @@ export class GestionProductosPage implements OnInit {
 
     this.productService.updateProduct(updatedProduct).subscribe({
       next: savedProduct => {
-        this.upsertProduct(savedProduct);
+        this.upsertProduct(enrichCatalogProduct(savedProduct));
         this.showToast(`Estado actualizado para ${product.nombre}.`, 'success');
       },
       error: (error: Error) => {
@@ -201,6 +249,15 @@ export class GestionProductosPage implements OnInit {
 
   trackByProduct(_index: number, product: Product): string {
     return product.id;
+  }
+
+  onProductImageError(event: Event) {
+    const image = event.target as HTMLImageElement | null;
+    if (!image || image.src.includes(this.fallbackImage)) {
+      return;
+    }
+
+    image.src = this.fallbackImage;
   }
 
   isActive(product: Product): boolean {
@@ -267,10 +324,12 @@ export class GestionProductosPage implements OnInit {
       id: '',
       nombre: '',
       categoria: '',
+      marca: '',
       presentacion: '',
       precio: null,
       stock: null,
-      imagenUrl: ''
+      imagenUrl: '',
+      imagenKey: ''
     };
   }
 
@@ -324,6 +383,7 @@ export class GestionProductosPage implements OnInit {
       product.id,
       product.nombre,
       product.categoria,
+      product.marca,
       product.presentacion
     ]
       .filter((value): value is string => Boolean(value))
@@ -333,7 +393,7 @@ export class GestionProductosPage implements OnInit {
     return searchableText.includes(term);
   }
 
-  private upsertProduct(product: Product) {
+  private upsertProduct(product: CatalogProductView) {
     const index = this.products.findIndex(item => item.id === product.id);
     if (index >= 0) {
       this.products = [
@@ -363,6 +423,35 @@ export class GestionProductosPage implements OnInit {
     }
 
     return parts.slice(0, 2).map(part => part[0]?.toUpperCase() ?? '').join('');
+  }
+
+  private sortCatalogItems(items: CatalogMasterItem[]): CatalogMasterItem[] {
+    return [...items].sort((left, right) => {
+      const leftOrder = left.orden ?? Number.MAX_SAFE_INTEGER;
+      const rightOrder = right.orden ?? Number.MAX_SAFE_INTEGER;
+
+      if (leftOrder !== rightOrder) {
+        return leftOrder - rightOrder;
+      }
+
+      return left.nombre.localeCompare(right.nombre);
+    });
+  }
+
+  private withCurrentOption(items: CatalogMasterItem[], currentValue: string): CatalogMasterItem[] {
+    const normalizedValue = currentValue.trim();
+    if (!normalizedValue || items.some(item => item.nombre === normalizedValue)) {
+      return items;
+    }
+
+    return [
+      ...items,
+      {
+        id: this.slugify(normalizedValue),
+        nombre: normalizedValue,
+        activo: true
+      }
+    ];
   }
 
   private async showToast(message: string, color: string) {

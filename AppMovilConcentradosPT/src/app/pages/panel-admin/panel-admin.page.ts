@@ -148,7 +148,7 @@ export class PanelAdminPage implements OnInit {
               position: 'top'
             });
             await toast.present();
-            this.router.navigate(['/login-operativo']);
+            this.router.navigate(['/inicio']);
           }
         }
       ]

@@ -15,7 +15,55 @@
       <!-- Buscador -->
       <div class="search-wrapper">
         <span class="material-icons-outlined search-icon">search</span>
-        <input type="text" placeholder="Buscar producto..." class="search-input" />
+        <input
+          type="text"
+          placeholder="Buscar producto..."
+          class="search-input"
+          [(ngModel)]="searchTerm"
+          (ngModelChange)="onSearchTermChange($event)"
+          (focus)="onSearchFocus()"
+          (blur)="onSearchBlur()"
+          (keyup.enter)="buscarProductos()" />
+        <button class="search-submit-btn" type="button" (click)="buscarProductos()">
+          <span class="material-icons-outlined">arrow_forward</span>
+        </button>
+
+        <div class="search-results-panel" *ngIf="shouldShowSearchPanel">
+          <div class="search-results-state" *ngIf="searchLoading">
+            Buscando productos...
+          </div>
+
+          <button
+            type="button"
+            class="search-result-item"
+            *ngFor="let product of searchResults"
+            (mousedown)="seleccionarProducto(product)">
+            <img
+              [src]="product.resolvedImageUrl"
+              [alt]="product.nombre"
+              class="search-result-image"
+              (error)="onSuggestionImageError($event)" />
+            <div class="search-result-copy">
+              <span class="search-result-name">{{ product.nombre }}</span>
+              <span class="search-result-meta">
+                {{ product.displayCategory }} · {{ product.displayBrand }} · {{ product.presentacion }}
+              </span>
+            </div>
+            <span class="search-result-price">${{ product.precio | number }}</span>
+          </button>
+
+          <div class="search-results-state" *ngIf="showEmptyResults">
+            No se encontraron productos con ese término.
+          </div>
+
+          <button
+            type="button"
+            class="search-results-footer"
+            *ngIf="searchResults.length > 0"
+            (mousedown)="verResultados()">
+            Ver todos los resultados para "{{ searchTerm.trim() }}"
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -118,30 +166,3 @@
     </div>
   </div>
 </ion-content>
-
-<!-- Tab Bar de Navegación -->
-<ion-footer class="ion-no-border">
-  <div class="tab-bar">
-    <a class="tab-item active" routerLink="/inicio">
-      <span class="material-icons-outlined">home</span>
-      <span class="tab-label">Inicio</span>
-    </a>
-    <a class="tab-item" routerLink="/catalogo">
-      <span class="material-icons-outlined">category</span>
-      <span class="tab-label">Productos</span>
-    </a>
-    <div class="tab-center">
-      <a class="tab-center-btn" routerLink="/mi-pedido">
-        <span class="material-icons-outlined">add_shopping_cart</span>
-      </a>
-    </div>
-    <a class="tab-item" href="#">
-      <span class="material-icons-outlined">receipt_long</span>
-      <span class="tab-label">Pedidos</span>
-    </a>
-    <a class="tab-item" href="#">
-      <span class="material-icons-outlined">person</span>
-      <span class="tab-label">Perfil</span>
-    </a>
-  </div>
-</ion-footer>

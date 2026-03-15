@@ -65,6 +65,7 @@
     <section class="observations-section" *ngIf="(cart.items$ | async)?.length! > 0">
       <label class="obs-label" for="observations">Observaciones</label>
       <textarea id="observations" class="obs-textarea" [(ngModel)]="observations"
+        (ngModelChange)="persistDraft()"
         placeholder="Ej: Entregar por la mañana, llamar antes..." rows="3"></textarea>
     </section>
 
@@ -77,17 +78,19 @@
       <div class="delivery-fields">
         <div class="field">
           <label class="field-label" for="name">Nombre Completo *</label>
-          <input type="text" id="name" class="field-input" placeholder="Juan Pérez" [(ngModel)]="customerName" />
+          <input type="text" id="name" class="field-input" placeholder="Juan Pérez" [(ngModel)]="customerName"
+            (ngModelChange)="persistDraft()" />
         </div>
         <div class="field-row">
           <div class="field">
             <label class="field-label" for="phone">Celular *</label>
-            <input type="tel" id="phone" class="field-input" placeholder="300 123 4567" [(ngModel)]="customerPhone" />
+            <input type="tel" id="phone" class="field-input" placeholder="300 123 4567" [(ngModel)]="customerPhone"
+              (ngModelChange)="persistDraft()" />
           </div>
           <div class="field">
             <label class="field-label" for="location">Municipio / Vereda</label>
             <input type="text" id="location" class="field-input" placeholder="Ej: Puente Tierra"
-              [(ngModel)]="customerLocation" />
+              [(ngModel)]="customerLocation" (ngModelChange)="persistDraft()" />
           </div>
         </div>
       </div>

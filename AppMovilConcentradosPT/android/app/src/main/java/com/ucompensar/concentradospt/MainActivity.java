@@ -1,4 +1,4 @@
-package io.ionic.starter;
+package com.ucompensar.concentradospt;
 
 import com.getcapacitor.BridgeActivity;
 

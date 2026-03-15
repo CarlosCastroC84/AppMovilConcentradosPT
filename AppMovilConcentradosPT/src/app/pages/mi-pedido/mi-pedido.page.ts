@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonicModule, ToastController, LoadingController } from '@ionic/angular';
@@ -6,7 +6,17 @@ import { RouterModule } from '@angular/router';
 import { CartService } from '../../services/cart.service';
 import { OrderService } from '../../services/order.service';
 import { AuthService } from '../../services/auth.service';
+import { StorageService } from '../../services/storage.service';
 import { Order } from '../../models/order.model';
+
+interface CheckoutDraft {
+  customerName: string;
+  customerPhone: string;
+  customerLocation: string;
+  observations: string;
+}
+
+const CHECKOUT_DRAFT_KEY = 'checkout_draft';
 
 @Component({
   selector: 'app-mi-pedido',
@@ -15,10 +25,11 @@ import { Order } from '../../models/order.model';
   standalone: true,
   imports: [IonicModule, CommonModule, FormsModule, RouterModule]
 })
-export class MiPedidoPage {
+export class MiPedidoPage implements OnInit {
   public cart = inject(CartService);
   private orderService = inject(OrderService);
   private authService = inject(AuthService);
+  private storageService = inject(StorageService);
   private toastController = inject(ToastController);
   private loadingController = inject(LoadingController);
 
@@ -28,8 +39,29 @@ export class MiPedidoPage {
   customerLocation = '';
   observations = '';
 
+  async ngOnInit(): Promise<void> {
+    await this.loadDraft();
+  }
+
   formatPrice(value: number): string {
     return '$' + value.toLocaleString('es-CO');
+  }
+
+  persistDraft(): void {
+    const draft: CheckoutDraft = {
+      customerName: this.customerName.trim(),
+      customerPhone: this.customerPhone.trim(),
+      customerLocation: this.customerLocation.trim(),
+      observations: this.observations.trim()
+    };
+
+    const isEmpty = Object.values(draft).every(value => value === '');
+    if (isEmpty) {
+      void this.clearDraft();
+      return;
+    }
+
+    void this.storageService.setJson(CHECKOUT_DRAFT_KEY, draft);
   }
 
   async procesarPedido() {
@@ -68,6 +100,7 @@ export class MiPedidoPage {
         await loading.dismiss();
         this.mostrarMensaje('¡Pedido guardado en DynamoDB con éxito!', 'success');
         this.cart.clearCart(); // Vaciamos el carrito tras el éxito
+        await this.clearDraft();
 
         // Limpiamos el form
         this.customerName = '';
@@ -81,6 +114,22 @@ export class MiPedidoPage {
         this.mostrarMensaje(err.message || 'Hubo un error al guardar tu pedido en AWS. Por el momento enviémoslo por WhatsApp.', 'danger');
       }
     });
+  }
+
+  private async loadDraft(): Promise<void> {
+    const draft = await this.storageService.getJson<CheckoutDraft>(CHECKOUT_DRAFT_KEY);
+    if (!draft) {
+      return;
+    }
+
+    this.customerName = draft.customerName ?? '';
+    this.customerPhone = draft.customerPhone ?? '';
+    this.customerLocation = draft.customerLocation ?? '';
+    this.observations = draft.observations ?? '';
+  }
+
+  private async clearDraft(): Promise<void> {
+    await this.storageService.remove(CHECKOUT_DRAFT_KEY);
   }
 
   async mostrarMensaje(msg: string, color: string) {

@@ -38,6 +38,17 @@
         </div>
       </div>
 
+      <div class="feedback-card" *ngIf="catalogsLoading">
+        <ion-spinner name="crescent"></ion-spinner>
+        <p>Cargando categorías, marcas y presentaciones desde AWS...</p>
+      </div>
+
+      <div class="feedback-card error" *ngIf="!catalogsLoading && catalogsError">
+        <span class="material-icons-round">error</span>
+        <p>{{ catalogsError }}</p>
+        <button class="secondary-btn" (click)="cargarCatalogos()">Reintentar</button>
+      </div>
+
       <div class="form-grid">
         <label class="field-group">
           <span class="field-label">ID</span>
@@ -51,12 +62,32 @@
 
         <label class="field-group">
           <span class="field-label">Categoría</span>
-          <input class="field-input" [(ngModel)]="form.categoria" placeholder="Ganadería, Pollo Engorde..." />
+          <select class="field-input" [(ngModel)]="form.categoria" [disabled]="catalogsLoading || categoriaOptions.length === 0">
+            <option value="">Selecciona una categoría</option>
+            <option *ngFor="let categoria of categoriaOptions" [value]="categoria.nombre">
+              {{ categoria.nombre }}
+            </option>
+          </select>
+        </label>
+
+        <label class="field-group">
+          <span class="field-label">Marca</span>
+          <select class="field-input" [(ngModel)]="form.marca" [disabled]="catalogsLoading || marcaOptions.length === 0">
+            <option value="">Selecciona una marca</option>
+            <option *ngFor="let marca of marcaOptions" [value]="marca.nombre">
+              {{ marca.nombre }}
+            </option>
+          </select>
         </label>
 
         <label class="field-group">
           <span class="field-label">Presentación</span>
-          <input class="field-input" [(ngModel)]="form.presentacion" placeholder="Bulto 40 kg" />
+          <select class="field-input" [(ngModel)]="form.presentacion" [disabled]="catalogsLoading || presentacionOptions.length === 0">
+            <option value="">Selecciona una presentación</option>
+            <option *ngFor="let presentacion of presentacionOptions" [value]="presentacion.nombre">
+              {{ presentacion.nombre }}
+            </option>
+          </select>
         </label>
 
         <label class="field-group">
@@ -73,11 +104,16 @@
           <span class="field-label">URL Imagen</span>
           <input class="field-input" [(ngModel)]="form.imagenUrl" placeholder="https://..." />
         </label>
+
+        <label class="field-group full-width">
+          <span class="field-label">S3 Key</span>
+          <input class="field-input" [(ngModel)]="form.imagenKey" placeholder="productos/SALES/atalsal_lecheria_10_18.png" />
+        </label>
       </div>
 
       <div class="field-actions">
         <button class="secondary-btn" (click)="cancelEdit()" [disabled]="saving">Cancelar</button>
-        <button class="primary-btn" (click)="saveProduct()" [disabled]="saving">
+        <button class="primary-btn" (click)="saveProduct()" [disabled]="saving || catalogsLoading || !!catalogsError">
           <span class="material-icons-round">{{ editingProductId ? 'save' : 'add_box' }}</span>
           {{ saving ? 'Guardando...' : (editingProductId ? 'Guardar Cambios' : 'Crear Producto') }}
         </button>
@@ -117,12 +153,18 @@
 
       <div class="product-card" *ngFor="let product of filteredProducts; trackBy: trackByProduct" [class.inactive]="!isActive(product)">
         <div class="card-body">
-          <div class="prod-emoji" [ngClass]="getCategoryTone(product)">{{ getCategoryEmoji(product) }}</div>
+          <div class="prod-media">
+            <img
+              [src]="product.resolvedImageUrl"
+              [alt]="product.nombre"
+              class="prod-image"
+              (error)="onProductImageError($event)" />
+          </div>
           <div class="prod-info">
             <div class="prod-top-row">
               <div>
                 <h3 class="prod-name" [class.dimmed]="!isActive(product)">{{ product.nombre }}</h3>
-                <p class="prod-category">{{ product.categoria || 'Sin categoría' }} • {{ product.presentacion }}</p>
+                <p class="prod-category">{{ product.categoria || 'Sin categoría' }} • {{ product.marca || 'Sin marca' }} • {{ product.presentacion }}</p>
               </div>
               <label class="toggle">
                 <input type="checkbox" [checked]="isActive(product)" (change)="toggleProductState(product, $event)" />

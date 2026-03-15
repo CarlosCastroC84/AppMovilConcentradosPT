@@ -2,155 +2,161 @@
   <ion-toolbar>
     <div class="header-top">
       <div class="header-brand">
-        <img src="assets/Logos_dpt.png" alt="Logo Puente Tierra" class="header-logo" />
+        <img src="assets/Logos_dpt.png" alt="Logo Puente Tierra" class="header-logo" routerLink="/inicio" />
         <div class="header-info">
           <h1 class="brand-name">Puente Tierra</h1>
-          <p class="brand-tagline">Nutriendo tu granja</p>
+          <p class="brand-tagline">"Nutriendo tu granja, fortaleciendo tu futuro"</p>
         </div>
       </div>
       <button class="cart-btn" routerLink="/mi-pedido">
         <span class="material-icons-round">shopping_cart</span>
-        <span class="cart-badge"></span>
+        <span class="cart-badge" *ngIf="cart.totalItems > 0"></span>
       </button>
     </div>
     <div class="search-wrapper">
       <span class="material-icons-round search-icon">search</span>
-      <input type="text" placeholder="Buscar productos (ej: Vaca 20, Pollito...)" class="search-input" />
+      <input type="text" placeholder="Buscar productos, categorias o marcas..." class="search-input"
+        [(ngModel)]="searchTerm" />
     </div>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-  <!-- Categorías horizontales -->
-  <section class="categories-section">
-    <h2 class="section-label">Categorías</h2>
-    <div class="categories-scroll">
-      <button class="category-btn active">
-        <div class="cat-icon-wrap active">
-          <span class="material-icons-round">grass</span>
-        </div>
-        <span class="cat-label active">Ganadería</span>
-      </button>
-      <button class="category-btn">
-        <div class="cat-icon-wrap">
-          <span class="material-icons-round orange-icon">egg</span>
-        </div>
-        <span class="cat-label">Aves</span>
-      </button>
-      <button class="category-btn">
-        <div class="cat-icon-wrap">
-          <span class="material-icons-round pink-icon">savings</span>
-        </div>
-        <span class="cat-label">Porcinos</span>
-      </button>
-      <button class="category-btn">
-        <div class="cat-icon-wrap">
-          <span class="material-icons-round blue-icon">set_meal</span>
-        </div>
-        <span class="cat-label">Acuicultura</span>
-      </button>
-      <button class="category-btn">
-        <div class="cat-icon-wrap">
-          <span class="material-icons-round brown-icon">pets</span>
-        </div>
-        <span class="cat-label">Equinos</span>
-      </button>
+  <section class="filters-section">
+    <div class="filter-block">
+      <div class="filter-head">
+        <h2 class="section-label">Categorias</h2>
+        <span class="filter-count">{{ groupedProducts.length }} grupos</span>
+      </div>
+      <div class="chip-scroll">
+        <button class="filter-chip" *ngFor="let category of categoryOptions"
+          [class.active]="selectedCategory === category" (click)="setCategory(category)">
+          {{ category }}
+        </button>
+      </div>
+    </div>
+
+    <div class="filter-block">
+      <div class="filter-head">
+        <h2 class="section-label">Marcas</h2>
+        <span class="filter-count">{{ brandOptions.length - 1 }} disponibles</span>
+      </div>
+      <div class="chip-scroll">
+        <button class="filter-chip secondary" *ngFor="let brand of brandOptions"
+          [class.active]="selectedBrand === brand" (click)="setBrand(brand)">
+          {{ brand }}
+        </button>
+      </div>
     </div>
   </section>
 
-  <!-- Banner Descuentos Mayoristas -->
-  <section class="promo-section">
+  <!--<section class="promo-section">
     <div class="promo-banner-cat">
       <div class="promo-blur-1"></div>
       <div class="promo-blur-2"></div>
       <div class="promo-inner">
         <div>
-          <h3 class="promo-title">Descuentos Mayoristas</h3>
-          <p class="promo-desc">Pregunta por precios especiales por volumen</p>
+          <h3 class="promo-title">Imagenes reales desde S3</h3>
+          <p class="promo-desc">Filtra por categoria y marca para navegar el catalogo</p>
         </div>
-        <span class="material-icons-round promo-icon">local_offer</span>
+        <span class="material-icons-round promo-icon">cloud_done</span>
       </div>
     </div>
-  </section>
+  </section>-->
 
-  <!-- Productos: Ganadería & Lechería -->
   <main class="products-main">
     <div class="section-header">
-      <h2 class="section-title">Todos los Productos</h2>
+      <h2 class="section-title">Catalogo de Productos</h2>
+      <span class="results-pill">{{ filteredProducts.length }} productos</span>
     </div>
 
-    <!-- Spinner de carga -->
     <div *ngIf="cargando" class="ion-text-center ion-padding">
       <ion-spinner name="bubbles"></ion-spinner>
-      <p>Cargando concentrados...</p>
+      <p>Cargando productos...</p>
     </div>
 
-    <!-- Mensaje de error -->
     <div *ngIf="error" class="ion-text-center ion-padding" style="color: var(--ion-color-danger)">
       <p>{{ error }}</p>
       <ion-button fill="outline" (click)="cargarProductos()">Reintentar</ion-button>
     </div>
 
-    <!-- Lista Dinámica de Productos -->
     <ng-container *ngIf="!cargando && !error">
-
-      <!-- Si la base de datos está vacía -->
-      <div *ngIf="productos.length === 0" class="ion-text-center ion-padding">
-        <p>Aún no hay productos en el catálogo de AWS.</p>
+      <div *ngIf="filteredProducts.length === 0" class="ion-text-center ion-padding">
+        <p>No hay productos para los filtros seleccionados.</p>
       </div>
 
-      <!-- Ciclo iterativo usando Angular (*ngFor) -->
-      <div class="product-card" *ngFor="let prod of productos">
-        <div class="offer-badge" *ngIf="prod.estado === 'OFERTA'">Oferta</div>
-
-        <div class="product-row">
-          <div class="product-img-wrap">
-            <img [src]="prod.imagenUrl || 'assets/Logos_dpt.png'" [alt]="prod.nombre" class="product-img" />
-          </div>
-
-          <div class="product-info">
-            <h3 class="product-name">{{ prod.nombre }}</h3>
-            <p class="product-desc">{{ prod.presentacion }}</p>
-            <span class="price-label">Precio Bulto</span>
-            <span class="price-value">{{ prod.precio | currency:'COP':'symbol-narrow':'1.0-0' }}</span>
-          </div>
-
-          <div class="product-actions">
-            <!-- Este botón dispara el agregarAlCarrito que creamos en TypeScript -->
-            <button class="add-btn" (click)="agregarAlCarrito(prod)">
-              <span class="material-icons-round">add</span>
-            </button>
+      <section class="category-group" *ngFor="let group of groupedProducts">
+        <div class="group-header">
+          <div>
+            <h3 class="group-title">{{ group.category }}</h3>
+            <p class="group-subtitle">{{ group.items.length }} productos disponibles</p>
           </div>
         </div>
-      </div>
+
+        <div class="product-card" *ngFor="let prod of group.items; trackBy: trackByProduct">
+          <div class="offer-badge" *ngIf="prod.estado === 'OFERTA'">Oferta</div>
+
+          <div class="product-row">
+            <button class="product-img-wrap" type="button" (click)="abrirVistaPrevia(prod)">
+              <img [src]="prod.resolvedImageUrl" [alt]="prod.nombre" class="product-img"
+                (error)="onProductImageError($event)" />
+              <span class="preview-pill">
+                <span class="material-icons-round">zoom_in</span>
+                Ver
+              </span>
+            </button>
+
+            <div class="product-info">
+              <div class="product-meta">
+                <span class="meta-chip">{{ prod.displayBrand }}</span>
+                <span class="meta-chip muted">{{ prod.presentacion }}</span>
+              </div>
+              <h3 class="product-name">{{ prod.nombre }}</h3>
+              <p class="product-desc">{{ prod.displayCategory }}</p>
+              <span class="price-label">Precio</span>
+              <span class="price-value">{{ prod.precio | currency:'COP':'symbol-narrow':'1.0-0' }}</span>
+            </div>
+
+            <div class="product-actions">
+              <div class="qty-stepper">
+                <button class="qty-btn" type="button" (click)="decreaseSelectedQuantity(prod, $event)">
+                  <span class="material-icons-round">remove</span>
+                </button>
+                <span class="qty-value">{{ getSelectedQuantity(prod) }}</span>
+                <button class="qty-btn" type="button" (click)="increaseSelectedQuantity(prod, $event)">
+                  <span class="material-icons-round">add</span>
+                </button>
+              </div>
+              <button class="add-btn" type="button" (click)="agregarAlCarrito(prod)">
+                <span class="material-icons-round">shopping_bag</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
     </ng-container>
   </main>
-
 </ion-content>
 
-<!-- Tab Bar -->
-<ion-footer class="ion-no-border">
-  <div class="tab-bar">
-    <a class="tab-item" routerLink="/inicio">
-      <span class="material-icons-round">home</span>
-      <span class="tab-label">Inicio</span>
-    </a>
-    <a class="tab-item active" routerLink="/catalogo">
-      <span class="material-icons-round">grid_view</span>
-      <span class="tab-label">Catálogo</span>
-    </a>
-    <div class="tab-center">
-      <a class="tab-center-btn" routerLink="/mi-pedido">
-        <span class="material-icons-round">search</span>
-      </a>
+<div class="preview-overlay" *ngIf="previewProduct" (click)="cerrarVistaPrevia()">
+  <div class="preview-card" (click)="$event.stopPropagation()">
+    <button class="preview-close" type="button" (click)="cerrarVistaPrevia()">
+      <span class="material-icons-round">close</span>
+    </button>
+
+    <div class="preview-image-shell">
+      <img [src]="previewProduct.resolvedImageUrl" [alt]="previewProduct.nombre" class="preview-image"
+        (error)="onProductImageError($event)" />
     </div>
-    <a class="tab-item" href="#">
-      <span class="material-icons-round">receipt_long</span>
-      <span class="tab-label">Pedidos</span>
-    </a>
-    <a class="tab-item" href="#">
-      <span class="material-icons-round">person</span>
-      <span class="tab-label">Perfil</span>
-    </a>
+
+    <div class="preview-content">
+      <div class="preview-meta">
+        <span class="meta-chip">{{ previewProduct.displayBrand }}</span>
+        <span class="meta-chip muted">{{ previewProduct.presentacion }}</span>
+      </div>
+      <h3 class="preview-title">{{ previewProduct.nombre }}</h3>
+      <p class="preview-category">{{ previewProduct.displayCategory }}</p>
+      <p class="preview-price">{{ previewProduct.precio | currency:'COP':'symbol-narrow':'1.0-0' }}</p>
+    </div>
   </div>
-</ion-footer>
+</div>
