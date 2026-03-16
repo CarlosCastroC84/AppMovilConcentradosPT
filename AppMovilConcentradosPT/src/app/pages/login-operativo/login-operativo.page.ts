@@ -129,7 +129,7 @@ export class LoginOperativoPage {
       return;
     }
 
-    this.mostrarMensaje(`¡Bienvenido ${userInfo?.username || this.username}!`, 'success');
+    this.mostrarMensaje(`¡Bienvenido ${userInfo?.name || this.username}!`, 'success');
 
     const redirectTo = this.route.snapshot.queryParamMap.get('redirectTo');
     const fallbackRoute = this.sessionProfileService.getDefaultRoute();

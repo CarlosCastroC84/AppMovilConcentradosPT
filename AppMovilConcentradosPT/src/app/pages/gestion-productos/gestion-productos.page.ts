@@ -2,7 +2,7 @@ import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonicModule, AlertController, ToastController } from '@ionic/angular';
-import { RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { Product } from '../../models/product.model';
 import { CatalogMasterItem } from '../../models/catalog-master-item.model';
 import { ProductService } from '../../services/product.service';
@@ -39,6 +39,8 @@ export class GestionProductosPage implements OnInit {
   private catalogMasterService = inject(CatalogMasterService);
   private toastController = inject(ToastController);
   private alertController = inject(AlertController);
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
 
   activeFilter = this.allFilterValue;
   searchTerm = '';
@@ -55,9 +57,14 @@ export class GestionProductosPage implements OnInit {
   formVisible = false;
   editingProductId: string | null = null;
   form: ProductFormModel = this.createEmptyForm();
+  private pendingEditProductId: string | null = null;
 
   async ngOnInit() {
     await this.loadCurrentUser();
+    this.route.queryParamMap.subscribe(params => {
+      this.pendingEditProductId = params.get('edit')?.trim() || null;
+      this.tryOpenProductEditor();
+    });
     this.cargarCatalogos();
     this.cargarProductos();
   }
@@ -121,6 +128,7 @@ export class GestionProductosPage implements OnInit {
       next: products => {
         this.products = products.map(product => enrichCatalogProduct(product));
         this.syncActiveFilter();
+        this.tryOpenProductEditor();
         this.loading = false;
       },
       error: (error: Error) => {
@@ -153,6 +161,7 @@ export class GestionProductosPage implements OnInit {
     this.editingProductId = null;
     this.form = this.createEmptyForm();
     this.formVisible = true;
+    void this.clearEditQueryParam();
   }
 
   startEdit(product: Product) {
@@ -169,12 +178,14 @@ export class GestionProductosPage implements OnInit {
       imagenKey: product.imagenKey || ''
     };
     this.formVisible = true;
+    void this.clearEditQueryParam();
   }
 
   cancelEdit() {
     this.formVisible = false;
     this.editingProductId = null;
     this.form = this.createEmptyForm();
+    void this.clearEditQueryParam();
   }
 
   saveProduct() {
@@ -485,6 +496,35 @@ export class GestionProductosPage implements OnInit {
       .normalize('NFD')
       .replace(/[\u0300-\u036f]/g, '')
       .trim();
+  }
+
+  private tryOpenProductEditor() {
+    if (!this.pendingEditProductId) {
+      return;
+    }
+
+    const product = this.products.find(item => item.id === this.pendingEditProductId);
+
+    if (!product) {
+      if (!this.loading) {
+        this.pendingEditProductId = null;
+        void this.clearEditQueryParam();
+        void this.showToast('No encontramos el producto solicitado para edición.', 'warning');
+      }
+      return;
+    }
+
+    this.pendingEditProductId = null;
+    this.startEdit(product);
+  }
+
+  private async clearEditQueryParam(): Promise<void> {
+    await this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { edit: null },
+      queryParamsHandling: 'merge',
+      replaceUrl: true
+    });
   }
 
   private async showToast(message: string, color: string) {

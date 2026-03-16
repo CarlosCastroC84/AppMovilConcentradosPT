@@ -7,6 +7,9 @@ import { ProductService } from '../../services/product.service';
 import { CartService } from '../../services/cart.service';
 import { CatalogProductView, enrichCatalogProduct, sortBrandOptions, sortCategoryOptions } from '../../utils/catalog-product.util';
 import { Product } from '../../models/product.model';
+import { Capacitor } from '@capacitor/core';
+import { Toast } from '@capacitor/toast';
+
 
 @Component({
   selector: 'app-catalogo',
@@ -152,7 +155,10 @@ export class CatalogoPage implements OnInit {
       position: 'bottom',
       color: 'success'
     });
-    await toast.present();
+    await this.mostrarToastAgregado(
+      `${quantity} ${quantity === 1 ? 'unidad agregada' : 'unidades agregadas'} de ${producto.nombre}`
+    );
+
 
     const key = this.getProductSelectionKey(producto);
     this.selectedQuantities = {
@@ -160,6 +166,27 @@ export class CatalogoPage implements OnInit {
       [key]: 1
     };
   }
+
+  private async mostrarToastAgregado(message: string): Promise<void> {
+    if (Capacitor.getPlatform() !== 'web') {
+      await Toast.show({
+        text: message,
+        duration: 'short',
+        position: 'top'
+      });
+      return;
+    }
+
+    const toast = await this.toastController.create({
+      message,
+      duration: 2000,
+      position: 'bottom',
+      color: 'success'
+    });
+
+    await toast.present();
+  }
+
 
   abrirVistaPrevia(producto: CatalogProductView) {
     this.previewProduct = producto;

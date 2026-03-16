@@ -7,6 +7,9 @@ import { ProductService } from '../../services/product.service';
 import { CartService } from '../../services/cart.service';
 import { CatalogProductView, enrichCatalogProduct } from '../../utils/catalog-product.util';
 import { Product } from '../../models/product.model';
+import { Capacitor } from '@capacitor/core';
+import { Toast } from '@capacitor/toast';
+
 
 @Component({
   selector: 'app-detalle-producto',
@@ -71,8 +74,24 @@ export class DetalleProductoPage implements OnInit {
       imageUrl: this.product.resolvedImageUrl
     }, this.quantity);
 
+    await this.mostrarToastAgregado(
+      `${this.quantity} ${this.quantity === 1 ? 'unidad agregada' : 'unidades agregadas'} de ${this.product.nombre}`
+    );
+
+  }
+
+  private async mostrarToastAgregado(message: string): Promise<void> {
+    if (Capacitor.getPlatform() !== 'web') {
+      await Toast.show({
+        text: message,
+        duration: 'short',
+        position: 'top'
+      });
+      return;
+    }
+
     const toast = await this.toastController.create({
-      message: `${this.quantity} ${this.quantity === 1 ? 'unidad agregada' : 'unidades agregadas'} de ${this.product.nombre}`,
+      message,
       duration: 2000,
       position: 'bottom',
       color: 'success'
@@ -80,6 +99,7 @@ export class DetalleProductoPage implements OnInit {
 
     await toast.present();
   }
+
 
   onProductImageError(event: Event) {
     const image = event.target as HTMLImageElement | null;

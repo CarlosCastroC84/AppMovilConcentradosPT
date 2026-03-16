@@ -69,13 +69,6 @@
         <button class="action-card" *ngFor="let module of availableModules" [routerLink]="module.route" type="button">
           <span class="material-icons-round action-icon">{{ module.icon }}</span>
           <span class="action-title">{{ module.title }}</span>
-          <span class="action-text">{{ module.route }}</span>
-        </button>
-
-        <button class="action-card" routerLink="/catalogo" type="button">
-          <span class="material-icons-round action-icon purple">storefront</span>
-          <span class="action-title">Ver catálogo</span>
-          <span class="action-text">Abrir experiencia cliente</span>
         </button>
       </div>
 
@@ -142,7 +135,11 @@
 
       <div class="products-list" *ngIf="!loadingProductos && productos.length > 0">
         <article class="product-row" *ngFor="let prod of productos | slice:0:5">
-          <div class="product-avatar">📦</div>
+          <button class="product-avatar preview-trigger" type="button" (click)="abrirVistaPrevia(prod)"
+            [attr.aria-label]="'Vista previa de ' + prod.nombre">
+            <img [src]="prod.resolvedImageUrl" [alt]="prod.nombre" class="product-avatar-image"
+              (error)="onProductImageError($event)" />
+          </button>
 
           <div class="product-copy">
             <h3 class="product-name">{{ prod.nombre }}</h3>
@@ -151,10 +148,30 @@
 
           <div class="product-right">
             <span class="product-price">{{ formatPrice(prod.precio || 0) }}</span>
-            <button class="mini-link" routerLink="/gestion-productos" type="button">Editar</button>
+            <button class="mini-link" type="button" (click)="editarProducto(prod)">Editar</button>
           </div>
         </article>
       </div>
     </section>
   </main>
 </ion-content>
+
+<div class="preview-overlay" *ngIf="previewProduct" (click)="cerrarVistaPrevia()">
+  <div class="preview-card" (click)="$event.stopPropagation()">
+    <button class="preview-close" type="button" (click)="cerrarVistaPrevia()">
+      <span class="material-icons-round">close</span>
+    </button>
+
+    <div class="preview-image-shell">
+      <img [src]="previewProduct.resolvedImageUrl" [alt]="previewProduct.nombre" class="preview-image"
+        (error)="onProductImageError($event)" />
+    </div>
+
+    <div class="preview-content">
+      <h3 class="preview-title">{{ previewProduct.nombre }}</h3>
+      <p class="preview-meta-copy">{{ previewProduct.presentacion }} · {{ previewProduct.categoria }}</p>
+      <p class="preview-brand">Marca: {{ previewProduct.marca || 'Sin marca' }}</p>
+      <p class="preview-price">{{ formatPrice(previewProduct.precio || 0) }}</p>
+    </div>
+  </div>
+</div>

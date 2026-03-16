@@ -8,6 +8,8 @@ import { OrderService } from '../../services/order.service';
 import { ProductService } from '../../services/product.service';
 import { SessionProfileService } from '../../services/session-profile.service';
 import { SessionModule } from '../../models/session-profile.model';
+import { Product } from '../../models/product.model';
+import { CatalogProductView, enrichCatalogProduct } from '../../utils/catalog-product.util';
 import { firstValueFrom } from 'rxjs';
 
 
@@ -19,6 +21,8 @@ import { firstValueFrom } from 'rxjs';
   imports: [IonicModule, CommonModule, FormsModule, RouterModule]
 })
 export class PanelAdminPage implements OnInit {
+  readonly fallbackImage = 'assets/Logos_dpt.png';
+
   private authService = inject(AuthService);
   private orderService = inject(OrderService);
   private productService = inject(ProductService);
@@ -33,9 +37,10 @@ export class PanelAdminPage implements OnInit {
   availableModules: SessionModule[] = [];
   currentUser: string = 'Administrador';
   pedidos: any[] = [];
-  productos: any[] = [];
+  productos: CatalogProductView[] = [];
   loadingPedidos = true;
   loadingProductos = true;
+  previewProduct: CatalogProductView | null = null;
 
   // KPIs calculados
   get totalVentasHoy(): number {
@@ -107,13 +112,15 @@ export class PanelAdminPage implements OnInit {
     // Cargamos productos desde DynamoDB
     this.productService.getProducts().subscribe({
       next: (data: any) => {
+        let products: Product[] = [];
+
         if (Array.isArray(data)) {
-          this.productos = data;
+          products = data;
         } else if (data?.body) {
-          this.productos = typeof data.body === 'string' ? JSON.parse(data.body) : data.body;
-        } else {
-          this.productos = [];
+          products = typeof data.body === 'string' ? JSON.parse(data.body) : data.body;
         }
+
+        this.productos = products.map(product => enrichCatalogProduct(product));
         this.loadingProductos = false;
       },
       error: (err) => {
@@ -160,6 +167,29 @@ export class PanelAdminPage implements OnInit {
       'CANCELLED': 'red'
     };
     return map[status] || 'yellow';
+  }
+
+  onProductImageError(event: Event) {
+    const image = event.target as HTMLImageElement | null;
+    if (!image || image.src.includes(this.fallbackImage)) {
+      return;
+    }
+
+    image.src = this.fallbackImage;
+  }
+
+  abrirVistaPrevia(product: CatalogProductView) {
+    this.previewProduct = product;
+  }
+
+  cerrarVistaPrevia() {
+    this.previewProduct = null;
+  }
+
+  editarProducto(product: CatalogProductView) {
+    void this.router.navigate(['/gestion-productos'], {
+      queryParams: { edit: product.id }
+    });
   }
 
   async cerrarSesion() {
