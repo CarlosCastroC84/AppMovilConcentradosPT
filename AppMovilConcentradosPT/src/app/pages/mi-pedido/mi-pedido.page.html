@@ -2,15 +2,17 @@
   <ion-toolbar>
     <div class="header-row">
       <div class="header-left">
-        <button class="back-btn" routerLink="/catalogo">
+        <button class="back-btn" routerLink="/catalogo" type="button">
           <span class="material-icons-round">arrow_back</span>
         </button>
+
         <div class="header-info">
           <h1 class="header-title">Mi Pedido</h1>
-          <p class="header-subtitle">Distribuidora Puente Tierra</p>
+          <p class="header-subtitle">Revisa tus productos y confirma la entrega</p>
         </div>
       </div>
-      <button class="cart-icon-btn" routerLink="/mi-pedido">
+
+      <button class="cart-icon-btn" routerLink="/mi-pedido" type="button">
         <span class="material-icons-round">shopping_cart</span>
         <span class="cart-dot" *ngIf="cart.totalItems > 0"></span>
       </button>
@@ -20,101 +22,125 @@
 
 <ion-content>
   <main class="pedido-main">
-    <!-- Lista de Productos -->
-    <section class="products-section">
-      <div class="section-top">
-        <h2 class="section-label">PRODUCTOS</h2>
-        <button class="clear-btn" (click)="cart.clearCart()">Vaciar carrito</button>
-      </div>
-
-      <!-- Empty state -->
-      <div class="empty-state" *ngIf="(cart.items$ | async)?.length === 0">
-        <span class="material-icons-round empty-icon">shopping_cart</span>
-        <p class="empty-text">Tu carrito está vacío</p>
-        <button class="browse-btn" routerLink="/catalogo">Ver Catálogo</button>
-      </div>
-
-      <!-- Cart Items -->
-      <div class="cart-items">
-        <div class="cart-item" *ngFor="let item of cart.items$ | async">
-          <div class="item-emoji">
-            <span>{{ item.emoji }}</span>
+    <ng-container *ngIf="(cart.items$ | async) as items">
+      <section class="products-section">
+        <div class="section-top">
+          <div>
+            <p class="section-kicker">Resumen</p>
+            <h2 class="section-title">Productos del pedido</h2>
           </div>
-          <div class="item-details">
-            <div class="item-top">
-              <h3 class="item-name">{{ item.name }}</h3>
-              <p class="item-presentation">Presentación: {{ item.presentation }}</p>
-            </div>
-            <div class="item-bottom">
-              <span class="item-price">{{ formatPrice(item.price) }}</span>
-              <div class="qty-control">
-                <button class="qty-btn" (click)="cart.decreaseQty(item.id)">-</button>
-                <span class="qty-val">{{ item.quantity }}</span>
-                <button class="qty-btn" (click)="cart.increaseQty(item.id)">+</button>
-              </div>
-            </div>
-          </div>
-          <button class="remove-btn" (click)="cart.removeItem(item.id)">
-            <span class="material-icons-round">close</span>
+
+          <button class="clear-btn" type="button" *ngIf="items.length > 0" (click)="cart.clearCart()">
+            Vaciar
           </button>
         </div>
-      </div>
-    </section>
 
-    <!-- Observaciones -->
-    <section class="observations-section" *ngIf="(cart.items$ | async)?.length! > 0">
-      <label class="obs-label" for="observations">Observaciones</label>
-      <textarea id="observations" class="obs-textarea" [(ngModel)]="observations"
-        (ngModelChange)="persistDraft()"
-        placeholder="Ej: Entregar por la mañana, llamar antes..." rows="3"></textarea>
-    </section>
-
-    <!-- Datos de Entrega -->
-    <section class="delivery-section" *ngIf="(cart.items$ | async)?.length! > 0">
-      <div class="delivery-header">
-        <span class="material-icons-round delivery-icon">person_outline</span>
-        <h2 class="delivery-title">Datos de Entrega</h2>
-      </div>
-      <div class="delivery-fields">
-        <div class="field">
-          <label class="field-label" for="name">Nombre Completo *</label>
-          <input type="text" id="name" class="field-input" placeholder="Juan Pérez" [(ngModel)]="customerName"
-            (ngModelChange)="persistDraft()" />
+        <div class="empty-state" *ngIf="items.length === 0">
+          <span class="material-icons-round empty-icon">shopping_cart</span>
+          <h3 class="empty-title">Tu carrito está vacío</h3>
+          <p class="empty-text">Agrega productos desde el catálogo para empezar tu reserva.</p>
+          <button class="browse-btn" routerLink="/catalogo" type="button">Ver Catálogo</button>
         </div>
-        <div class="field-row">
+
+        <div class="cart-items" *ngIf="items.length > 0">
+          <article class="cart-item" *ngFor="let item of items">
+            <div class="item-emoji">
+              <span>{{ item.emoji }}</span>
+            </div>
+
+            <div class="item-details">
+              <div class="item-top">
+                <h3 class="item-name">{{ item.name }}</h3>
+                <p class="item-presentation">{{ item.presentation }}</p>
+              </div>
+
+              <div class="item-bottom">
+                <div class="item-pricing">
+                  <span class="item-price">{{ formatPrice(item.price) }}</span>
+                  <span class="item-subtotal">
+                    {{ formatPrice(item.price * item.quantity) }}
+                  </span>
+                </div>
+
+                <div class="qty-control">
+                  <button class="qty-btn" type="button"
+                    (click)="cart.decreaseQty(item.id, item.presentation)">-</button>
+                  <span class="qty-val">{{ item.quantity }}</span>
+                  <button class="qty-btn" type="button"
+                    (click)="cart.increaseQty(item.id, item.presentation)">+</button>
+                </div>
+              </div>
+            </div>
+
+            <button class="remove-btn" type="button" (click)="cart.removeItem(item.id, item.presentation)">
+              <span class="material-icons-round">close</span>
+            </button>
+          </article>
+        </div>
+      </section>
+
+      <section class="observations-section" *ngIf="items.length > 0">
+        <div class="section-block-head">
+          <p class="section-kicker">Detalle adicional</p>
+          <h2 class="section-title">Observaciones</h2>
+        </div>
+
+        <textarea id="observations" class="obs-textarea" [(ngModel)]="observations" (ngModelChange)="persistDraft()"
+          placeholder="Ej: Entregar por la mañana, llamar antes, dejar en portería..." rows="3"></textarea>
+      </section>
+
+      <section class="delivery-section" *ngIf="items.length > 0">
+        <div class="delivery-header">
+          <span class="material-icons-round delivery-icon">local_shipping</span>
+          <div>
+            <p class="section-kicker">Entrega</p>
+            <h2 class="delivery-title">Datos del cliente</h2>
+          </div>
+        </div>
+
+        <div class="delivery-fields">
           <div class="field">
-            <label class="field-label" for="phone">Celular *</label>
-            <input type="tel" id="phone" class="field-input" placeholder="300 123 4567" [(ngModel)]="customerPhone"
+            <label class="field-label" for="name">Nombre Completo *</label>
+            <input type="text" id="name" class="field-input" placeholder="Juan Pérez" [(ngModel)]="customerName"
               (ngModelChange)="persistDraft()" />
           </div>
-          <div class="field">
-            <label class="field-label" for="location">Municipio / Vereda</label>
-            <input type="text" id="location" class="field-input" placeholder="Ej: Puente Tierra"
-              [(ngModel)]="customerLocation" (ngModelChange)="persistDraft()" />
+
+          <div class="field-row">
+            <div class="field">
+              <label class="field-label" for="phone">Celular *</label>
+              <input type="tel" id="phone" class="field-input" placeholder="300 123 4567" [(ngModel)]="customerPhone"
+                (ngModelChange)="persistDraft()" />
+            </div>
+
+            <div class="field">
+              <label class="field-label" for="location">Municipio / Vereda</label>
+              <input type="text" id="location" class="field-input" placeholder="Ej: Puente Tierra"
+                [(ngModel)]="customerLocation" (ngModelChange)="persistDraft()" />
+            </div>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
+    </ng-container>
   </main>
 </ion-content>
 
-<!-- Bottom Bar -->
 <ion-footer class="ion-no-border" *ngIf="(cart.items$ | async)?.length! > 0">
   <div class="bottom-bar">
     <div class="subtotal-row">
-      <span class="subtotal-label">Subtotal ({{ cart.totalItems }} items)</span>
+      <div>
+        <span class="subtotal-label">Total del pedido</span>
+        <span class="subtotal-note">{{ cart.totalItems }} items · Pago contra entrega</span>
+      </div>
+
       <div class="subtotal-right">
         <span class="subtotal-price">{{ formatPrice(cart.subtotal) }}</span>
-        <span class="subtotal-note">Pago contra entrega</span>
       </div>
     </div>
-    <div class="bottom-actions" style="margin-top: 15px;">
-      <!-- Botón conectado al TypeScript -->
-      <button class="action-btn call"
-        style="width: 100%; justify-content: center; background: var(--ion-color-primary); color: white;"
-        (click)="procesarPedido()">
+
+    <div class="bottom-actions">
+      <button class="action-btn whatsapp" type="button" (click)="procesarPedido()">
         <span class="material-icons-round">cloud_upload</span>
-        <span style="font-weight: bold; font-size: 1.1rem; padding-left: 8px;">Enviar Reserva a AWS</span>
+        Enviar reserva
       </button>
     </div>
   </div>

@@ -3,6 +3,8 @@ export interface CatalogMasterItem {
     nombre: string;
     orden?: number;
     activo?: boolean;
+    imagenUrl?: string;
+    imagenKey?: string;
     createdAt?: string;
     updatedAt?: string;
 }

@@ -1,183 +1,191 @@
 <ion-header class="ion-no-border">
   <ion-toolbar class="glass-toolbar">
     <div class="nav-row">
-      <button class="nav-btn" routerLink="/panel-admin">
-        <span class="material-symbols-outlined nav-icon">menu</span>
+      <button class="nav-btn" routerLink="/panel-admin" type="button">
+        <span class="material-symbols-outlined nav-icon">arrow_back</span>
       </button>
+
       <h1 class="nav-title truncate">Dashboard Ventas</h1>
-      <button class="help-btn">Ayuda</button>
+
+      <button class="help-btn" type="button" (click)="cargarPedidos()">
+        Actualizar
+      </button>
     </div>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-  <main class="dashboard-main pb-24">
-    <!-- KPI Cards -->
+  <main class="dashboard-main">
     <section class="kpi-grid">
-      <div class="kpi-card col-span-2 sm:col-span-1">
+      <div class="kpi-card">
         <div class="kpi-header">
           <p class="kpi-label">Pedidos Hoy</p>
           <span class="material-symbols-outlined kpi-icon text-primary">shopping_cart</span>
         </div>
-        <p class="kpi-value">15</p>
+        <p class="kpi-value">{{ ordersTodayCount }}</p>
         <div class="kpi-trend text-green">
-          <span class="material-symbols-outlined text-sm mr-1">trending_up</span>
-          <span>+2 vs ayer</span>
+          <span class="material-symbols-outlined">trending_up</span>
+          <span>{{ ordersDeltaLabel }}</span>
         </div>
       </div>
-      
+
+      <div class="kpi-card">
+        <div class="kpi-header">
+          <p class="kpi-label">Ventas Hoy</p>
+          <span class="material-symbols-outlined kpi-icon text-green">payments</span>
+        </div>
+        <p class="kpi-value">{{ formatPrice(salesToday) }}</p>
+        <div class="kpi-trend text-muted">
+          <span>Ingresos acumulados del día</span>
+        </div>
+      </div>
+
       <div class="kpi-card">
         <div class="kpi-header">
           <p class="kpi-label">Por Confirmar</p>
           <span class="material-symbols-outlined kpi-icon text-orange">assignment_late</span>
         </div>
-        <p class="kpi-value">4</p>
-        <div class="kpi-trend text-orange font-medium mt-1">
-          Requieren acción
+        <p class="kpi-value">{{ pendingOrdersCount }}</p>
+        <div class="kpi-trend text-orange">
+          <span>Requieren acción</span>
         </div>
       </div>
 
       <div class="kpi-card">
         <div class="kpi-header">
-          <p class="kpi-label">En Alistamiento</p>
+          <p class="kpi-label">En Proceso</p>
           <span class="material-symbols-outlined kpi-icon text-blue">inventory_2</span>
         </div>
-        <p class="kpi-value">2</p>
-        <div class="kpi-trend text-muted mt-1">
-          Procesando...
+        <p class="kpi-value">{{ processingOrdersCount }}</p>
+        <div class="kpi-trend text-muted">
+          <span>Pedidos activos</span>
         </div>
       </div>
     </section>
 
-    <!-- Recent Orders Header -->
     <section class="mt-6">
       <div class="section-header mb-4">
-        <h3 class="section-title">Órdenes Recientes <span class="text-sm font-normal text-slate-500 ml-1">(RECIBIDO)</span></h3>
-        <a class="view-all-link" routerLink="/gestion-pedidos">Ver todas</a>
+        <h3 class="section-title">Pedidos recientes</h3>
+        <a class="view-all-link" routerLink="/gestion-pedidos">Ver todos</a>
       </div>
 
-      <!-- Order Card 1 -->
-      <article class="order-card group mb-4">
-        <div class="order-bg" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAwAqGM4ib3IyL3PwkAEcbATZpOZRtqDH0XWGKQt2d_BT8QQs_-oJV4XHKuIV9iuYSMtOkWAqpaPMZdLfjvkM-T4VbLA1t-7jHKnND824OhgPooZjXMOlhTIqJdsEDX_q0DfUbDmWDIdvt9F65O9TLpcqaUKrNnKGMH2xLVxBzNE0gCqVOOskV-SLtmP7EURM_jSdUGMyKZXQh7d5sSXuJE3jCap74CxQIa3UlEHzHtd1sapAX--rAii8DgUdExlz_yKlTzc0PGoMA');"></div>
+      <article class="order-card mb-4" *ngIf="loading">
         <div class="order-content">
           <div class="mb-4">
             <div class="order-top-row">
-              <span class="order-badge">#3842</span>
-              <span class="order-time">Hace 15 min</span>
+              <span class="order-badge">Sincronizando</span>
             </div>
-            <h4 class="order-customer">Supermercado El Éxito</h4>
-            <p class="order-items">
-              <span class="material-symbols-outlined text-base">package_2</span>
-              12 sacos - Concentrado Bovino
-            </p>
-            <p class="order-address">Calle 45 # 12-34, Bogotá</p>
+            <h4 class="order-customer">Cargando pedidos...</h4>
+            <p class="order-address">Estamos consultando la información más reciente.</p>
+          </div>
+          <ion-spinner name="crescent"></ion-spinner>
+        </div>
+      </article>
+
+      <article class="order-card mb-4" *ngIf="!loading && error">
+        <div class="order-content">
+          <div class="mb-4">
+            <div class="order-top-row">
+              <span class="order-badge">Error</span>
+            </div>
+            <h4 class="order-customer">No fue posible cargar las ventas</h4>
+            <p class="order-address">{{ error }}</p>
           </div>
           <div class="order-actions">
-            <button class="action-btn-secondary">
-              <span class="material-symbols-outlined">visibility</span> Detalles
-            </button>
-            <button class="action-btn-primary">
-              <span class="material-symbols-outlined">check_circle</span> Confirmar
+            <button class="action-btn-primary" type="button" (click)="cargarPedidos()">
+              <span class="material-symbols-outlined">refresh</span>
+              Reintentar
             </button>
           </div>
         </div>
       </article>
 
-      <!-- Order Card 2 -->
-      <article class="order-card group mb-4">
-        <div class="order-bg" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBf75T0AhIIO1HO22f5QwR_RXg5JwZc21xZpGPW1s-dBRZAyomPW-d9dnuU16XpxEU0Rj6xQ789bCls4dP2HO9H3bX6CeY2_OXwWHFkSA8l-UNg1pOLqgBteBPbx1b9gsFP16UPlbSBJTkbNASpua78eOPhZCXGu4CKJC4_u_qsOBNEBXMJxoHvDSEH70asDOtTMfseBYFycsAGQF71ACAz1Af10LnGSASXppUmpaDNmIDFbHsrjgcp0JXWZF69T-GPCtqDopnxR9g');"></div>
+      <article class="order-card mb-4" *ngIf="!loading && !error && recentOrders.length === 0">
         <div class="order-content">
           <div class="mb-4">
             <div class="order-top-row">
-              <span class="order-badge">#3841</span>
-              <span class="order-time">Hace 45 min</span>
+              <span class="order-badge">Sin datos</span>
             </div>
-            <h4 class="order-customer">Agropecuaria La Finca</h4>
-            <p class="order-items">
-              <span class="material-symbols-outlined text-base">package_2</span>
-              50 bultos - Maíz Amarillo
-            </p>
-            <p class="order-address">Km 5 Vía La Calera</p>
+            <h4 class="order-customer">Todavía no hay pedidos</h4>
+            <p class="order-address">Cuando entren pedidos, aparecerán aquí para seguimiento rápido.</p>
           </div>
           <div class="order-actions">
-            <button class="action-btn-secondary">
-              <span class="material-symbols-outlined">visibility</span> Detalles
-            </button>
-            <button class="action-btn-primary">
-              <span class="material-symbols-outlined">check_circle</span> Confirmar
+            <button class="action-btn-secondary" type="button" routerLink="/catalogo">
+              <span class="material-symbols-outlined">storefront</span>
+              Ver catálogo
             </button>
           </div>
         </div>
       </article>
 
-      <!-- Order Card 3 -->
-      <article class="order-card group mb-4">
-        <div class="order-bg" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCC72ePsA5uciG0_A4c1N1onX2kIESHMCDABuGmc3HhXL1h7xwzkvijcBSLEoslWAcKt656g7nG0k7H2ruHp6EuMoRKhl_h3dAO42JyDOmUJnpRCJdcIxmFAGtemcK0PgSky-k21eyZu99gH4F0iHsuF1HQD8rhjddhx_Q7aQIzVtvw4LzmlQYiTusUULpbB-s-iKV6KcLuHAI4PZMRuY_RbNfcxJCQ0B7EiiW5ZZ-fYgSRCCaYl0uUkw3ABcI4gfbcIVQNOZMzXWQ');"></div>
+      <article class="order-card group mb-4" *ngFor="let order of recentOrders; trackBy: trackByOrder">
+        <div class="order-bg" [style.background]="
+            order.status === 'PENDING'
+              ? 'linear-gradient(135deg, #ffedd5 0%, transparent 100%)'
+              : order.status === 'PROCESSING'
+                ? 'linear-gradient(135deg, #dbeafe 0%, transparent 100%)'
+                : order.status === 'COMPLETED'
+                  ? 'linear-gradient(135deg, #dcfce7 0%, transparent 100%)'
+                  : 'linear-gradient(135deg, #e5e7eb 0%, transparent 100%)'
+          ">
+        </div>
+
         <div class="order-content">
           <div class="mb-4">
             <div class="order-top-row">
-              <span class="order-badge">#3840</span>
-              <span class="order-time">Hace 1h 20m</span>
+              <span class="order-badge">{{ getStatusLabel(order.status) }} · #{{ order.id }}</span>
+              <span class="order-time">{{ tiempoRelativo(order.createdAt) }}</span>
             </div>
-            <h4 class="order-customer">Distribuidora El Campo</h4>
+
+            <h4 class="order-customer">{{ getCustomerDisplayName(order) }}</h4>
+
             <p class="order-items">
-              <span class="material-symbols-outlined text-base">package_2</span>
-              25 sacos - Alimento Pollos
+              <span class="material-symbols-outlined">package_2</span>
+              {{ getItemSummary(order) }}
             </p>
-            <p class="order-address">Zona Industrial Cazucá</p>
+
+            <p class="order-address">
+              {{ getCustomerLocation(order) || 'Ubicación no registrada' }}
+            </p>
+
+            <p class="order-items">
+              <span class="material-symbols-outlined">payments</span>
+              {{ formatPrice(order.total || 0) }}
+            </p>
           </div>
+
           <div class="order-actions">
-            <button class="action-btn-secondary">
-              <span class="material-symbols-outlined">visibility</span> Detalles
+            <button class="action-btn-secondary" type="button" (click)="viewOrderDetails(order)">
+              <span class="material-symbols-outlined">visibility</span>
+              Detalles
             </button>
-            <button class="action-btn-primary">
-              <span class="material-symbols-outlined">check_circle</span> Confirmar
+
+            <button class="action-btn-primary" type="button" (click)="confirmOrder(order)"
+              [disabled]="order.status !== 'PENDING' || updatingOrderId === order.id">
+              <span class="material-symbols-outlined">
+                {{
+                updatingOrderId === order.id
+                ? 'hourglass_top'
+                : order.status === 'PENDING'
+                ? 'check_circle'
+                : order.status === 'PROCESSING'
+                ? 'inventory_2'
+                : order.status === 'COMPLETED'
+                ? 'task_alt'
+                : 'block'
+                }}
+              </span>
+              {{
+              updatingOrderId === order.id
+              ? 'Guardando...'
+              : order.status === 'PENDING'
+              ? 'Confirmar'
+              : getStatusLabel(order.status)
+              }}
             </button>
           </div>
         </div>
       </article>
-
     </section>
   </main>
 </ion-content>
-
-<!-- Bottom Navigation Tab Bar (Admin version) -->
-<ion-footer class="ion-no-border">
-  <div class="bottom-tab-bar">
-    <a class="tab-item active" routerLink="/dashboard-ventas">
-      <div class="icon-wrap">
-        <span class="material-symbols-outlined">home</span>
-      </div>
-      <span class="tab-label">Inicio</span>
-    </a>
-    <a class="tab-item" routerLink="/gestion-pedidos">
-      <div class="icon-wrap relative">
-        <span class="material-symbols-outlined">assignment</span>
-        <span class="badge-dot"></span>
-      </div>
-      <span class="tab-label">Pedidos</span>
-    </a>
-    
-    <div class="tab-center">
-      <a class="fab-wrapper" routerLink="/catalogo">
-        <button class="cart-fab bg-primary shadow-primary">
-          <span class="material-symbols-outlined">add</span>
-        </button>
-        <span class="fab-label">Nueva Venta</span>
-      </a>
-    </div>
-
-    <a class="tab-item">
-      <div class="icon-wrap">
-        <span class="material-symbols-outlined">groups</span>
-      </div>
-      <span class="tab-label">Clientes</span>
-    </a>
-    <a class="tab-item" routerLink="/configuracion-general">
-      <div class="icon-wrap">
-        <span class="material-symbols-outlined">account_circle</span>
-      </div>
-      <span class="tab-label">Perfil</span>
-    </a>
-  </div>
-</ion-footer>

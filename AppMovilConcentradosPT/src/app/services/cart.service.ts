@@ -15,7 +15,7 @@ export class CartService {
 
   items$ = this.items.asObservable();
 
-  constructor(private readonly storageService: StorageService) {}
+  constructor(private readonly storageService: StorageService) { }
 
   get cartItems(): CartItem[] {
     return this.items.getValue();
@@ -61,14 +61,16 @@ export class CartService {
     void this.persistItems();
   }
 
-  removeItem(id: string) {
-    this.setItems(this.cartItems.filter(i => i.id !== id));
+  removeItem(id: string, presentation?: string) {
+    this.setItems(
+      this.cartItems.filter(i => !this.isSameCartLine(i, id, presentation))
+    );
     void this.persistItems();
   }
 
-  increaseQty(id: string) {
+  increaseQty(id: string, presentation?: string) {
     const current = this.cartItems;
-    const item = current.find(i => i.id === id);
+    const item = current.find(i => this.isSameCartLine(i, id, presentation));
     if (item) {
       item.quantity++;
       this.setItems(current);
@@ -76,9 +78,9 @@ export class CartService {
     }
   }
 
-  decreaseQty(id: string) {
+  decreaseQty(id: string, presentation?: string) {
     const current = this.cartItems;
-    const item = current.find(i => i.id === id);
+    const item = current.find(i => this.isSameCartLine(i, id, presentation));
     if (item && item.quantity > 1) {
       item.quantity--;
       this.setItems(current);
@@ -86,10 +88,24 @@ export class CartService {
     }
   }
 
+
   clearCart() {
     this.setItems([]);
     void this.persistItems();
   }
+
+  private isSameCartLine(item: CartItem, id: string, presentation?: string): boolean {
+    if (item.id !== id) {
+      return false;
+    }
+
+    if (presentation === undefined) {
+      return true;
+    }
+
+    return item.presentation === presentation;
+  }
+
 
   private async hydrateFromStorage(): Promise<void> {
     const storedItems = await this.storageService.getJson<CartItem[]>(CART_ITEMS_KEY);

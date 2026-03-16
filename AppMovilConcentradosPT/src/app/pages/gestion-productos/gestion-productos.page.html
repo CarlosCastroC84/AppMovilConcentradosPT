@@ -1,17 +1,23 @@
 <ion-header class="ion-no-border">
   <ion-toolbar>
-    <div class="nav-row">
-      <div class="nav-left">
-        <button class="menu-btn" routerLink="/panel-admin">
+    <div class="products-topbar">
+      <div class="topbar-left">
+        <button class="icon-btn" routerLink="/panel-admin" type="button">
           <span class="material-icons-round">arrow_back</span>
         </button>
-        <h1 class="nav-title">Gestión de Productos</h1>
+
+        <div class="topbar-copy">
+          <p class="topbar-kicker">Administración</p>
+          <h1 class="topbar-title">Gestión de productos</h1>
+        </div>
       </div>
-      <div class="nav-right">
-        <button class="notif-btn" (click)="cargarProductos()">
+
+      <div class="topbar-right">
+        <button class="icon-btn" type="button" (click)="cargarProductos()">
           <span class="material-icons-round">refresh</span>
         </button>
-        <div class="avatar">{{ currentUserInitials }}</div>
+
+        <div class="user-badge">{{ currentUserInitials }}</div>
       </div>
     </div>
   </ion-toolbar>
@@ -19,40 +25,44 @@
 
 <ion-content>
   <main class="gestion-main">
-    <div class="action-row">
-      <button class="action-btn outline" (click)="cargarProductos()" [disabled]="loading">
+    <section class="hero-actions">
+      <button class="hero-btn secondary" type="button" (click)="cargarProductos()" [disabled]="loading">
         <span class="material-icons-round">sync</span>
-        Actualizar
+        Actualizar catálogo
       </button>
-      <button class="action-btn primary" (click)="startCreate()" [disabled]="saving">
-        <span class="material-icons-round">add</span>
-        Nuevo Producto
+
+      <button class="hero-btn primary" type="button" (click)="startCreate()" [disabled]="saving">
+        <span class="material-icons-round">add_box</span>
+        Nuevo producto
       </button>
-    </div>
+    </section>
 
     <section class="editor-card" *ngIf="formVisible">
-      <div class="editor-header">
+      <div class="section-head">
         <div>
-          <h2 class="editor-title">{{ editingProductId ? 'Editar producto' : 'Crear producto' }}</h2>
-          <p class="editor-subtitle">Los cambios se guardan directamente en la API AWS.</p>
+          <p class="section-kicker">Editor</p>
+          <h2 class="section-title">{{ editingProductId ? 'Editar producto' : 'Crear producto' }}</h2>
         </div>
+
+        <span class="editor-state" *ngIf="saving">Guardando...</span>
       </div>
 
       <div class="feedback-card" *ngIf="catalogsLoading">
         <ion-spinner name="crescent"></ion-spinner>
-        <p>Cargando categorías, marcas y presentaciones desde AWS...</p>
+        <p>Cargando categorías, marcas y presentaciones...</p>
       </div>
 
       <div class="feedback-card error" *ngIf="!catalogsLoading && catalogsError">
         <span class="material-icons-round">error</span>
         <p>{{ catalogsError }}</p>
-        <button class="secondary-btn" (click)="cargarCatalogos()">Reintentar</button>
+        <button class="secondary-btn" type="button" (click)="cargarCatalogos()">Reintentar</button>
       </div>
 
       <div class="form-grid">
         <label class="field-group">
           <span class="field-label">ID</span>
-          <input class="field-input" [(ngModel)]="form.id" placeholder="Se genera si lo dejas vacío" [readonly]="!!editingProductId" />
+          <input class="field-input" [(ngModel)]="form.id" placeholder="Se genera si lo dejas vacío"
+            [readonly]="!!editingProductId" />
         </label>
 
         <label class="field-group">
@@ -62,7 +72,8 @@
 
         <label class="field-group">
           <span class="field-label">Categoría</span>
-          <select class="field-input" [(ngModel)]="form.categoria" [disabled]="catalogsLoading || categoriaOptions.length === 0">
+          <select class="field-input" [(ngModel)]="form.categoria"
+            [disabled]="catalogsLoading || categoriaOptions.length === 0">
             <option value="">Selecciona una categoría</option>
             <option *ngFor="let categoria of categoriaOptions" [value]="categoria.nombre">
               {{ categoria.nombre }}
@@ -72,7 +83,8 @@
 
         <label class="field-group">
           <span class="field-label">Marca</span>
-          <select class="field-input" [(ngModel)]="form.marca" [disabled]="catalogsLoading || marcaOptions.length === 0">
+          <select class="field-input" [(ngModel)]="form.marca"
+            [disabled]="catalogsLoading || marcaOptions.length === 0">
             <option value="">Selecciona una marca</option>
             <option *ngFor="let marca of marcaOptions" [value]="marca.nombre">
               {{ marca.nombre }}
@@ -82,7 +94,8 @@
 
         <label class="field-group">
           <span class="field-label">Presentación</span>
-          <select class="field-input" [(ngModel)]="form.presentacion" [disabled]="catalogsLoading || presentacionOptions.length === 0">
+          <select class="field-input" [(ngModel)]="form.presentacion"
+            [disabled]="catalogsLoading || presentacionOptions.length === 0">
             <option value="">Selecciona una presentación</option>
             <option *ngFor="let presentacion of presentacionOptions" [value]="presentacion.nombre">
               {{ presentacion.nombre }}
@@ -101,95 +114,147 @@
         </label>
 
         <label class="field-group full-width">
-          <span class="field-label">URL Imagen</span>
+          <span class="field-label">URL de imagen</span>
           <input class="field-input" [(ngModel)]="form.imagenUrl" placeholder="https://..." />
         </label>
 
         <label class="field-group full-width">
           <span class="field-label">S3 Key</span>
-          <input class="field-input" [(ngModel)]="form.imagenKey" placeholder="productos/SALES/atalsal_lecheria_10_18.png" />
+          <input class="field-input" [(ngModel)]="form.imagenKey" placeholder="productos/GANADERIA/vaca-20.png" />
         </label>
       </div>
 
       <div class="field-actions">
-        <button class="secondary-btn" (click)="cancelEdit()" [disabled]="saving">Cancelar</button>
-        <button class="primary-btn" (click)="saveProduct()" [disabled]="saving || catalogsLoading || !!catalogsError">
+        <button class="secondary-btn" type="button" (click)="cancelEdit()" [disabled]="saving">
+          Cancelar
+        </button>
+
+        <button class="primary-btn" type="button" (click)="saveProduct()"
+          [disabled]="saving || catalogsLoading || !!catalogsError">
           <span class="material-icons-round">{{ editingProductId ? 'save' : 'add_box' }}</span>
-          {{ saving ? 'Guardando...' : (editingProductId ? 'Guardar Cambios' : 'Crear Producto') }}
+          {{ editingProductId ? 'Guardar cambios' : 'Crear producto' }}
         </button>
       </div>
     </section>
 
-    <div class="search-filters">
+    <section class="filters-card">
+      <div class="section-head compact">
+        <div>
+          <p class="section-kicker">Catálogo</p>
+          <h2 class="section-title">Buscar y filtrar</h2>
+        </div>
+
+        <span class="results-pill">{{ filteredProducts.length }} productos</span>
+      </div>
+
       <div class="search-wrap">
         <span class="material-icons-round search-icon">search</span>
-        <input type="text" class="search-input" [(ngModel)]="searchTerm" placeholder="Buscar producto..." />
+        <input type="text" class="search-input" [(ngModel)]="searchTerm"
+          placeholder="Buscar por nombre, categoría, marca o presentación..." />
       </div>
+
       <div class="filter-chips">
-        <button class="chip" [class.active]="activeFilter === 'todos'" (click)="setFilter('todos')">Todos</button>
-        <button class="chip" [class.active]="activeFilter === 'ganaderia'" (click)="setFilter('ganaderia')">Ganadería</button>
-        <button class="chip" [class.active]="activeFilter === 'pollo'" (click)="setFilter('pollo')">Pollo Engorde</button>
-        <button class="chip" [class.active]="activeFilter === 'porcicultura'" (click)="setFilter('porcicultura')">Porcicultura</button>
-        <button class="chip" [class.active]="activeFilter === 'acuicultura'" (click)="setFilter('acuicultura')">Acuicultura</button>
+        <button class="chip" [class.active]="activeFilter === 'todos'" (click)="setFilter('todos')" type="button">
+          Todos
+        </button>
+        <button class="chip" [class.active]="activeFilter === 'ganaderia'" (click)="setFilter('ganaderia')"
+          type="button">
+          Ganadería
+        </button>
+        <button class="chip" [class.active]="activeFilter === 'pollo'" (click)="setFilter('pollo')" type="button">
+          Pollo Engorde
+        </button>
+        <button class="chip" [class.active]="activeFilter === 'porcicultura'" (click)="setFilter('porcicultura')"
+          type="button">
+          Porcicultura
+        </button>
+        <button class="chip" [class.active]="activeFilter === 'acuicultura'" (click)="setFilter('acuicultura')"
+          type="button">
+          Acuicultura
+        </button>
       </div>
-    </div>
+    </section>
 
     <div class="feedback-card" *ngIf="loading">
       <ion-spinner name="crescent"></ion-spinner>
-      <p>Cargando productos desde AWS...</p>
+      <p>Cargando productos...</p>
     </div>
 
     <div class="feedback-card error" *ngIf="!loading && error">
       <span class="material-icons-round">error</span>
       <p>{{ error }}</p>
-      <button class="secondary-btn" (click)="cargarProductos()">Reintentar</button>
+      <button class="secondary-btn" type="button" (click)="cargarProductos()">Reintentar</button>
     </div>
 
-    <div class="products-list" *ngIf="!loading && !error">
+    <section class="products-section" *ngIf="!loading && !error">
       <div class="feedback-card" *ngIf="filteredProducts.length === 0">
         <span class="material-icons-round">inventory_2</span>
         <p>No hay productos para el filtro actual.</p>
       </div>
 
-      <div class="product-card" *ngFor="let product of filteredProducts; trackBy: trackByProduct" [class.inactive]="!isActive(product)">
-        <div class="card-body">
-          <div class="prod-media">
-            <img
-              [src]="product.resolvedImageUrl"
-              [alt]="product.nombre"
-              class="prod-image"
+      <article class="product-card" *ngFor="let product of filteredProducts; trackBy: trackByProduct"
+        [class.inactive]="!isActive(product)">
+        <div class="product-main">
+          <div class="product-media">
+            <img [src]="product.resolvedImageUrl" [alt]="product.nombre" class="product-image"
               (error)="onProductImageError($event)" />
           </div>
-          <div class="prod-info">
-            <div class="prod-top-row">
+
+          <div class="product-copy">
+            <div class="product-top">
               <div>
-                <h3 class="prod-name" [class.dimmed]="!isActive(product)">{{ product.nombre }}</h3>
-                <p class="prod-category">{{ product.categoria || 'Sin categoría' }} • {{ product.marca || 'Sin marca' }} • {{ product.presentacion }}</p>
+                <div class="product-identity">
+                  <span class="emoji-badge" [ngClass]="'tone-' + getCategoryTone(product)">
+                    {{ getCategoryEmoji(product) }}
+                  </span>
+
+                  <div>
+                    <h3 class="product-name" [class.dimmed]="!isActive(product)">{{ product.nombre }}</h3>
+                    <p class="product-meta">
+                      {{ product.categoria || 'Sin categoría' }} · {{ product.marca || 'Sin marca' }} · {{
+                      product.presentacion }}
+                    </p>
+                  </div>
+                </div>
               </div>
+
               <label class="toggle">
                 <input type="checkbox" [checked]="isActive(product)" (change)="toggleProductState(product, $event)" />
                 <span class="toggle-slider"></span>
               </label>
             </div>
-            <div class="price-tags">
-              <span class="price-tag">{{ product.presentacion }}: <strong>{{ product.precio | currency:'COP':'symbol-narrow':'1.0-0' }}</strong></span>
-              <span class="price-tag muted" *ngIf="product.stock !== undefined">Stock: <strong>{{ product.stock }}</strong></span>
+
+            <div class="product-tags">
+              <span class="info-tag">
+                Precio: <strong>{{ product.precio | currency:'COP':'symbol-narrow':'1.0-0' }}</strong>
+              </span>
+
+              <span class="info-tag muted" *ngIf="product.stock !== undefined">
+                Stock: <strong>{{ product.stock }}</strong>
+              </span>
             </div>
-            <div class="inactive-label" *ngIf="!isActive(product)">Producto inactivo</div>
+
+            <p class="inactive-label" *ngIf="!isActive(product)">Producto inactivo</p>
           </div>
         </div>
-        <div class="card-actions">
-          <button class="card-action muted" (click)="showHistory(product)">
-            <span class="material-icons-round">history</span> Historial
+
+        <div class="product-actions">
+          <button class="mini-action muted" type="button" (click)="showHistory(product)">
+            <span class="material-icons-round">history</span>
+            Historial
           </button>
-          <button class="card-action primary" (click)="startEdit(product)">
-            <span class="material-icons-round">edit</span> Editar
+
+          <button class="mini-action primary" type="button" (click)="startEdit(product)">
+            <span class="material-icons-round">edit</span>
+            Editar
           </button>
-          <button class="card-action danger" (click)="confirmDelete(product)">
-            <span class="material-icons-round">delete</span> Eliminar
+
+          <button class="mini-action danger" type="button" (click)="confirmDelete(product)">
+            <span class="material-icons-round">delete</span>
+            Eliminar
           </button>
         </div>
-      </div>
-    </div>
+      </article>
+    </section>
   </main>
 </ion-content>

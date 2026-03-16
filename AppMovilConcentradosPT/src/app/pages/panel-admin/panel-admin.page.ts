@@ -6,6 +6,10 @@ import { RouterModule, Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { OrderService } from '../../services/order.service';
 import { ProductService } from '../../services/product.service';
+import { SessionProfileService } from '../../services/session-profile.service';
+import { SessionModule } from '../../models/session-profile.model';
+import { firstValueFrom } from 'rxjs';
+
 
 @Component({
   selector: 'app-panel-admin',
@@ -21,7 +25,11 @@ export class PanelAdminPage implements OnInit {
   private toastController = inject(ToastController);
   private alertController = inject(AlertController);
   private router = inject(Router);
+  private sessionProfileService = inject(SessionProfileService);
 
+
+  currentRole: string = 'ADMIN';
+  availableModules: SessionModule[] = [];
   currentUser: string = 'Administrador';
   pedidos: any[] = [];
   productos: any[] = [];
@@ -41,12 +49,38 @@ export class PanelAdminPage implements OnInit {
     return this.productos.length;
   }
 
+  get canViewSales(): boolean {
+    return this.sessionProfileService.hasPermission('sales.view');
+  }
+
+  get canViewOrders(): boolean {
+    return this.sessionProfileService.hasPermission('orders.view');
+  }
+
+  get canManageProducts(): boolean {
+    return this.sessionProfileService.hasPermission('products.manage');
+  }
+
   async ngOnInit() {
     // Obtenemos el nombre real del usuario logueado
     const user = await this.authService.getCurrentUser();
     if (user) {
       this.currentUser = user.name || user.email || user.username;
     }
+
+    try {
+      const profile =
+        this.sessionProfileService.profile ||
+        await firstValueFrom(this.sessionProfileService.loadProfile());
+
+      this.currentRole = profile.role;
+      this.availableModules = profile.modules || [];
+    } catch (error) {
+      console.error('No fue posible cargar el perfil del panel:', error);
+      this.availableModules = [];
+    }
+
+
 
     // Cargamos pedidos desde DynamoDB
     this.orderService.getOrders().subscribe({
@@ -141,6 +175,7 @@ export class PanelAdminPage implements OnInit {
           role: 'destructive',
           handler: async () => {
             await this.authService.logout();
+            this.sessionProfileService.clearProfile();
             const toast = await this.toastController.create({
               message: 'Sesión cerrada exitosamente',
               duration: 2000,

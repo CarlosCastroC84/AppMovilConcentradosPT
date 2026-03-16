@@ -2,7 +2,7 @@ import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonicModule, ToastController, LoadingController } from '@ionic/angular';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { CartService } from '../../services/cart.service';
 import { OrderService } from '../../services/order.service';
 import { AuthService } from '../../services/auth.service';
@@ -32,6 +32,9 @@ export class MiPedidoPage implements OnInit {
   private storageService = inject(StorageService);
   private toastController = inject(ToastController);
   private loadingController = inject(LoadingController);
+  private router = inject(Router);
+
+
 
   // Variables del formulario
   customerName = '';
@@ -65,56 +68,92 @@ export class MiPedidoPage implements OnInit {
   }
 
   async procesarPedido() {
-    // Validamos que haya ingresado al menos el nombre
-    if (!this.customerName || !this.customerPhone) {
-      this.mostrarMensaje('Por favor ingresa tu Nombre y Celular', 'warning');
+    const customerName = this.customerName.trim();
+    const customerPhone = this.customerPhone.trim();
+    const customerLocation = this.customerLocation.trim();
+    const observations = this.observations.trim();
+
+    if (this.cart.cartItems.length === 0) {
+      this.mostrarMensaje('Tu carrito está vacío. Agrega productos antes de enviar el pedido.', 'warning');
       return;
     }
 
+    if (!customerName || !customerPhone) {
+      this.mostrarMensaje('Por favor ingresa tu Nombre y Celular.', 'warning');
+      return;
+    }
+    if (!this.isValidPhone(customerPhone)) {
+      this.mostrarMensaje('Ingresa un celular válido con al menos 10 dígitos.', 'warning');
+      return;
+    }
+
+
     const loading = await this.loadingController.create({
-      message: 'Enviando pedido a AWS...',
+      message: 'Enviando pedido a Distribuidora de Concentrados Puente Tierra...',
       spinner: 'circles'
     });
-    await loading.present();
 
-    const currentUser = await this.authService.getCurrentUser();
+    try {
+      await loading.present();
 
-    // Construimos el objeto del pedido
-    const newOrder: Partial<Order> = {
-      id: `ORD-${new Date().getTime()}`,
-      userId: currentUser?.userId || 'GUEST',
-      customerName: this.customerName.trim(),
-      customerPhone: this.customerPhone.trim(),
-      customerLocation: this.customerLocation.trim(),
-      customerEmail: currentUser?.email,
-      total: this.cart.subtotal,
-      status: 'PENDING',
-      observations: this.observations,
-      createdAt: new Date().toISOString(),
-      items: this.cart.cartItems.map(item => ({ ...item }))
-    };
+      const currentUser = await this.authService.getCurrentUser();
 
-    // Llamamos a nuestro servicio de AWS
-    this.orderService.createOrder(newOrder).subscribe({
-      next: async () => {
-        await loading.dismiss();
-        this.mostrarMensaje('¡Pedido guardado en DynamoDB con éxito!', 'success');
-        this.cart.clearCart(); // Vaciamos el carrito tras el éxito
-        await this.clearDraft();
+      const newOrder: Partial<Order> = {
+        id: `ORD-${Date.now()}`,
+        userId: currentUser?.userId || 'GUEST',
+        customerName,
+        customerPhone,
+        customerLocation,
+        customerEmail: currentUser?.email,
+        total: this.cart.subtotal,
+        status: 'PENDING',
+        observations,
+        createdAt: new Date().toISOString(),
+        items: this.cart.cartItems.map(item => ({ ...item }))
+      };
 
-        // Limpiamos el form
-        this.customerName = '';
-        this.customerPhone = '';
-        this.customerLocation = '';
-        this.observations = '';
-      },
-      error: async (err: Error) => {
-        await loading.dismiss();
-        console.error('Error enviando pedido:', err);
-        this.mostrarMensaje(err.message || 'Hubo un error al guardar tu pedido en AWS. Por el momento enviémoslo por WhatsApp.', 'danger');
-      }
-    });
+      this.orderService.createOrder(newOrder).subscribe({
+        next: async () => {
+          await loading.dismiss();
+
+          const pedidoId = newOrder.id || `ORD-${Date.now()}`;
+          const total = this.cart.subtotal;
+
+          this.cart.clearCart();
+          await this.clearDraft();
+
+          this.customerName = '';
+          this.customerPhone = '';
+          this.customerLocation = '';
+          this.observations = '';
+
+          await this.router.navigate(['/confirmacion-pedido-cliente'], {
+            replaceUrl: true,
+            queryParams: {
+              pedidoId,
+              customerName,
+              customerLocation,
+              total
+            }
+          });
+
+        },
+        error: async (err: Error) => {
+          await loading.dismiss();
+          console.error('Error enviando pedido:', err);
+          await this.mostrarMensaje(
+            err.message || 'Hubo un error al guardar tu pedido. Intenta nuevamente.',
+            'danger'
+          );
+        }
+      });
+    } catch (error) {
+      await loading.dismiss();
+      console.error('Error preparando el pedido:', error);
+      await this.mostrarMensaje('No fue posible preparar el pedido. Intenta nuevamente.', 'danger');
+    }
   }
+
 
   private async loadDraft(): Promise<void> {
     const draft = await this.storageService.getJson<CheckoutDraft>(CHECKOUT_DRAFT_KEY);
@@ -131,6 +170,11 @@ export class MiPedidoPage implements OnInit {
   private async clearDraft(): Promise<void> {
     await this.storageService.remove(CHECKOUT_DRAFT_KEY);
   }
+  private isValidPhone(phone: string): boolean {
+    const digitsOnly = phone.replace(/\D/g, '');
+    return digitsOnly.length >= 10;
+  }
+
 
   async mostrarMensaje(msg: string, color: string) {
     const toast = await this.toastController.create({

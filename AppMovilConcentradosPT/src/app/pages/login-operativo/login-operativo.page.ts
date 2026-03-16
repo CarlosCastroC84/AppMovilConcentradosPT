@@ -5,13 +5,18 @@ import { IonicModule, ToastController, LoadingController } from '@ionic/angular'
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { confirmSignIn } from 'aws-amplify/auth';
+import { RouterModule } from '@angular/router';
+import { firstValueFrom } from 'rxjs';
+import { SessionProfileService } from '../../services/session-profile.service';
+
 
 @Component({
   selector: 'app-login-operativo',
   templateUrl: './login-operativo.page.html',
   styleUrls: ['./login-operativo.page.scss'],
   standalone: true,
-  imports: [IonicModule, CommonModule, FormsModule]
+  imports: [IonicModule, CommonModule, FormsModule, RouterModule]
+
 })
 export class LoginOperativoPage {
   private authService = inject(AuthService);
@@ -19,6 +24,7 @@ export class LoginOperativoPage {
   private loadingController = inject(LoadingController);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
+  private sessionProfileService = inject(SessionProfileService);
 
   // Variables del formulario
   username = '';
@@ -46,7 +52,7 @@ export class LoginOperativoPage {
     }
 
     const loading = await this.loadingController.create({
-      message: 'Iniciando sesión con AWS Cognito...',
+      message: 'Iniciando sesión...',
       spinner: 'circles'
     });
     await loading.present();
@@ -117,10 +123,23 @@ export class LoginOperativoPage {
 
   private async loginExitoso() {
     const userInfo = await this.authService.getCurrentUser();
+
+    try {
+      await firstValueFrom(this.sessionProfileService.loadProfile());
+    } catch (error) {
+      console.error('No fue posible cargar el perfil de sesión:', error);
+      this.mostrarMensaje('No fue posible cargar permisos del usuario.', 'danger');
+      return;
+    }
+
     this.mostrarMensaje(`¡Bienvenido ${userInfo?.username || this.username}!`, 'success');
-    const redirectTo = this.route.snapshot.queryParamMap.get('redirectTo') || '/panel-admin';
-    this.router.navigateByUrl(redirectTo);
+
+    const redirectTo = this.route.snapshot.queryParamMap.get('redirectTo');
+    const fallbackRoute = this.sessionProfileService.getDefaultRoute();
+
+    this.router.navigateByUrl(redirectTo || fallbackRoute);
   }
+
 
   private mostrarMensajeError(error: any) {
     let errorMsg = 'Error al iniciar sesión';

@@ -1,8 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
-import { RouterModule } from '@angular/router';
+import { ActivatedRoute, RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-confirmacion-pedido-cliente',
@@ -11,8 +11,24 @@ import { RouterModule } from '@angular/router';
   standalone: true,
   imports: [IonicModule, CommonModule, FormsModule, RouterModule]
 })
-export class ConfirmacionPedidoClientePage {
-  pedidoId = 'PT-7892';
-  
-  constructor() { }
+export class ConfirmacionPedidoClientePage implements OnInit {
+  private route = inject(ActivatedRoute);
+
+  pedidoId = '';
+  customerName = '';
+  customerLocation = '';
+  total = 0;
+
+  ngOnInit(): void {
+    this.route.queryParamMap.subscribe(params => {
+      this.pedidoId = params.get('pedidoId') || 'ORD-SIN-ID';
+      this.customerName = params.get('customerName') || 'Cliente';
+      this.customerLocation = params.get('customerLocation') || 'Ubicación por confirmar';
+      this.total = Number(params.get('total') || 0);
+    });
+  }
+
+  formatPrice(value: number): string {
+    return '$' + value.toLocaleString('es-CO');
+  }
 }

@@ -2,7 +2,7 @@ import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonicModule, ToastController } from '@ionic/angular';
-import { ActivatedRoute, RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { ProductService } from '../../services/product.service';
 import { CartService } from '../../services/cart.service';
 import { CatalogProductView, enrichCatalogProduct, sortBrandOptions, sortCategoryOptions } from '../../utils/catalog-product.util';
@@ -24,6 +24,7 @@ export class CatalogoPage implements OnInit {
   public cart = inject(CartService);
   private toastController = inject(ToastController);
   private route = inject(ActivatedRoute);
+  private router = inject(Router);
 
   productos: CatalogProductView[] = [];
   cargando = true;
@@ -48,6 +49,13 @@ export class CatalogoPage implements OnInit {
     const categories = new Set(this.productos.map(product => product.displayCategory));
     return [this.allCategoriesLabel, ...sortCategoryOptions([...categories])];
   }
+
+  irADetalle(producto: CatalogProductView) {
+    void this.router.navigate(['/detalle-producto'], {
+      queryParams: { id: producto.id }
+    });
+  }
+
 
   get brandOptions(): string[] {
     const brands = new Set(this.filteredProductsWithoutBrandFilter.map(product => product.displayBrand));

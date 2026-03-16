@@ -2,127 +2,153 @@
   <ion-toolbar>
     <div class="header-row">
       <div class="header-left">
-        <button class="back-btn" routerLink="/inicio">
+        <button class="back-btn" routerLink="/inicio" type="button">
           <span class="material-icons-round">arrow_back</span>
         </button>
-        <h1 class="header-title">Atención al Cliente</h1>
-      </div>
-      <div class="avatar-circle">
-        <span class="material-icons-round">person</span>
+
+        <div class="header-copy">
+          <h1 class="header-title">Atención al Cliente</h1>
+          <p class="header-subtitle">Soporte para pedidos, cotizaciones y dudas</p>
+        </div>
       </div>
     </div>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-  <main class="main-content">
-    <!-- Hero -->
+  <main class="support-main">
     <section class="hero-section">
       <div class="hero-icon-circle">
         <span class="material-icons-round hero-icon">support_agent</span>
       </div>
-      <h2 class="hero-title">¿En qué podemos ayudarte?</h2>
-      <p class="hero-desc">Estamos aquí para resolver tus dudas sobre pedidos, productos y servicios.</p>
+
+      <h2 class="hero-title">Estamos listos para ayudarte</h2>
+      <p class="hero-desc">
+        Elige el canal más rápido para resolver dudas sobre pedidos, productos, entregas o cotizaciones.
+      </p>
     </section>
 
-    <!-- Crear Nueva Solicitud -->
-    <section>
-      <button class="new-request-btn" (click)="openModal()">
-        <span class="material-icons-round">add_circle_outline</span>
-        Crear Nueva Solicitud
+    <section class="channels-section">
+      <button class="channel-card whatsapp" type="button" (click)="openWhatsAppChannel()">
+        <div class="channel-icon-wrap">
+          <span class="material-icons-round">chat</span>
+        </div>
+        <div class="channel-copy">
+          <h3 class="channel-title">WhatsApp</h3>
+          <p class="channel-text">Respuesta rápida para pedidos y consultas inmediatas.</p>
+        </div>
+      </button>
+
+      <button class="channel-card call" type="button" (click)="callSupport()">
+        <div class="channel-icon-wrap">
+          <span class="material-icons-round">call</span>
+        </div>
+        <div class="channel-copy">
+          <h3 class="channel-title">Llamar</h3>
+          <p class="channel-text">Atención directa para coordinar entregas y resolver dudas.</p>
+        </div>
       </button>
     </section>
 
-    <!-- Mis Solicitudes -->
-    <section>
-      <div class="section-header">
-        <h3 class="section-title">Mis solicitudes</h3>
-        <a href="#" class="section-link">Ver todas</a>
+    <section class="request-section">
+      <div class="section-head">
+        <div>
+          <p class="section-kicker">Soporte</p>
+          <h3 class="section-title">Crear solicitud</h3>
+        </div>
       </div>
-      <div class="requests-list">
-        <!-- Request 1 -->
-        <div class="request-card">
-          <div class="request-left">
-            <div class="request-icon blue">
-              <span class="material-icons-round">inventory_2</span>
-            </div>
-            <div>
-              <p class="request-name">Pedido #10234 - Bultos Vaca</p>
-              <p class="request-time">Hace 2 horas</p>
-            </div>
-          </div>
-          <span class="status-badge yellow">En proceso</span>
-        </div>
-        <!-- Request 2 -->
-        <div class="request-card">
-          <div class="request-left">
-            <div class="request-icon green">
-              <span class="material-icons-round">request_quote</span>
-            </div>
-            <div>
-              <p class="request-name">Cotización Alimento Pollo</p>
-              <p class="request-time">Ayer</p>
-            </div>
-          </div>
-          <span class="status-badge green">Cerrada</span>
-        </div>
-        <!-- Request 3 -->
-        <div class="request-card">
-          <div class="request-left">
-            <div class="request-icon gray">
-              <span class="material-icons-round">help_outline</span>
-            </div>
-            <div>
-              <p class="request-name">Consulta sobre cobertura</p>
-              <p class="request-time">20 Oct 2023</p>
-            </div>
-          </div>
-          <span class="status-badge gray">Recibida</span>
+
+      <button class="new-request-btn" type="button" (click)="openModal()">
+        <span class="material-icons-round">add_circle_outline</span>
+        Crear Nueva Solicitud
+      </button>
+
+      <div class="support-topics">
+        <button class="topic-card" type="button" (click)="openRequestFor('Estado de pedido')">
+          <span class="material-icons-round topic-icon">inventory_2</span>
+          <span class="topic-label">Estado de pedido</span>
+        </button>
+
+        <button class="topic-card" type="button" (click)="openRequestFor('Cotización')">
+          <span class="material-icons-round topic-icon">request_quote</span>
+          <span class="topic-label">Cotización</span>
+        </button>
+
+        <button class="topic-card" type="button" (click)="openRequestFor('Entrega')">
+          <span class="material-icons-round topic-icon">local_shipping</span>
+          <span class="topic-label">Entrega</span>
+        </button>
+
+        <button class="topic-card" type="button" (click)="openRequestFor('Asesoría técnica')">
+          <span class="material-icons-round topic-icon">agriculture</span>
+          <span class="topic-label">Asesoría</span>
+        </button>
+      </div>
+    </section>
+
+    <section class="info-card">
+      <div class="info-row">
+        <span class="material-icons-round info-icon">schedule</span>
+        <div>
+          <h3 class="info-title">Horario de atención</h3>
+          <p class="info-text">Lunes a viernes: {{ weekdayHoursLabel }}</p>
+          <p class="info-text">Sábados: {{ saturdayHoursLabel }}</p>
+          <p class="info-text" *ngIf="businessConfig.sundayEnabled">
+            Domingos y festivos: {{ sundayHoursLabel }}
+          </p>
+          <p class="info-text" *ngIf="!businessConfig.sundayEnabled">
+            Domingos y festivos: Cerrado
+          </p>
         </div>
       </div>
     </section>
 
-    <!-- FAQ -->
-    <section>
-      <h3 class="section-title faq-title">Preguntas Frecuentes</h3>
+
+    <section class="faq-section">
+      <div class="section-head">
+        <div>
+          <p class="section-kicker">Ayuda rápida</p>
+          <h3 class="section-title">Preguntas frecuentes</h3>
+        </div>
+      </div>
+
       <div class="faq-list">
         <details class="faq-item">
           <summary class="faq-summary">
             <div class="faq-left">
-              <span class="material-icons-round faq-icon">schedule</span>
-              <span class="faq-question">Horarios de atención</span>
-            </div>
-            <span class="material-icons-round faq-arrow">expand_more</span>
-          </summary>
-          <div class="faq-answer">
-            Lunes a Viernes: 7:00 AM - 5:00 PM<br />
-            Sábados: 8:00 AM - 12:00 PM<br />
-            Domingos y Festivos: Cerrado
-          </div>
-        </details>
-        <details class="faq-item">
-          <summary class="faq-summary">
-            <div class="faq-left">
               <span class="material-icons-round faq-icon">local_shipping</span>
-              <span class="faq-question">Zonas de Cobertura</span>
+              <span class="faq-question">¿En qué zonas realizan entregas?</span>
             </div>
             <span class="material-icons-round faq-arrow">expand_more</span>
           </summary>
           <div class="faq-answer">
-            Realizamos entregas en toda la zona de Puente Tierra y veredas aledañas. Para pedidos mayores a 10 bultos,
-            el envío es gratuito en el casco urbano.
+            Atendemos Puente Tierra y veredas cercanas. Para pedidos grandes se coordina entrega según ubicación.
           </div>
         </details>
+
         <details class="faq-item">
           <summary class="faq-summary">
             <div class="faq-left">
               <span class="material-icons-round faq-icon">payments</span>
-              <span class="faq-question">Medios de Pago</span>
+              <span class="faq-question">¿Qué medios de pago manejan?</span>
             </div>
             <span class="material-icons-round faq-arrow">expand_more</span>
           </summary>
           <div class="faq-answer">
-            Aceptamos efectivo contra entrega, transferencias Bancolombia, Nequi y Daviplata.
+            Puedes pagar contra entrega o coordinar transferencia según el pedido y la zona de despacho.
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary class="faq-summary">
+            <div class="faq-left">
+              <span class="material-icons-round faq-icon">inventory</span>
+              <span class="faq-question">¿Cómo consulto disponibilidad?</span>
+            </div>
+            <span class="material-icons-round faq-arrow">expand_more</span>
+          </summary>
+          <div class="faq-answer">
+            Escríbenos por WhatsApp o crea una solicitud y te confirmaremos existencias y presentación disponible.
           </div>
         </details>
       </div>
@@ -130,35 +156,39 @@
   </main>
 </ion-content>
 
-<!-- Modal Nueva Solicitud -->
 <div class="modal-overlay" *ngIf="showModal" (click)="closeModal()">
   <div class="modal-content" (click)="$event.stopPropagation()">
     <div class="modal-header">
       <h3 class="modal-title">Nueva Solicitud</h3>
-      <button class="modal-close" (click)="closeModal()">
+      <button class="modal-close" type="button" (click)="closeModal()">
         <span class="material-icons-round">close</span>
       </button>
     </div>
+
     <div class="modal-body">
       <div class="form-group">
         <label class="form-label">Nombre Completo</label>
         <div class="input-with-icon">
           <span class="material-icons-round input-icon">person</span>
-          <input type="text" class="form-input" placeholder="Tu nombre" />
+          <input type="text" class="form-input" placeholder="Tu nombre" [(ngModel)]="requestForm.name"
+            name="requestName" />
         </div>
       </div>
+
       <div class="form-group">
         <label class="form-label">Teléfono</label>
         <div class="input-with-icon">
           <span class="material-icons-round input-icon">phone</span>
-          <input type="tel" class="form-input" placeholder="300 000 0000" />
+          <input type="tel" class="form-input" placeholder="300 000 0000" [(ngModel)]="requestForm.phone"
+            name="requestPhone" />
         </div>
       </div>
+
       <div class="form-group">
         <label class="form-label">Tipo de Solicitud</label>
         <div class="input-with-icon">
           <span class="material-icons-round input-icon">category</span>
-          <select class="form-input form-select">
+          <select class="form-input form-select" [(ngModel)]="requestForm.type" name="requestType">
             <option>Pedido</option>
             <option>Cotización</option>
             <option>Queja o Reclamo</option>
@@ -167,33 +197,16 @@
           </select>
         </div>
       </div>
+
       <div class="form-group">
-        <label class="form-label">Mensaje (Opcional)</label>
-        <textarea class="form-textarea" placeholder="Describe brevemente tu solicitud..." rows="3"></textarea>
+        <label class="form-label">Mensaje</label>
+        <textarea class="form-textarea" placeholder="Describe brevemente tu solicitud..." rows="4"
+          [(ngModel)]="requestForm.message" name="requestMessage"></textarea>
       </div>
-      <button class="submit-btn">Enviar Solicitud</button>
+
+      <button class="submit-btn" type="button" (click)="submitRequest()">
+        Enviar Solicitud
+      </button>
     </div>
   </div>
 </div>
-
-<!-- Tab Bar -->
-<ion-footer class="ion-no-border">
-  <div class="tab-bar">
-    <a class="tab-item" routerLink="/inicio">
-      <span class="material-icons-round">home</span>
-      <span class="tab-label">Inicio</span>
-    </a>
-    <a class="tab-item" routerLink="/catalogo">
-      <span class="material-icons-round">shopping_bag</span>
-      <span class="tab-label">Productos</span>
-    </a>
-    <a class="tab-item active">
-      <span class="material-icons-round">support_agent</span>
-      <span class="tab-label">Soporte</span>
-    </a>
-    <a class="tab-item" routerLink="/perfil-auditoria-staff">
-      <span class="material-icons-round">person</span>
-      <span class="tab-label">Perfil</span>
-    </a>
-  </div>
-</ion-footer>

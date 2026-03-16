@@ -1,107 +1,110 @@
 <ion-header class="ion-no-border login-header">
   <ion-toolbar>
-    <ion-buttons slot="start">
-      <button class="icon-btn" routerLink="/inicio">
-        <span class="material-symbols-outlined">arrow_back</span>
+    <div class="login-topbar">
+      <button class="icon-btn" routerLink="/inicio" type="button">
+        <span class="material-icons-round">arrow_back</span>
       </button>
-    </ion-buttons>
-    <ion-title class="header-title">Staff Portal</ion-title>
+      <p class="topbar-label">Acceso operativo</p>
+    </div>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-  <div class="login-container">
-    <!-- Logo/Header Area -->
-    <div class="logo-area">
-      <div class="logo-circle">
-        <span class="material-symbols-outlined logo-icon">agriculture</span>
+  <main class="login-shell">
+    <section class="login-hero">
+      <div class="hero-mark">
+        <img src="assets/Logos_dpt.png" alt="Logo Puente Tierra" class="hero-logo" />
       </div>
-      <h1 class="app-title">Concentrados <br /> Puente Tierra</h1>
-      <p class="app-subtitle">OPERACIONES INTERNAS</p>
-    </div>
 
-    <!-- Login Card (Login Normal) -->
-    <div class="login-card" *ngIf="!requiresNewPassword">
-      <h2 class="card-title">Bienvenido</h2>
-      <p class="card-subtitle">Ingresa tus credenciales de Amazon Cognito para continuar.</p>
+      <div class="hero-copy">
+        <p class="hero-kicker">Portal interno</p>
+        <h1 class="hero-title">Concentrados Puente Tierra</h1>
+        <p class="hero-subtitle">Ingreso para operaciones, pedidos, inventario y gestión administrativa.</p>
+      </div>
+    </section>
 
-      <form (submit)="$event.preventDefault(); onLogin()">
-        <!-- Username Input -->
+    <section class="login-card" *ngIf="!requiresNewPassword">
+      <div class="card-head">
+        <h2 class="card-title">Iniciar sesión</h2>
+        <p class="card-subtitle">Ingresa con tus credenciales de Amazon Cognito.</p>
+      </div>
+
+      <form (submit)="$event.preventDefault(); onLogin()" class="login-form">
         <div class="input-group">
-          <label class="input-label">Correo Electrónico</label>
+          <label class="input-label">Correo electrónico</label>
           <div class="input-wrapper">
-            <input type="email" placeholder="tu@email.com"
-              class="custom-input" [(ngModel)]="username" name="username" autocomplete="username" />
-            <span class="material-symbols-outlined input-icon">person</span>
+            <span class="material-icons-round input-icon">mail</span>
+            <input type="email" placeholder="tu@email.com" class="custom-input with-leading-icon" [(ngModel)]="username"
+              name="username" autocomplete="username" />
           </div>
         </div>
 
-        <!-- Password Input -->
         <div class="input-group">
           <label class="input-label">Contraseña</label>
           <div class="input-wrapper">
+            <span class="material-icons-round input-icon">lock</span>
             <input [type]="showPassword ? 'text' : 'password'" placeholder="••••••••"
-              class="custom-input" [(ngModel)]="password" name="password" autocomplete="current-password" />
-            <span class="material-symbols-outlined input-icon toggle-password"
-              (click)="togglePassword()" style="cursor: pointer;">
-              {{ showPassword ? 'visibility_off' : 'visibility' }}
-            </span>
+              class="custom-input with-leading-icon with-trailing-icon" [(ngModel)]="password" name="password"
+              autocomplete="current-password" />
+
+            <button class="toggle-btn" type="button" (click)="togglePassword()">
+              <span class="material-icons-round">
+                {{ showPassword ? 'visibility_off' : 'visibility' }}
+              </span>
+            </button>
           </div>
         </div>
 
-        <!-- Submit Button -->
         <button type="submit" class="submit-btn">
-          <span>Ingresar</span>
-          <span class="material-symbols-outlined btn-icon">login</span>
+          <span>Ingresar al portal</span>
+          <span class="material-icons-round btn-icon">login</span>
         </button>
       </form>
 
-      <div class="forgot-password">
-        <a href="#">¿Olvidó su contraseña?</a>
+      <div class="login-hint">
+        <span class="material-icons-round">verified_user</span>
+        Acceso exclusivo para personal autorizado.
       </div>
-    </div>
+    </section>
 
-    <!-- Cambio de Contraseña Obligatorio -->
-    <div class="login-card" *ngIf="requiresNewPassword">
-      <h2 class="card-title">🔐 Nueva Contraseña</h2>
-      <p class="card-subtitle">Amazon Cognito requiere que establezcas una nueva contraseña para tu cuenta.</p>
+    <section class="login-card" *ngIf="requiresNewPassword">
+      <div class="card-head">
+        <h2 class="card-title">Nueva contraseña</h2>
+        <p class="card-subtitle">
+          Amazon Cognito requiere que actualices tu contraseña antes de continuar.
+        </p>
+      </div>
 
-      <form (submit)="$event.preventDefault(); onSetNewPassword()">
-        <!-- New Password -->
+      <form (submit)="$event.preventDefault(); onSetNewPassword()" class="login-form">
         <div class="input-group">
-          <label class="input-label">Nueva Contraseña</label>
+          <label class="input-label">Nueva contraseña</label>
           <div class="input-wrapper">
+            <span class="material-icons-round input-icon">lock_reset</span>
             <input [type]="showNewPassword ? 'text' : 'password'" placeholder="Mínimo 8 caracteres"
-              class="custom-input" [(ngModel)]="newPassword" name="newPassword" />
-            <span class="material-symbols-outlined input-icon toggle-password"
-              (click)="toggleNewPassword()" style="cursor: pointer;">
-              {{ showNewPassword ? 'visibility_off' : 'visibility' }}
-            </span>
+              class="custom-input with-leading-icon with-trailing-icon" [(ngModel)]="newPassword" name="newPassword" />
+
+            <button class="toggle-btn" type="button" (click)="toggleNewPassword()">
+              <span class="material-icons-round">
+                {{ showNewPassword ? 'visibility_off' : 'visibility' }}
+              </span>
+            </button>
           </div>
         </div>
 
-        <!-- Confirm New Password -->
         <div class="input-group">
-          <label class="input-label">Confirmar Contraseña</label>
+          <label class="input-label">Confirmar contraseña</label>
           <div class="input-wrapper">
+            <span class="material-icons-round input-icon">task_alt</span>
             <input [type]="showNewPassword ? 'text' : 'password'" placeholder="Repite tu nueva contraseña"
-              class="custom-input" [(ngModel)]="confirmNewPassword" name="confirmNewPassword" />
-            <span class="material-symbols-outlined input-icon">lock</span>
+              class="custom-input with-leading-icon" [(ngModel)]="confirmNewPassword" name="confirmNewPassword" />
           </div>
         </div>
 
-        <!-- Submit Button -->
         <button type="submit" class="submit-btn">
-          <span>Establecer Contraseña</span>
-          <span class="material-symbols-outlined btn-icon">check_circle</span>
+          <span>Establecer contraseña</span>
+          <span class="material-icons-round btn-icon">check_circle</span>
         </button>
       </form>
-    </div>
-  </div>
-
-  <!-- Footer / Warehouse Visual Context -->
-  <div class="footer-bg">
-    <div class="footer-gradient"></div>
-    <div class="footer-image"></div>
-  </div>
+    </section>
+  </main>
 </ion-content>

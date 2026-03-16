@@ -64,6 +64,7 @@ export class AuthService {
     }
   }
 
+
   async isAuthenticated(): Promise<boolean> {
     const token = await this.getAuthToken();
     return Boolean(token);

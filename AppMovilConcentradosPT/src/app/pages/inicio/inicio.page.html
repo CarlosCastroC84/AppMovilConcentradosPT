@@ -1,31 +1,32 @@
 <ion-content class="inicio-content" [fullscreen]="true">
-  <!-- Header con Logo y Buscador -->
-  <div class="header-section">
-    <div class="header-inner">
-      <div class="top-bar-row">
-        <div class="spacer"></div>
-        <img src="assets/Logos_dpt.png" alt="Logo Concentrados Puente Tierra" class="header-logo" />
+  <div class="inicio-shell">
+    <section class="home-header">
+      <div class="home-topbar">
+        <div class="brand-stack">
+          <img src="assets/Logos_dpt.png" alt="Logo Concentrados Puente Tierra" class="header-logo" />
+
+          <h1 class="brand-title">Puente Tierra</h1>
+
+          <p class="brand-subtitle">
+            "Nutriendo tu granja, fortaleciendo tu futuro"
+          </p>
+        </div>
+
         <button class="admin-login-btn" routerLink="/login-operativo" title="Acceso Admin">
-          <span class="material-icons-outlined">admin_panel_settings</span>
+          <span class="material-icons-outlined">account_circle</span>
+          <span class="admin-text">Admin</span>
         </button>
       </div>
-      <h1 class="header-title">Tienda Virtual</h1>
-      <p class="header-slogan">"Nutriendo tu granja, fortaleciendo tu futuro"</p>
 
-      <!-- Buscador -->
       <div class="search-wrapper">
         <span class="material-icons-outlined search-icon">search</span>
-        <input
-          type="text"
-          placeholder="Buscar producto..."
-          class="search-input"
-          [(ngModel)]="searchTerm"
-          (ngModelChange)="onSearchTermChange($event)"
-          (focus)="onSearchFocus()"
-          (blur)="onSearchBlur()"
+
+        <input type="text" placeholder="Buscar producto..." class="search-input" [(ngModel)]="searchTerm"
+          (ngModelChange)="onSearchTermChange($event)" (focus)="onSearchFocus()" (blur)="onSearchBlur()"
           (keyup.enter)="buscarProductos()" />
+
         <button class="search-submit-btn" type="button" (click)="buscarProductos()">
-          <span class="material-icons-outlined">arrow_forward</span>
+          <span class="material-icons-outlined">expand_more</span>
         </button>
 
         <div class="search-results-panel" *ngIf="shouldShowSearchPanel">
@@ -33,22 +34,18 @@
             Buscando productos...
           </div>
 
-          <button
-            type="button"
-            class="search-result-item"
-            *ngFor="let product of searchResults"
+          <button type="button" class="search-result-item" *ngFor="let product of searchResults"
             (mousedown)="seleccionarProducto(product)">
-            <img
-              [src]="product.resolvedImageUrl"
-              [alt]="product.nombre"
-              class="search-result-image"
+            <img [src]="product.resolvedImageUrl" [alt]="product.nombre" class="search-result-image"
               (error)="onSuggestionImageError($event)" />
+
             <div class="search-result-copy">
               <span class="search-result-name">{{ product.nombre }}</span>
               <span class="search-result-meta">
                 {{ product.displayCategory }} · {{ product.displayBrand }} · {{ product.presentacion }}
               </span>
             </div>
+
             <span class="search-result-price">${{ product.precio | number }}</span>
           </button>
 
@@ -56,113 +53,94 @@
             No se encontraron productos con ese término.
           </div>
 
-          <button
-            type="button"
-            class="search-results-footer"
-            *ngIf="searchResults.length > 0"
+          <button type="button" class="search-results-footer" *ngIf="searchResults.length > 0"
             (mousedown)="verResultados()">
             Ver todos los resultados para "{{ searchTerm.trim() }}"
           </button>
         </div>
       </div>
-    </div>
-  </div>
+    </section>
 
-  <!-- Contenido principal -->
-  <div class="main-content">
-    <!-- Banner Promocional -->
-    <div class="promo-banner">
-      <div class="promo-blur-top"></div>
-      <div class="promo-blur-bottom"></div>
-      <div class="promo-content">
+    <section class="promo-banner">
+      <div class="promo-copy">
         <span class="promo-badge">Oferta Especial</span>
         <h2 class="promo-title">Descuentos para Mayoristas</h2>
         <p class="promo-desc">Precios especiales por bulto y cantidad.</p>
-        <button class="promo-btn" routerLink="/mayoristas">
-          Cotizar Ahora
-          <span class="material-icons-outlined promo-btn-icon">arrow_forward</span>
-        </button>
       </div>
-      <img
-        src="https://lh3.googleusercontent.com/aida-public/AB6AXuAmTppmJ6iaaJrfooN_INf8tVVyGzxAiVU_Tw2xx4XbPQsoFN-VsORAYXlcjYInQtJiuo-FOn5FC1l14CQd4VOIogpto6vw3J9hvLJf2S14yAxeublQIBVkGgGtAFOL6VgpNJfqu9I8y8RIuXFAnlQ4_THDYlP9YmAVfnOqrln_8v4h0W-GTpBHdUx7HBjfdoATElRgKeb0o5TOP_G3CNlCnl2ICka1but2x2O27BaxZ969WEquYhQk0OdYdxM094PW2QYhiK2VaB0"
-        alt="Granja" class="promo-img" />
-    </div>
 
-    <!-- Acciones Rápidas -->
-    <div class="quick-actions">
-      <button class="action-card" routerLink="/catalogo">
-        <div class="action-icon-wrap orange">
-          <span class="material-icons-outlined action-icon">menu_book</span>
-        </div>
-        <span class="action-label">Ver Catálogo</span>
+      <button class="promo-btn" routerLink="/mayoristas">
+        Cotizar Ahora
+        <span class="material-icons-outlined promo-btn-icon">arrow_forward</span>
       </button>
-      <button class="action-card">
-        <div class="action-icon-wrap green">
-          <span class="material-icons-outlined action-icon green-icon">shopping_cart</span>
-        </div>
-        <span class="action-label">Hacer Pedido</span>
-      </button>
-    </div>
+    </section>
 
-    <!-- Categorías -->
-    <div class="categories-section">
+
+    <section class="quick-actions">
+      <button class="quick-btn" routerLink="/catalogo">
+        <span>Ver Catálogo</span>
+        <span class="material-icons-outlined">menu_book</span>
+      </button>
+
+      <button class="quick-btn" type="button" (click)="irAHacerPedido()">
+        <span>Hacer Pedido</span>
+        <span class="material-icons-outlined">shopping_cart</span>
+      </button>
+    </section>
+
+    <section class="categories-section">
       <div class="section-header">
-        <h3 class="section-title">Categorías</h3>
+        <h2 class="section-title">Categorías</h2>
         <a routerLink="/catalogo" class="section-link">Ver todo</a>
       </div>
-      <div class="categories-scroll">
-        <div class="category-item">
-          <div class="category-img-wrap">
-            <img
-              src="https://lh3.googleusercontent.com/aida-public/AB6AXuBPDAkhq8aeYtslLDrTtFY2qCGmA7hQsSZ2WFPKvR_M0A4oKW0i4FJFsE4kSfV1a8CK1OG_C7ST8CRP2riLagwR7gZeXcH2l6jxYurpwank5Qb_gF2AjC9maoX447RViqwWnaajY36Kiewta_ewuL-5y52exrGVKQ3rCcyL6RvTL2p7JN9TEW8lB7jp_qKMnuJmjtUvOmcYqqK1lCnsSaRrAnlymBP7KNd-KvWIGNd7dyl6fkB8N2M9QsdNDwE2pYPaLG9lV8txXyA"
-              alt="Ganadería" class="category-img" />
-            <div class="category-overlay"></div>
-            <span class="category-label">Ganadería</span>
-          </div>
-        </div>
-        <div class="category-item">
-          <div class="category-img-wrap">
-            <img
-              src="https://lh3.googleusercontent.com/aida-public/AB6AXuCZ2Rf_FpyLzrbPki9LpQtrOAYHNSPyCJEpuTk6JuMLdj6EQvTd4DZn8l3G7bKavvR6TU0I_OGnzI8XvGM0J0fSDOU5AB5Pa6fjHIuShAHl9Mh2whaeibrxQAnIJT1yUnUrFZWLGcPTDijJCn07F1dx7zr-NE6zLAgJ7mS2rXCYYbipc3M50PGXkmnJE1-tFGTVvpWoLMjQ3XTYUMV71TMMNjMDNd6WaVoRjK9NocwO5JKLtloG2nZE7IXJJNl1dKATFwdEYTN5NJI"
-              alt="Avicultura" class="category-img" />
-            <div class="category-overlay"></div>
-            <span class="category-label">Avicultura</span>
-          </div>
-        </div>
-        <div class="category-item">
-          <div class="category-img-wrap">
-            <img
-              src="https://lh3.googleusercontent.com/aida-public/AB6AXuAUCRN3yydkx1ZU8YcnQI7Q8e6Jdt5g-FsT3hjyitI0lZSJccpxi1-a_KopIWjVrV6YvNefT_lb9fE4Uv4XExcPl8thhoDYeRrNP8RfkwiZDyISit0dP8YPFre7qXZWeAcmGbC6YRfLILm47roBAntKSWet2WiNPt1PvJO2bF7VfWpGFj6LVMVd6CdKBGgC607v-FAi1-sgj1q0Sfuze-dWeZoXDVXT1wobAmeemdQ7n2r9BrSlttzO9ZpUR-KWv1JxuZDYagC2AjU"
-              alt="Porcicultura" class="category-img" />
-            <div class="category-overlay"></div>
-            <span class="category-label">Porcicultura</span>
-          </div>
-        </div>
-        <div class="category-item">
-          <div class="category-img-wrap">
-            <img
-              src="https://lh3.googleusercontent.com/aida-public/AB6AXuBu6AT_950MGa05h2xxNPcG1lBZD3AM7eMWrqUggn8D07eU11wi4tSUMQRqfLuqufMcIpP5i1Ii5PngCbAcTvKQGuuGzHqKKXO3x688opWd8fs09yT11GAjRnKHNDSflYPU_Tf84T93OvPXyZ5L2XSxglZh3WWceF_UW7TrgAkcvNfGWC2jUB-RtrEbgfIAlAOR5mp2hpSuDzezAzVt1mcOinmEEJY6CKRUVXLjaQyg4Uts7hfJ_ONBAOkxjo-lTIlDgkmMR32Xno8"
-              alt="Equinos" class="category-img" />
-            <div class="category-overlay"></div>
-            <span class="category-label">Equinos</span>
-          </div>
+
+      <div class="categories-scroll-wrap">
+        <div class="categories-columns">
+          <ng-container *ngFor="let category of categories; let i = index; trackBy: trackByCategory">
+            <div class="category-column" *ngIf="i % 2 === 0">
+              <button type="button" class="category-item" (click)="verCategoria(category)">
+                <div class="category-img-wrap">
+                  <img [src]="category.resolvedImageUrl" [alt]="category.nombre" class="category-img"
+                    (error)="onCategoryImageError($event, category)" />
+                </div>
+                <span class="category-label">{{ category.nombre }}</span>
+              </button>
+
+
+              <button type="button" class="category-item" *ngIf="categories[i + 1]"
+                (click)="verCategoria(categories[i + 1])">
+                <div class="category-img-wrap">
+                  <img [src]="categories[i + 1].resolvedImageUrl" [alt]="categories[i + 1].nombre" class="category-img"
+                    (error)="onCategoryImageError($event, categories[i + 1])" />
+                </div>
+                <span class="category-label">{{ categories[i + 1].nombre }}</span>
+              </button>
+            </div>
+          </ng-container>
         </div>
       </div>
-    </div>
 
-    <!-- Sección de Ayuda -->
-    <div class="help-section" routerLink="/atencion-cliente">
-      <h3 class="help-title">¿Necesitas Ayuda?</h3>
+    </section>
+
+    <section class="help-section">
+      <div class="help-header">
+        <h3 class="help-title">¿Necesitas Ayuda?</h3>
+        <p class="help-subtitle">
+          Resolvemos tus dudas sobre productos, disponibilidad y pedidos por el canal más rápido.
+        </p>
+      </div>
+
       <div class="help-buttons">
-        <button class="help-btn whatsapp">
+        <button class="help-btn whatsapp" routerLink="/atencion-cliente">
           <span class="material-icons-outlined">chat</span>
           WhatsApp
         </button>
-        <button class="help-btn call">
+
+        <button class="help-btn call" routerLink="/atencion-cliente">
           <span class="material-icons-outlined">call</span>
           Llamar
         </button>
       </div>
-    </div>
+    </section>
+
   </div>
 </ion-content>
