@@ -1,7 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IonicModule, ToastController, LoadingController } from '@ionic/angular';
+import { IonicModule, ToastController } from '@ionic/angular';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { confirmSignIn } from 'aws-amplify/auth';
@@ -21,7 +21,6 @@ import { SessionProfileService } from '../../services/session-profile.service';
 export class LoginOperativoPage {
   private authService = inject(AuthService);
   private toastController = inject(ToastController);
-  private loadingController = inject(LoadingController);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   private sessionProfileService = inject(SessionProfileService);
@@ -46,37 +45,41 @@ export class LoginOperativoPage {
   }
 
   async onLogin() {
-    if (!this.username || !this.password) {
+    const username = this.username.trim().toLowerCase();
+    const password = this.password;
+
+    if (!username || !password) {
       this.mostrarMensaje('Por favor ingresa tu usuario y contraseña', 'warning');
       return;
     }
 
-    const loading = await this.loadingController.create({
-      message: 'Iniciando sesión...',
-      spinner: 'circles'
-    });
-    await loading.present();
-
     try {
-      // Limpiamos cualquier sesión anterior para evitar "There is already a signed in user"
-      await this.authService.logout();
-
-      const result = await this.authService.login(this.username, this.password);
-      await loading.dismiss();
+      const result = await this.loginConRecuperacion(username, password);
 
       if (result.success) {
         await this.loginExitoso();
       } else if (result.nextStep?.signInStep === 'CONFIRM_SIGN_IN_WITH_NEW_PASSWORD_REQUIRED') {
-        // Cognito exige cambiar la contraseña temporal
         this.requiresNewPassword = true;
         this.mostrarMensaje('Debes establecer una nueva contraseña para continuar.', 'warning');
       } else if (result.nextStep) {
         this.mostrarMensaje(`Paso adicional requerido: ${result.nextStep.signInStep}`, 'warning');
       }
     } catch (error: any) {
-      await loading.dismiss();
       console.error('Error de login:', error);
       this.mostrarMensajeError(error);
+    }
+  }
+
+  private async loginConRecuperacion(username: string, password: string): Promise<any> {
+    try {
+      return await this.authService.login(username, password);
+    } catch (error: any) {
+      if (error?.name === 'UserAlreadyAuthenticatedException') {
+        await this.authService.logout();
+        return await this.authService.login(username, password);
+      }
+
+      throw error;
     }
   }
 
@@ -96,16 +99,8 @@ export class LoginOperativoPage {
       return;
     }
 
-    const loading = await this.loadingController.create({
-      message: 'Estableciendo nueva contraseña...',
-      spinner: 'circles'
-    });
-    await loading.present();
-
     try {
-      // Usamos confirmSignIn de Amplify para completar el reto de nueva contraseña
       const result = await confirmSignIn({ challengeResponse: this.newPassword });
-      await loading.dismiss();
 
       if (result.isSignedIn) {
         this.requiresNewPassword = false;
@@ -115,7 +110,6 @@ export class LoginOperativoPage {
         this.requiresNewPassword = false;
       }
     } catch (error: any) {
-      await loading.dismiss();
       console.error('Error cambiando contraseña:', error);
       this.mostrarMensajeError(error);
     }
@@ -125,10 +119,13 @@ export class LoginOperativoPage {
     const userInfo = await this.authService.getCurrentUser();
 
     try {
-      await firstValueFrom(this.sessionProfileService.loadProfile());
-    } catch (error) {
+      await this.cargarPerfilConReintento();
+    } catch (error: any) {
       console.error('No fue posible cargar el perfil de sesión:', error);
-      this.mostrarMensaje('No fue posible cargar permisos del usuario.', 'danger');
+      this.mostrarMensaje(
+        error?.message || 'El usuario inició sesión, pero no fue posible cargar su perfil.',
+        'danger'
+      );
       return;
     }
 
@@ -136,8 +133,24 @@ export class LoginOperativoPage {
 
     const redirectTo = this.route.snapshot.queryParamMap.get('redirectTo');
     const fallbackRoute = this.sessionProfileService.getDefaultRoute();
+    await this.router.navigateByUrl(redirectTo || fallbackRoute);
+  }
 
-    this.router.navigateByUrl(redirectTo || fallbackRoute);
+  private async cargarPerfilConReintento(): Promise<void> {
+    let lastError: unknown;
+
+    for (let intento = 0; intento < 3; intento++) {
+      try {
+        await this.authService.getAuthToken();
+        await firstValueFrom(this.sessionProfileService.loadProfile());
+        return;
+      } catch (error) {
+        lastError = error;
+        await new Promise(resolve => setTimeout(resolve, 700));
+      }
+    }
+
+    throw lastError;
   }
 
 

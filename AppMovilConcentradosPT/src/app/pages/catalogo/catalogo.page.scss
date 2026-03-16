@@ -25,6 +25,10 @@ ion-content {
   --background: var(--bg);
 }
 
+ion-content.catalog-content::part(scroll) {
+  overflow-x: hidden;
+}
+
 .catalog-topbar {
   display: flex;
   align-items: center;
@@ -135,6 +139,7 @@ ion-content {
   gap: 8px;
   overflow-x: auto;
   padding-bottom: 6px;
+  width: 100%;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
 
@@ -448,6 +453,17 @@ ion-content {
 }
 
 @media (max-width: 480px) {
+  .chip-scroll {
+    flex-wrap: wrap;
+    overflow-x: visible;
+    padding-bottom: 0;
+  }
+
+  .filter-chip {
+    flex-shrink: 1;
+    max-width: 100%;
+  }
+
   .catalog-title {
     font-size: 18px;
   }

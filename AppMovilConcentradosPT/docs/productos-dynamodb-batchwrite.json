@@ -1,0 +1,591 @@
+{
+  "RequestItems": {
+    "Productos": [
+      {
+        "PutRequest": {
+          "Item": {
+            "id": {
+              "S": "superternera-40kg"
+            },
+            "nombre": {
+              "S": "Superternera"
+            },
+            "categoria": {
+              "S": "Ganaderia"
+            },
+            "marca": {
+              "S": "Puente Tierra"
+            },
+            "presentacion": {
+              "S": "Bulto 40 kg"
+            },
+            "precio": {
+              "N": "0"
+            },
+            "estado": {
+              "S": "ACTIVO"
+            },
+            "stock": {
+              "N": "0"
+            },
+            "imagenKey": {
+              "S": "productos/ganaderia/superternera-40kg.jpg"
+            },
+            "imagenUrl": {
+              "S": "https://concentrados-app-imagenes-517329182634-us-east-2-an.s3.us-east-2.amazonaws.com/productos/ganaderia/superternera-40kg.jpg"
+            },
+            "descripcion": {
+              "S": "Actualizar precio, stock y descripcion real antes de cargar."
+            },
+            "createdAt": {
+              "S": "2026-03-16T00:00:00.000Z"
+            },
+            "updatedAt": {
+              "S": "2026-03-16T00:00:00.000Z"
+            }
+          }
+        }
+      },
+      {
+        "PutRequest": {
+          "Item": {
+            "id": {
+              "S": "cremosa-lactancia-40kg"
+            },
+            "nombre": {
+              "S": "Cremosa Lactancia"
+            },
+            "categoria": {
+              "S": "Ganaderia"
+            },
+            "marca": {
+              "S": "Puente Tierra"
+            },
+            "presentacion": {
+              "S": "Bulto 40 kg"
+            },
+            "precio": {
+              "N": "0"
+            },
+            "estado": {
+              "S": "ACTIVO"
+            },
+            "stock": {
+              "N": "0"
+            },
+            "imagenKey": {
+              "S": "productos/ganaderia/cremosa-lactancia-40kg.jpg"
+            },
+            "imagenUrl": {
+              "S": "https://concentrados-app-imagenes-517329182634-us-east-2-an.s3.us-east-2.amazonaws.com/productos/ganaderia/cremosa-lactancia-40kg.jpg"
+            },
+            "descripcion": {
+              "S": "Actualizar precio, stock y descripcion real antes de cargar."
+            },
+            "createdAt": {
+              "S": "2026-03-16T00:00:00.000Z"
+            },
+            "updatedAt": {
+              "S": "2026-03-16T00:00:00.000Z"
+            }
+          }
+        }
+      },
+      {
+        "PutRequest": {
+          "Item": {
+            "id": {
+              "S": "f-pollito-preiniciador-20kg"
+            },
+            "nombre": {
+              "S": "F. Pollito Preiniciador"
+            },
+            "categoria": {
+              "S": "Pollo Engorde"
+            },
+            "marca": {
+              "S": "Finca"
+            },
+            "presentacion": {
+              "S": "Bulto 20 kg"
+            },
+            "precio": {
+              "N": "0"
+            },
+            "estado": {
+              "S": "ACTIVO"
+            },
+            "stock": {
+              "N": "0"
+            },
+            "imagenKey": {
+              "S": "productos/pollo-engorde/f-pollito-preiniciador-20kg.jpg"
+            },
+            "imagenUrl": {
+              "S": "https://concentrados-app-imagenes-517329182634-us-east-2-an.s3.us-east-2.amazonaws.com/productos/pollo-engorde/f-pollito-preiniciador-20kg.jpg"
+            },
+            "descripcion": {
+              "S": "Actualizar precio, stock y descripcion real antes de cargar."
+            },
+            "createdAt": {
+              "S": "2026-03-16T00:00:00.000Z"
+            },
+            "updatedAt": {
+              "S": "2026-03-16T00:00:00.000Z"
+            }
+          }
+        }
+      },
+      {
+        "PutRequest": {
+          "Item": {
+            "id": {
+              "S": "pollo-engorde-40kg"
+            },
+            "nombre": {
+              "S": "Pollo Engorde"
+            },
+            "categoria": {
+              "S": "Pollo Engorde"
+            },
+            "marca": {
+              "S": "Puente Tierra"
+            },
+            "presentacion": {
+              "S": "Bulto 40 kg"
+            },
+            "precio": {
+              "N": "0"
+            },
+            "estado": {
+              "S": "ACTIVO"
+            },
+            "stock": {
+              "N": "0"
+            },
+            "imagenKey": {
+              "S": "productos/pollo-engorde/pollo-engorde-40kg.jpg"
+            },
+            "imagenUrl": {
+              "S": "https://concentrados-app-imagenes-517329182634-us-east-2-an.s3.us-east-2.amazonaws.com/productos/pollo-engorde/pollo-engorde-40kg.jpg"
+            },
+            "descripcion": {
+              "S": "Actualizar precio, stock y descripcion real antes de cargar."
+            },
+            "createdAt": {
+              "S": "2026-03-16T00:00:00.000Z"
+            },
+            "updatedAt": {
+              "S": "2026-03-16T00:00:00.000Z"
+            }
+          }
+        }
+      },
+      {
+        "PutRequest": {
+          "Item": {
+            "id": {
+              "S": "pollita-postura-40kg"
+            },
+            "nombre": {
+              "S": "Pollita Postura"
+            },
+            "categoria": {
+              "S": "Posturas"
+            },
+            "marca": {
+              "S": "Puente Tierra"
+            },
+            "presentacion": {
+              "S": "Bulto 40 kg"
+            },
+            "precio": {
+              "N": "0"
+            },
+            "estado": {
+              "S": "ACTIVO"
+            },
+            "stock": {
+              "N": "0"
+            },
+            "imagenKey": {
+              "S": "productos/posturas/pollita-postura-40kg.jpg"
+            },
+            "imagenUrl": {
+              "S": "https://concentrados-app-imagenes-517329182634-us-east-2-an.s3.us-east-2.amazonaws.com/productos/posturas/pollita-postura-40kg.jpg"
+            },
+            "descripcion": {
+              "S": "Actualizar precio, stock y descripcion real antes de cargar."
+            },
+            "createdAt": {
+              "S": "2026-03-16T00:00:00.000Z"
+            },
+            "updatedAt": {
+              "S": "2026-03-16T00:00:00.000Z"
+            }
+          }
+        }
+      },
+      {
+        "PutRequest": {
+          "Item": {
+            "id": {
+              "S": "f-cerdito-ag1-40kg"
+            },
+            "nombre": {
+              "S": "F. Cerdito AG1"
+            },
+            "categoria": {
+              "S": "Porcicultura"
+            },
+            "marca": {
+              "S": "Finca"
+            },
+            "presentacion": {
+              "S": "Bulto 40 kg"
+            },
+            "precio": {
+              "N": "0"
+            },
+            "estado": {
+              "S": "ACTIVO"
+            },
+            "stock": {
+              "N": "0"
+            },
+            "imagenKey": {
+              "S": "productos/porcicultura/f-cerdito-ag1-40kg.jpg"
+            },
+            "imagenUrl": {
+              "S": "https://concentrados-app-imagenes-517329182634-us-east-2-an.s3.us-east-2.amazonaws.com/productos/porcicultura/f-cerdito-ag1-40kg.jpg"
+            },
+            "descripcion": {
+              "S": "Actualizar precio, stock y descripcion real antes de cargar."
+            },
+            "createdAt": {
+              "S": "2026-03-16T00:00:00.000Z"
+            },
+            "updatedAt": {
+              "S": "2026-03-16T00:00:00.000Z"
+            }
+          }
+        }
+      },
+      {
+        "PutRequest": {
+          "Item": {
+            "id": {
+              "S": "f-cerda-ag2-40kg"
+            },
+            "nombre": {
+              "S": "F. Cerda AG2"
+            },
+            "categoria": {
+              "S": "Porcicultura"
+            },
+            "marca": {
+              "S": "Finca"
+            },
+            "presentacion": {
+              "S": "Bulto 40 kg"
+            },
+            "precio": {
+              "N": "0"
+            },
+            "estado": {
+              "S": "ACTIVO"
+            },
+            "stock": {
+              "N": "0"
+            },
+            "imagenKey": {
+              "S": "productos/porcicultura/f-cerda-ag2-40kg.jpg"
+            },
+            "imagenUrl": {
+              "S": "https://concentrados-app-imagenes-517329182634-us-east-2-an.s3.us-east-2.amazonaws.com/productos/porcicultura/f-cerda-ag2-40kg.jpg"
+            },
+            "descripcion": {
+              "S": "Actualizar precio, stock y descripcion real antes de cargar."
+            },
+            "createdAt": {
+              "S": "2026-03-16T00:00:00.000Z"
+            },
+            "updatedAt": {
+              "S": "2026-03-16T00:00:00.000Z"
+            }
+          }
+        }
+      },
+      {
+        "PutRequest": {
+          "Item": {
+            "id": {
+              "S": "furia-total-30kg"
+            },
+            "nombre": {
+              "S": "Furia Total"
+            },
+            "categoria": {
+              "S": "Equinos"
+            },
+            "marca": {
+              "S": "Puente Tierra"
+            },
+            "presentacion": {
+              "S": "Bulto 30 kg"
+            },
+            "precio": {
+              "N": "0"
+            },
+            "estado": {
+              "S": "ACTIVO"
+            },
+            "stock": {
+              "N": "0"
+            },
+            "imagenKey": {
+              "S": "productos/equinos/furia-total-30kg.jpg"
+            },
+            "imagenUrl": {
+              "S": "https://concentrados-app-imagenes-517329182634-us-east-2-an.s3.us-east-2.amazonaws.com/productos/equinos/furia-total-30kg.jpg"
+            },
+            "descripcion": {
+              "S": "Actualizar precio, stock y descripcion real antes de cargar."
+            },
+            "createdAt": {
+              "S": "2026-03-16T00:00:00.000Z"
+            },
+            "updatedAt": {
+              "S": "2026-03-16T00:00:00.000Z"
+            }
+          }
+        }
+      },
+      {
+        "PutRequest": {
+          "Item": {
+            "id": {
+              "S": "mojarra-crecimiento-40kg"
+            },
+            "nombre": {
+              "S": "Mojarra Crecimiento"
+            },
+            "categoria": {
+              "S": "Acuicultura"
+            },
+            "marca": {
+              "S": "Puente Tierra"
+            },
+            "presentacion": {
+              "S": "Bulto 40 kg"
+            },
+            "precio": {
+              "N": "0"
+            },
+            "estado": {
+              "S": "ACTIVO"
+            },
+            "stock": {
+              "N": "0"
+            },
+            "imagenKey": {
+              "S": "productos/acuicultura/mojarra-crecimiento-40kg.jpg"
+            },
+            "imagenUrl": {
+              "S": "https://concentrados-app-imagenes-517329182634-us-east-2-an.s3.us-east-2.amazonaws.com/productos/acuicultura/mojarra-crecimiento-40kg.jpg"
+            },
+            "descripcion": {
+              "S": "Actualizar precio, stock y descripcion real antes de cargar."
+            },
+            "createdAt": {
+              "S": "2026-03-16T00:00:00.000Z"
+            },
+            "updatedAt": {
+              "S": "2026-03-16T00:00:00.000Z"
+            }
+          }
+        }
+      },
+      {
+        "PutRequest": {
+          "Item": {
+            "id": {
+              "S": "italovinos-engorde-40kg"
+            },
+            "nombre": {
+              "S": "Italovinos Engorde"
+            },
+            "categoria": {
+              "S": "Ovinos"
+            },
+            "marca": {
+              "S": "Italcol"
+            },
+            "presentacion": {
+              "S": "Bulto 40 kg"
+            },
+            "precio": {
+              "N": "0"
+            },
+            "estado": {
+              "S": "ACTIVO"
+            },
+            "stock": {
+              "N": "0"
+            },
+            "imagenKey": {
+              "S": "productos/ovinos/italovinos-engorde-40kg.jpg"
+            },
+            "imagenUrl": {
+              "S": "https://concentrados-app-imagenes-517329182634-us-east-2-an.s3.us-east-2.amazonaws.com/productos/ovinos/italovinos-engorde-40kg.jpg"
+            },
+            "descripcion": {
+              "S": "Actualizar precio, stock y descripcion real antes de cargar."
+            },
+            "createdAt": {
+              "S": "2026-03-16T00:00:00.000Z"
+            },
+            "updatedAt": {
+              "S": "2026-03-16T00:00:00.000Z"
+            }
+          }
+        }
+      },
+      {
+        "PutRequest": {
+          "Item": {
+            "id": {
+              "S": "chunky-adultos-8kg"
+            },
+            "nombre": {
+              "S": "Chunky Adultos"
+            },
+            "categoria": {
+              "S": "Mascotas Italcol"
+            },
+            "marca": {
+              "S": "Italcol"
+            },
+            "presentacion": {
+              "S": "Bulto 8 kg"
+            },
+            "precio": {
+              "N": "0"
+            },
+            "estado": {
+              "S": "ACTIVO"
+            },
+            "stock": {
+              "N": "0"
+            },
+            "imagenKey": {
+              "S": "productos/mascotas-italcol/chunky-adultos-8kg.jpg"
+            },
+            "imagenUrl": {
+              "S": "https://concentrados-app-imagenes-517329182634-us-east-2-an.s3.us-east-2.amazonaws.com/productos/mascotas-italcol/chunky-adultos-8kg.jpg"
+            },
+            "descripcion": {
+              "S": "Actualizar precio, stock y descripcion real antes de cargar."
+            },
+            "createdAt": {
+              "S": "2026-03-16T00:00:00.000Z"
+            },
+            "updatedAt": {
+              "S": "2026-03-16T00:00:00.000Z"
+            }
+          }
+        }
+      },
+      {
+        "PutRequest": {
+          "Item": {
+            "id": {
+              "S": "italsal-tropico-40kg"
+            },
+            "nombre": {
+              "S": "Italsal Tropico"
+            },
+            "categoria": {
+              "S": "Sales"
+            },
+            "marca": {
+              "S": "Atalsal"
+            },
+            "presentacion": {
+              "S": "Bulto 40 kg"
+            },
+            "precio": {
+              "N": "0"
+            },
+            "estado": {
+              "S": "ACTIVO"
+            },
+            "stock": {
+              "N": "0"
+            },
+            "imagenKey": {
+              "S": "productos/sales/italsal-tropico-40kg.jpg"
+            },
+            "imagenUrl": {
+              "S": "https://concentrados-app-imagenes-517329182634-us-east-2-an.s3.us-east-2.amazonaws.com/productos/sales/italsal-tropico-40kg.jpg"
+            },
+            "descripcion": {
+              "S": "Actualizar precio, stock y descripcion real antes de cargar."
+            },
+            "createdAt": {
+              "S": "2026-03-16T00:00:00.000Z"
+            },
+            "updatedAt": {
+              "S": "2026-03-16T00:00:00.000Z"
+            }
+          }
+        }
+      },
+      {
+        "PutRequest": {
+          "Item": {
+            "id": {
+              "S": "maiz-amarillo-40kg"
+            },
+            "nombre": {
+              "S": "Maiz Amarillo"
+            },
+            "categoria": {
+              "S": "Maiz y Materias Primas"
+            },
+            "marca": {
+              "S": "Puente Tierra"
+            },
+            "presentacion": {
+              "S": "Bulto 40 kg"
+            },
+            "precio": {
+              "N": "0"
+            },
+            "estado": {
+              "S": "ACTIVO"
+            },
+            "stock": {
+              "N": "0"
+            },
+            "imagenKey": {
+              "S": "productos/maiz-y-materias-primas/maiz-amarillo-40kg.jpg"
+            },
+            "imagenUrl": {
+              "S": "https://concentrados-app-imagenes-517329182634-us-east-2-an.s3.us-east-2.amazonaws.com/productos/maiz-y-materias-primas/maiz-amarillo-40kg.jpg"
+            },
+            "descripcion": {
+              "S": "Actualizar precio, stock y descripcion real antes de cargar."
+            },
+            "createdAt": {
+              "S": "2026-03-16T00:00:00.000Z"
+            },
+            "updatedAt": {
+              "S": "2026-03-16T00:00:00.000Z"
+            }
+          }
+        }
+      }
+    ]
+  }
+}

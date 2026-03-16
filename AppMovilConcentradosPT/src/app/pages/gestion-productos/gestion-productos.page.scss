@@ -25,6 +25,10 @@ ion-content {
   --background: var(--bg);
 }
 
+ion-content::part(scroll) {
+  overflow-x: hidden;
+}
+
 .products-topbar {
   display: flex;
   align-items: center;
@@ -334,6 +338,7 @@ ion-content {
   gap: 8px;
   overflow-x: auto;
   padding-bottom: 4px;
+  width: 100%;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
 
@@ -617,6 +622,11 @@ ion-content {
 }
 
 @media (max-width: 640px) {
+  .topbar-left {
+    min-width: 0;
+    flex: 1;
+  }
+
   .form-grid {
     grid-template-columns: 1fr;
   }
@@ -625,8 +635,36 @@ ion-content {
     grid-column: auto;
   }
 
+  .hero-actions {
+    grid-template-columns: 1fr;
+  }
+
   .field-actions {
     flex-direction: column-reverse;
+  }
+
+  .section-head.compact {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .results-pill {
+    align-self: flex-start;
+  }
+
+  .filter-chips {
+    flex-wrap: wrap;
+    overflow-x: visible;
+    padding-bottom: 0;
+  }
+
+  .chip {
+    flex-shrink: 1;
+    max-width: 100%;
+  }
+
+  .product-actions {
+    justify-content: flex-start;
   }
 }
 
@@ -641,7 +679,6 @@ ion-content {
   }
 
   .hero-actions {
-    grid-template-columns: 1fr;
     gap: 10px;
   }
 

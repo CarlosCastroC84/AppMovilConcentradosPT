@@ -142,7 +142,8 @@ export class CatalogoPage implements OnInit {
       name: producto.nombre,
       emoji: '📦',
       presentation: producto.presentacion,
-      price: producto.precio
+      price: producto.precio,
+      imageUrl: producto.resolvedImageUrl
     }, quantity);
 
     const toast = await this.toastController.create({

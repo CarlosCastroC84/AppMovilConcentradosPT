@@ -154,23 +154,9 @@
       </div>
 
       <div class="filter-chips">
-        <button class="chip" [class.active]="activeFilter === 'todos'" (click)="setFilter('todos')" type="button">
-          Todos
-        </button>
-        <button class="chip" [class.active]="activeFilter === 'ganaderia'" (click)="setFilter('ganaderia')"
-          type="button">
-          Ganadería
-        </button>
-        <button class="chip" [class.active]="activeFilter === 'pollo'" (click)="setFilter('pollo')" type="button">
-          Pollo Engorde
-        </button>
-        <button class="chip" [class.active]="activeFilter === 'porcicultura'" (click)="setFilter('porcicultura')"
-          type="button">
-          Porcicultura
-        </button>
-        <button class="chip" [class.active]="activeFilter === 'acuicultura'" (click)="setFilter('acuicultura')"
-          type="button">
-          Acuicultura
+        <button class="chip" *ngFor="let filter of categoryFilters" [class.active]="activeFilter === filter.value"
+          (click)="setFilter(filter.value)" type="button">
+          {{ filter.label }}
         </button>
       </div>
     </section>

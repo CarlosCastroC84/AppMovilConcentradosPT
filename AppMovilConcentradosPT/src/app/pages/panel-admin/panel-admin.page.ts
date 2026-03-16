@@ -1,7 +1,7 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, NgZone, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IonicModule, ToastController, AlertController } from '@ionic/angular';
+import { IonicModule, AlertController, NavController } from '@ionic/angular';
 import { RouterModule, Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { OrderService } from '../../services/order.service';
@@ -22,10 +22,11 @@ export class PanelAdminPage implements OnInit {
   private authService = inject(AuthService);
   private orderService = inject(OrderService);
   private productService = inject(ProductService);
-  private toastController = inject(ToastController);
   private alertController = inject(AlertController);
   private router = inject(Router);
   private sessionProfileService = inject(SessionProfileService);
+  private zone = inject(NgZone);
+  private navController = inject(NavController);
 
 
   currentRole: string = 'ADMIN';
@@ -172,22 +173,30 @@ export class PanelAdminPage implements OnInit {
         },
         {
           text: 'Sí, cerrar',
-          role: 'destructive',
-          handler: async () => {
-            await this.authService.logout();
-            this.sessionProfileService.clearProfile();
-            const toast = await this.toastController.create({
-              message: 'Sesión cerrada exitosamente',
-              duration: 2000,
-              color: 'medium',
-              position: 'top'
-            });
-            await toast.present();
-            this.router.navigate(['/inicio']);
-          }
+          role: 'destructive'
         }
       ]
     });
     await alert.present();
+
+    const { role } = await alert.onDidDismiss();
+    if (role === 'destructive') {
+      await this.confirmarCerrarSesion();
+    }
+  }
+
+  private async confirmarCerrarSesion(): Promise<void> {
+    await this.authService.logout();
+
+    await this.zone.run(async () => {
+      this.sessionProfileService.clearProfile();
+      await this.router.navigateByUrl('/inicio', {
+        replaceUrl: true
+      });
+      await new Promise(resolve => setTimeout(resolve, 120));
+      await this.navController.navigateRoot('/login-operativo', {
+        animated: false
+      });
+    });
   }
 }

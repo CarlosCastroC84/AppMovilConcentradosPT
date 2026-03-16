@@ -27,6 +27,8 @@ ion-content {
 
 ion-footer {
   --background: transparent;
+  position: relative;
+  z-index: 20;
 }
 
 .header-row {
@@ -204,7 +206,7 @@ ion-footer {
   padding: 12px;
 }
 
-.item-emoji {
+.item-media {
   width: 68px;
   height: 68px;
   border-radius: 16px;
@@ -213,10 +215,16 @@ ion-footer {
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  overflow: hidden;
+  border: 1px solid #f6dcc9;
+}
 
-  span {
-    font-size: 34px;
-  }
+.item-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  padding: 8px;
+  display: block;
 }
 
 .item-details {
@@ -399,7 +407,9 @@ ion-footer {
   padding: 14px;
   padding-bottom: calc(14px + env(safe-area-inset-bottom));
   box-shadow: 0 -8px 18px rgba(17, 24, 39, 0.06);
+  pointer-events: auto;
 }
+
 
 .subtotal-row {
   display: flex;
@@ -505,6 +515,7 @@ ion-footer {
   .item-emoji span {
     font-size: 30px;
   }
+
 
   .item-name {
     font-size: 14px;

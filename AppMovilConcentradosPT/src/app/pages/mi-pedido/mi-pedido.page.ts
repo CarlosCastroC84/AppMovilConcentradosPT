@@ -1,13 +1,16 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IonicModule, ToastController, LoadingController } from '@ionic/angular';
+import { IonicModule, ToastController } from '@ionic/angular';
 import { Router, RouterModule } from '@angular/router';
 import { CartService } from '../../services/cart.service';
 import { OrderService } from '../../services/order.service';
 import { AuthService } from '../../services/auth.service';
 import { StorageService } from '../../services/storage.service';
 import { Order } from '../../models/order.model';
+import { ProductService } from '../../services/product.service';
+import { enrichCatalogProduct } from '../../utils/catalog-product.util';
+
 
 interface CheckoutDraft {
   customerName: string;
@@ -31,8 +34,12 @@ export class MiPedidoPage implements OnInit {
   private authService = inject(AuthService);
   private storageService = inject(StorageService);
   private toastController = inject(ToastController);
-  private loadingController = inject(LoadingController);
   private router = inject(Router);
+  readonly fallbackImage = 'assets/Logos_dpt.png';
+  private productService = inject(ProductService);
+  productImages: Record<string, string> = {};
+
+
 
 
 
@@ -44,11 +51,49 @@ export class MiPedidoPage implements OnInit {
 
   async ngOnInit(): Promise<void> {
     await this.loadDraft();
+    this.loadProductImages();
   }
+
 
   formatPrice(value: number): string {
     return '$' + value.toLocaleString('es-CO');
   }
+
+  getCartItemImage(item: { id: string; imageUrl?: string }): string {
+    const storedImage = item.imageUrl?.trim();
+
+    if (storedImage && storedImage !== this.fallbackImage) {
+      return storedImage;
+    }
+
+    return this.productImages[item.id] || this.fallbackImage;
+  }
+
+  private loadProductImages(): void {
+    this.productService.getProducts().subscribe({
+      next: products => {
+        this.productImages = products.reduce((acc, product) => {
+          acc[product.id] = enrichCatalogProduct(product).resolvedImageUrl;
+          return acc;
+        }, {} as Record<string, string>);
+      },
+      error: err => {
+        console.error('No fue posible cargar las imágenes del carrito.', err);
+      }
+    });
+  }
+
+
+
+  onCartImageError(event: Event): void {
+    const image = event.target as HTMLImageElement | null;
+    if (!image || image.src.includes(this.fallbackImage)) {
+      return;
+    }
+
+    image.src = this.fallbackImage;
+  }
+
 
   persistDraft(): void {
     const draft: CheckoutDraft = {
@@ -74,28 +119,21 @@ export class MiPedidoPage implements OnInit {
     const observations = this.observations.trim();
 
     if (this.cart.cartItems.length === 0) {
-      this.mostrarMensaje('Tu carrito está vacío. Agrega productos antes de enviar el pedido.', 'warning');
+      await this.mostrarMensaje('Tu carrito está vacío. Agrega productos antes de enviar el pedido.', 'warning');
       return;
     }
 
     if (!customerName || !customerPhone) {
-      this.mostrarMensaje('Por favor ingresa tu Nombre y Celular.', 'warning');
+      await this.mostrarMensaje('Por favor ingresa tu Nombre y Celular.', 'warning');
       return;
     }
+
     if (!this.isValidPhone(customerPhone)) {
-      this.mostrarMensaje('Ingresa un celular válido con al menos 10 dígitos.', 'warning');
+      await this.mostrarMensaje('Ingresa un celular válido con al menos 10 dígitos.', 'warning');
       return;
     }
-
-
-    const loading = await this.loadingController.create({
-      message: 'Enviando pedido a Distribuidora de Concentrados Puente Tierra...',
-      spinner: 'circles'
-    });
 
     try {
-      await loading.present();
-
       const currentUser = await this.authService.getCurrentUser();
 
       const newOrder: Partial<Order> = {
@@ -114,8 +152,6 @@ export class MiPedidoPage implements OnInit {
 
       this.orderService.createOrder(newOrder).subscribe({
         next: async () => {
-          await loading.dismiss();
-
           const pedidoId = newOrder.id || `ORD-${Date.now()}`;
           const total = this.cart.subtotal;
 
@@ -136,23 +172,28 @@ export class MiPedidoPage implements OnInit {
               total
             }
           });
-
         },
-        error: async (err: Error) => {
-          await loading.dismiss();
-          console.error('Error enviando pedido:', err);
+        error: async (err: any) => {
+          const status = err?.status;
+          const message =
+            err?.error?.message ||
+            err?.message ||
+            'Hubo un error al guardar tu pedido.';
+
           await this.mostrarMensaje(
-            err.message || 'Hubo un error al guardar tu pedido. Intenta nuevamente.',
+            status ? `Error (${status}): ${message}` : `Error: ${message}`,
             'danger'
           );
         }
       });
-    } catch (error) {
-      await loading.dismiss();
-      console.error('Error preparando el pedido:', error);
-      await this.mostrarMensaje('No fue posible preparar el pedido. Intenta nuevamente.', 'danger');
+    } catch (error: any) {
+      await this.mostrarMensaje(
+        error?.message || 'No fue posible preparar el pedido. Intenta nuevamente.',
+        'danger'
+      );
     }
   }
+
 
 
   private async loadDraft(): Promise<void> {

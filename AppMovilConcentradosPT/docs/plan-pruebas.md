@@ -4,7 +4,7 @@
 
 Este documento organiza la ejecucion de pruebas funcionales y tecnicas del proyecto `Concentrados PT` para soportar la entrega academica. Su objetivo es dejar evidencia verificable de autenticacion, consumo de API, carrito de compras, almacenamiento local, gestion administrativa y empaquetado Android.
 
-Fecha base de esta version: `14 de marzo de 2026`.
+Fecha base de esta version: `16 de marzo de 2026`.
 
 ## 2. Alcance
 
@@ -24,9 +24,9 @@ Se cubren los siguientes bloques:
 
 | Ambiente | Uso esperado | Responsable | Estado |
 | --- | --- | --- | --- |
-| Navegador en Windows | Validacion funcional rapida | Equipo | Pendiente |
+| Navegador en Windows | Validacion funcional rapida | Equipo | Parcial |
 | Emulador Android | Validacion hibrida base | Equipo | Pendiente |
-| Dispositivo Android fisico | Evidencia para entrega | Equipo | Pendiente |
+| Dispositivo Android fisico | Evidencia para entrega | Equipo | Hecho |
 | iOS con Xcode | No disponible en el entorno actual | No aplica | Bloqueado |
 
 ## 4. Precondiciones generales
@@ -53,9 +53,9 @@ Cada prueba debe registrar:
 
 | ID | Modulo | Escenario | Pasos resumidos | Resultado esperado | Ambiente | Evidencia sugerida | Estado |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| AUTH-01 | Autenticacion | Inicio de sesion exitoso | Abrir login, ingresar usuario y contrasena validos, enviar formulario | La app inicia sesion y redirige al panel administrativo o a la ruta solicitada | Navegador / Android | Captura del formulario y del panel ya cargado | Pendiente |
-| AUTH-02 | Autenticacion | Inicio de sesion fallido | Abrir login, ingresar credenciales invalidas y enviar formulario | La app muestra mensaje de error y no permite acceso | Navegador / Android | Captura del mensaje de error | Pendiente |
-| AUTH-03 | Seguridad | Auth guard en rutas privadas | Intentar abrir `/panel-admin` sin sesion activa | La app redirige a `/login-operativo` | Navegador / Android | Captura de la redireccion | Pendiente |
+| AUTH-01 | Autenticacion | Inicio de sesion exitoso | Abrir login, ingresar usuario y contrasena validos, enviar formulario | La app inicia sesion y redirige al panel administrativo o a la ruta solicitada | Navegador / Android | Captura del formulario y del panel ya cargado | Hecho |
+| AUTH-02 | Autenticacion | Inicio de sesion fallido | Abrir login, ingresar credenciales invalidas y enviar formulario | La app muestra mensaje de error y no permite acceso | Navegador / Android | Captura del mensaje de error | Hecho |
+| AUTH-03 | Seguridad | Auth guard en rutas privadas | Intentar abrir `/panel-admin` sin sesion activa | La app redirige a `/login-operativo` | Navegador / Android | Captura de la redireccion | Hecho |
 | PROD-01 | Catalogo | Consulta de productos | Abrir catalogo con API disponible | Los productos se cargan desde backend | Navegador / Android | Captura del catalogo cargado | Pendiente |
 | PROD-02 | Catalogo | Falla de API | Desactivar red o usar backend no disponible y abrir catalogo | La app informa error sin romperse | Navegador | Captura del error controlado | Pendiente |
 | CART-01 | Carrito | Agregar productos al carrito | Agregar 2 o mas productos desde catalogo | El contador y subtotal cambian correctamente | Navegador / Android | Captura del carrito con items | Pendiente |
@@ -63,7 +63,7 @@ Cada prueba debe registrar:
 | CART-03 | Carrito | Vaciar carrito | Agregar productos y usar accion de vaciar carrito | El carrito queda vacio y storage se limpia | Navegador / Android | Captura del estado vacio | Pendiente |
 | CHK-01 | Checkout | Persistencia del borrador | Escribir nombre, celular, ubicacion y observaciones, cerrar y reabrir la app | El formulario reaparece con los datos previos | Navegador / Android | Captura antes y despues del reinicio | Pendiente |
 | CHK-02 | Checkout | Validacion de campos obligatorios | Intentar enviar pedido sin nombre o celular | La app bloquea el envio y muestra advertencia | Navegador / Android | Captura del mensaje | Pendiente |
-| CHK-03 | Checkout | Creacion de pedido | Completar carrito y formulario, enviar pedido | El pedido se crea en backend y se confirma al usuario | Navegador / Android | Captura del mensaje de exito | Pendiente |
+| CHK-03 | Checkout | Creacion de pedido | Completar carrito y formulario, enviar pedido | El pedido se crea en backend y se confirma al usuario | Navegador / Android | Captura del mensaje de exito | Hecho |
 | CHK-04 | Checkout | Limpieza post-checkout | Tras un pedido exitoso, reabrir la app | Carrito y borrador quedan vacios | Navegador / Android | Captura del estado limpio | Pendiente |
 | ADM-PROD-01 | Gestion de productos | Crear producto | Entrar al panel, abrir formulario, registrar producto nuevo y guardar | El producto aparece en el listado | Navegador / Android | Captura del formulario y del listado actualizado | Pendiente |
 | ADM-PROD-02 | Gestion de productos | Editar producto | Seleccionar producto existente, modificar y guardar | Los cambios quedan reflejados en el listado | Navegador / Android | Captura antes y despues | Pendiente |

@@ -8,7 +8,7 @@ import { CatalogMasterItem } from '../../models/catalog-master-item.model';
 import { ProductService } from '../../services/product.service';
 import { AuthService } from '../../services/auth.service';
 import { CatalogMasterService } from '../../services/catalog-master.service';
-import { CatalogProductView, enrichCatalogProduct } from '../../utils/catalog-product.util';
+import { CatalogProductView, enrichCatalogProduct, sortCategoryOptions } from '../../utils/catalog-product.util';
 
 interface ProductFormModel {
   id: string;
@@ -30,6 +30,8 @@ interface ProductFormModel {
   imports: [IonicModule, CommonModule, FormsModule, RouterModule]
 })
 export class GestionProductosPage implements OnInit {
+  readonly allFilterValue = '__all__';
+  readonly allFilterLabel = 'Todos';
   readonly fallbackImage = 'assets/Logos_dpt.png';
 
   private productService = inject(ProductService);
@@ -38,7 +40,7 @@ export class GestionProductosPage implements OnInit {
   private toastController = inject(ToastController);
   private alertController = inject(AlertController);
 
-  activeFilter = 'todos';
+  activeFilter = this.allFilterValue;
   searchTerm = '';
   currentUserInitials = 'PT';
   loading = true;
@@ -81,6 +83,32 @@ export class GestionProductosPage implements OnInit {
       .sort((left, right) => left.nombre.localeCompare(right.nombre));
   }
 
+  get categoryFilters(): Array<{ label: string; value: string }> {
+    const categories = new Map<string, string>();
+
+    for (const category of [
+      ...this.categorias.map(item => item.nombre),
+      ...this.products.map(product => product.displayCategory)
+    ]) {
+      const label = category.trim();
+      const value = this.normalizeValue(label);
+
+      if (!value || categories.has(value)) {
+        continue;
+      }
+
+      categories.set(value, label);
+    }
+
+    return [
+      { label: this.allFilterLabel, value: this.allFilterValue },
+      ...sortCategoryOptions([...categories.values()]).map(label => ({
+        label,
+        value: this.normalizeValue(label)
+      }))
+    ];
+  }
+
   setFilter(filter: string) {
     this.activeFilter = filter;
   }
@@ -92,6 +120,7 @@ export class GestionProductosPage implements OnInit {
     this.productService.getProducts().subscribe({
       next: products => {
         this.products = products.map(product => enrichCatalogProduct(product));
+        this.syncActiveFilter();
         this.loading = false;
       },
       error: (error: Error) => {
@@ -110,6 +139,7 @@ export class GestionProductosPage implements OnInit {
         this.categorias = this.sortCatalogItems(categorias);
         this.marcas = this.sortCatalogItems(marcas);
         this.presentaciones = this.sortCatalogItems(presentaciones);
+        this.syncActiveFilter();
         this.catalogsLoading = false;
       },
       error: (error: Error) => {
@@ -354,24 +384,11 @@ export class GestionProductosPage implements OnInit {
   }
 
   private matchesFilter(product: Product): boolean {
-    if (this.activeFilter === 'todos') {
+    if (this.activeFilter === this.allFilterValue) {
       return true;
     }
 
-    const searchableCategory = `${product.categoria || product.nombre}`.toLowerCase();
-
-    switch (this.activeFilter) {
-      case 'ganaderia':
-        return searchableCategory.includes('ganad') || searchableCategory.includes('vaca') || searchableCategory.includes('bov');
-      case 'pollo':
-        return searchableCategory.includes('pollo') || searchableCategory.includes('ave');
-      case 'porcicultura':
-        return searchableCategory.includes('porc');
-      case 'acuicultura':
-        return searchableCategory.includes('acui') || searchableCategory.includes('pez') || searchableCategory.includes('mojarra');
-      default:
-        return true;
-    }
+    return this.normalizeValue(product.categoria || '') === this.activeFilter;
   }
 
   private matchesSearch(product: Product, term: string): boolean {
@@ -408,10 +425,7 @@ export class GestionProductosPage implements OnInit {
   }
 
   private slugify(value: string): string {
-    return value
-      .toLowerCase()
-      .normalize('NFD')
-      .replace(/[\u0300-\u036f]/g, '')
+    return this.normalizeValue(value)
       .replace(/[^a-z0-9]+/g, '-')
       .replace(/^-+|-+$/g, '') || `prod-${Date.now()}`;
   }
@@ -452,6 +466,25 @@ export class GestionProductosPage implements OnInit {
         activo: true
       }
     ];
+  }
+
+  private syncActiveFilter() {
+    if (this.activeFilter === this.allFilterValue) {
+      return;
+    }
+
+    const activeFilterExists = this.categoryFilters.some(filter => filter.value === this.activeFilter);
+    if (!activeFilterExists) {
+      this.activeFilter = this.allFilterValue;
+    }
+  }
+
+  private normalizeValue(value: string): string {
+    return value
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .trim();
   }
 
   private async showToast(message: string, color: string) {

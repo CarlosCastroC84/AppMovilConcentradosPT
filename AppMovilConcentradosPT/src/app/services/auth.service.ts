@@ -46,7 +46,12 @@ export class AuthService {
    */
   async logout(): Promise<void> {
     try {
-      await signOut();
+      await Promise.race([
+        signOut(),
+        new Promise((_, reject) =>
+          setTimeout(() => reject(new Error('Timeout cerrando sesión')), 5000)
+        )
+      ]);
     } catch (error) {
       console.error('Error cerrando sesión:', error);
     }

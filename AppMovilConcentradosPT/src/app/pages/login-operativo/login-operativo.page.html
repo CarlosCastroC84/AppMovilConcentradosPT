@@ -29,7 +29,7 @@
         <p class="card-subtitle">Ingresa con tus credenciales de Amazon Cognito.</p>
       </div>
 
-      <form (submit)="$event.preventDefault(); onLogin()" class="login-form">
+      <form class="login-form">
         <div class="input-group">
           <label class="input-label">Correo electrónico</label>
           <div class="input-wrapper">
@@ -55,7 +55,7 @@
           </div>
         </div>
 
-        <button type="submit" class="submit-btn">
+        <button type="button" class="submit-btn" (click)="onLogin()">
           <span>Ingresar al portal</span>
           <span class="material-icons-round btn-icon">login</span>
         </button>
@@ -75,7 +75,7 @@
         </p>
       </div>
 
-      <form (submit)="$event.preventDefault(); onSetNewPassword()" class="login-form">
+      <form class="login-form">
         <div class="input-group">
           <label class="input-label">Nueva contraseña</label>
           <div class="input-wrapper">
@@ -100,7 +100,7 @@
           </div>
         </div>
 
-        <button type="submit" class="submit-btn">
+        <button type="button" class="submit-btn" (click)="onSetNewPassword()">
           <span>Establecer contraseña</span>
           <span class="material-icons-round btn-icon">check_circle</span>
         </button>

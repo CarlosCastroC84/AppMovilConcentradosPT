@@ -44,9 +44,11 @@
 
         <div class="cart-items" *ngIf="items.length > 0">
           <article class="cart-item" *ngFor="let item of items">
-            <div class="item-emoji">
-              <span>{{ item.emoji }}</span>
+            <div class="item-media">
+              <img [src]="getCartItemImage(item)" [alt]="item.name" class="item-image"
+                (error)="onCartImageError($event)" />
             </div>
+
 
             <div class="item-details">
               <div class="item-top">

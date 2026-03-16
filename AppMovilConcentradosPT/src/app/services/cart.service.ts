@@ -51,15 +51,32 @@ export class CartService {
   addItem(item: Omit<CartItem, 'quantity'>, quantity = 1) {
     const current = this.cartItems;
     const existing = current.find(i => i.id === item.id && i.presentation === item.presentation);
+
     if (existing) {
       existing.quantity += quantity;
+      existing.name = item.name;
+      existing.price = item.price;
+      existing.emoji = item.emoji;
+
+      if (item.imageUrl?.trim()) {
+        existing.imageUrl = item.imageUrl.trim();
+      }
+
       this.setItems(current);
     } else {
-      this.setItems([...current, { ...item, quantity }]);
+      this.setItems([
+        ...current,
+        {
+          ...item,
+          imageUrl: item.imageUrl?.trim() || undefined,
+          quantity
+        }
+      ]);
     }
 
     void this.persistItems();
   }
+
 
   removeItem(id: string, presentation?: string) {
     this.setItems(
