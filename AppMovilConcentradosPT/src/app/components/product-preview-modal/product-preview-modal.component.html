@@ -1,0 +1,19 @@
+<div class="preview-card">
+  <button class="preview-close" type="button" (click)="dismiss()" aria-label="Cerrar vista previa">
+    <span class="material-icons-round">close</span>
+  </button>
+
+  <div class="preview-image-shell">
+    <img [src]="productImage" [alt]="product.name" class="preview-image" (error)="onImageError($event)" />
+  </div>
+
+  <div class="preview-content">
+    <h3 class="preview-title">{{ product.name }}</h3>
+
+    <p class="preview-meta" *ngIf="metaLine">{{ metaLine }}</p>
+    <p class="preview-meta" *ngIf="product.brand">Marca: {{ product.brand }}</p>
+    <p class="preview-price" *ngIf="product.price !== null && product.price !== undefined">
+      {{ product.price | currency:'COP':'symbol-narrow':'1.0-0' }}
+    </p>
+  </div>
+</div>

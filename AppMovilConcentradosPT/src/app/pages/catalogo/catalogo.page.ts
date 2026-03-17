@@ -1,14 +1,15 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IonicModule, ToastController } from '@ionic/angular';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { ProductService } from '../../services/product.service';
 import { CartService } from '../../services/cart.service';
 import { CatalogProductView, enrichCatalogProduct, sortBrandOptions, sortCategoryOptions } from '../../utils/catalog-product.util';
 import { Product } from '../../models/product.model';
-import { Capacitor } from '@capacitor/core';
-import { Toast } from '@capacitor/toast';
+import { IonicModule } from '@ionic/angular';
+import { AppToastService } from '../../services/app-toast.service';
+import { ProductPreviewService } from '../../services/product-preview.service';
+
 
 
 @Component({
@@ -25,7 +26,8 @@ export class CatalogoPage implements OnInit {
 
   private productService = inject(ProductService);
   public cart = inject(CartService);
-  private toastController = inject(ToastController);
+  private appToastService = inject(AppToastService);
+  private productPreviewService = inject(ProductPreviewService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
 
@@ -35,13 +37,15 @@ export class CatalogoPage implements OnInit {
   searchTerm = '';
   selectedCategory = this.allCategoriesLabel;
   selectedBrand = this.allBrandsLabel;
-  previewProduct: CatalogProductView | null = null;
+  mobileFiltersOpen = false;
   selectedQuantities: Record<string, number> = {};
+  private pendingCategoryFilter: string | null = null;
 
   ngOnInit() {
     this.route.queryParamMap.subscribe(params => {
       this.searchTerm = params.get('q')?.trim() || '';
-      this.selectedCategory = this.allCategoriesLabel;
+      this.pendingCategoryFilter = params.get('categoria')?.trim() || null;
+      this.selectedCategory = this.resolveCategoryOption(this.pendingCategoryFilter) || this.allCategoriesLabel;
       this.selectedBrand = this.allBrandsLabel;
     });
 
@@ -86,15 +90,62 @@ export class CatalogoPage implements OnInit {
     }));
   }
 
+  get activeFilterLabel(): string {
+    const activeFilters = [
+      this.selectedCategory !== this.allCategoriesLabel ? this.selectedCategory : null,
+      this.selectedBrand !== this.allBrandsLabel ? this.selectedBrand : null
+    ].filter((value): value is string => Boolean(value));
+
+    if (activeFilters.length === 0) {
+      return 'Todos';
+    }
+
+    if (activeFilters.length === 1) {
+      return activeFilters[0];
+    }
+
+    return `${activeFilters.length} filtros`;
+  }
+
   setCategory(category: string) {
     this.selectedCategory = category;
     if (!this.brandOptions.includes(this.selectedBrand)) {
       this.selectedBrand = this.allBrandsLabel;
     }
+    this.mobileFiltersOpen = false;
+
+    void this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: {
+        categoria: category === this.allCategoriesLabel ? null : category
+      },
+      queryParamsHandling: 'merge',
+      replaceUrl: true
+    });
   }
 
   setBrand(brand: string) {
     this.selectedBrand = brand;
+    this.mobileFiltersOpen = false;
+  }
+
+  clearFilters() {
+    this.selectedCategory = this.allCategoriesLabel;
+    this.selectedBrand = this.allBrandsLabel;
+    this.mobileFiltersOpen = false;
+
+    void this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: {
+        categoria: null
+      },
+      queryParamsHandling: 'merge',
+      replaceUrl: true
+    });
+  }
+
+  toggleMobileFilters() {
+    this.mobileFiltersOpen = !this.mobileFiltersOpen;
   }
 
   cargarProductos() {
@@ -106,6 +157,7 @@ export class CatalogoPage implements OnInit {
         this.productos = data
           .filter(product => product.estado !== 'INACTIVO')
           .map(product => enrichCatalogProduct(product));
+        this.selectedCategory = this.resolveCategoryOption(this.pendingCategoryFilter) || this.allCategoriesLabel;
         this.cargando = false;
       },
       error: (err) => {
@@ -149,16 +201,7 @@ export class CatalogoPage implements OnInit {
       imageUrl: producto.resolvedImageUrl
     }, quantity);
 
-    const toast = await this.toastController.create({
-      message: `${quantity} ${quantity === 1 ? 'unidad agregada' : 'unidades agregadas'} de ${producto.nombre}`,
-      duration: 2000,
-      position: 'bottom',
-      color: 'success'
-    });
-    await this.mostrarToastAgregado(
-      `${quantity} ${quantity === 1 ? 'unidad agregada' : 'unidades agregadas'} de ${producto.nombre}`
-    );
-
+    await this.appToastService.showCartAdded(producto.nombre, quantity);
 
     const key = this.getProductSelectionKey(producto);
     this.selectedQuantities = {
@@ -167,33 +210,17 @@ export class CatalogoPage implements OnInit {
     };
   }
 
-  private async mostrarToastAgregado(message: string): Promise<void> {
-    if (Capacitor.getPlatform() !== 'web') {
-      await Toast.show({
-        text: message,
-        duration: 'short',
-        position: 'top'
-      });
-      return;
-    }
-
-    const toast = await this.toastController.create({
-      message,
-      duration: 2000,
-      position: 'bottom',
-      color: 'success'
-    });
-
-    await toast.present();
-  }
-
 
   abrirVistaPrevia(producto: CatalogProductView) {
-    this.previewProduct = producto;
-  }
-
-  cerrarVistaPrevia() {
-    this.previewProduct = null;
+    void this.productPreviewService.open({
+      name: producto.nombre,
+      imageUrl: producto.resolvedImageUrl,
+      category: producto.displayCategory,
+      brand: producto.displayBrand,
+      presentation: producto.presentacion,
+      price: producto.precio,
+      fallbackImage: this.fallbackImage
+    });
   }
 
   onProductImageError(event: Event) {
@@ -232,6 +259,15 @@ export class CatalogoPage implements OnInit {
       .toLowerCase()
       .normalize('NFD')
       .replace(/[\u0300-\u036f]/g, '');
+  }
+
+  private resolveCategoryOption(category: string | null): string | null {
+    if (!category) {
+      return null;
+    }
+
+    const normalizedCategory = this.normalizeValue(category);
+    return this.categoryOptions.find(option => this.normalizeValue(option) === normalizedCategory) || null;
   }
 
   private getProductSelectionKey(producto: CatalogProductView): string {

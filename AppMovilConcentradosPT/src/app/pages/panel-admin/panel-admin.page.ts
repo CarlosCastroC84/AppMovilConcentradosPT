@@ -10,6 +10,7 @@ import { SessionProfileService } from '../../services/session-profile.service';
 import { SessionModule } from '../../models/session-profile.model';
 import { Product } from '../../models/product.model';
 import { CatalogProductView, enrichCatalogProduct } from '../../utils/catalog-product.util';
+import { ProductPreviewService } from '../../services/product-preview.service';
 import { firstValueFrom } from 'rxjs';
 
 
@@ -29,6 +30,7 @@ export class PanelAdminPage implements OnInit {
   private alertController = inject(AlertController);
   private router = inject(Router);
   private sessionProfileService = inject(SessionProfileService);
+  private productPreviewService = inject(ProductPreviewService);
   private zone = inject(NgZone);
   private navController = inject(NavController);
 
@@ -40,7 +42,6 @@ export class PanelAdminPage implements OnInit {
   productos: CatalogProductView[] = [];
   loadingPedidos = true;
   loadingProductos = true;
-  previewProduct: CatalogProductView | null = null;
 
   // KPIs calculados
   get totalVentasHoy(): number {
@@ -179,11 +180,15 @@ export class PanelAdminPage implements OnInit {
   }
 
   abrirVistaPrevia(product: CatalogProductView) {
-    this.previewProduct = product;
-  }
-
-  cerrarVistaPrevia() {
-    this.previewProduct = null;
+    void this.productPreviewService.open({
+      name: product.nombre,
+      imageUrl: product.resolvedImageUrl,
+      category: product.displayCategory,
+      brand: product.displayBrand,
+      presentation: product.presentacion,
+      price: product.precio,
+      fallbackImage: this.fallbackImage
+    });
   }
 
   editarProducto(product: CatalogProductView) {

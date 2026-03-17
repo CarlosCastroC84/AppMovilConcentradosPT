@@ -155,23 +155,3 @@
     </section>
   </main>
 </ion-content>
-
-<div class="preview-overlay" *ngIf="previewProduct" (click)="cerrarVistaPrevia()">
-  <div class="preview-card" (click)="$event.stopPropagation()">
-    <button class="preview-close" type="button" (click)="cerrarVistaPrevia()">
-      <span class="material-icons-round">close</span>
-    </button>
-
-    <div class="preview-image-shell">
-      <img [src]="previewProduct.resolvedImageUrl" [alt]="previewProduct.nombre" class="preview-image"
-        (error)="onProductImageError($event)" />
-    </div>
-
-    <div class="preview-content">
-      <h3 class="preview-title">{{ previewProduct.nombre }}</h3>
-      <p class="preview-meta-copy">{{ previewProduct.presentacion }} · {{ previewProduct.categoria }}</p>
-      <p class="preview-brand">Marca: {{ previewProduct.marca || 'Sin marca' }}</p>
-      <p class="preview-price">{{ formatPrice(previewProduct.precio || 0) }}</p>
-    </div>
-  </div>
-</div>

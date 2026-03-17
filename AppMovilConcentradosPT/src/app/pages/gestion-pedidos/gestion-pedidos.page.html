@@ -149,8 +149,8 @@
         </div>
 
         <div class="order-actions">
-          <button class="order-btn" [class.whatsapp]="!!getCustomerPhone(order)"
-            [class.whatsapp-outline]="!getCustomerPhone(order)" type="button" (click)="openWhatsApp(order)">
+          <button class="order-btn" [class.whatsapp]="hasWhatsAppPhone(order)"
+            [class.whatsapp-outline]="!hasWhatsAppPhone(order)" type="button" (click)="openWhatsApp(order)">
             <span class="material-icons-round">chat</span>
             WhatsApp
           </button>

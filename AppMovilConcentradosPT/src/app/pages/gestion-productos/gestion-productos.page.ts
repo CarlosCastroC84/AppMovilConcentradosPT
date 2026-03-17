@@ -9,6 +9,7 @@ import { ProductService } from '../../services/product.service';
 import { AuthService } from '../../services/auth.service';
 import { CatalogMasterService } from '../../services/catalog-master.service';
 import { CatalogProductView, enrichCatalogProduct, sortCategoryOptions } from '../../utils/catalog-product.util';
+import { ProductPreviewService } from '../../services/product-preview.service';
 
 interface ProductFormModel {
   id: string;
@@ -37,6 +38,7 @@ export class GestionProductosPage implements OnInit {
   private productService = inject(ProductService);
   private authService = inject(AuthService);
   private catalogMasterService = inject(CatalogMasterService);
+  private productPreviewService = inject(ProductPreviewService);
   private toastController = inject(ToastController);
   private alertController = inject(AlertController);
   private route = inject(ActivatedRoute);
@@ -50,6 +52,7 @@ export class GestionProductosPage implements OnInit {
   error: string | null = null;
   catalogsLoading = true;
   catalogsError: string | null = null;
+  mobileFiltersOpen = false;
   products: CatalogProductView[] = [];
   categorias: CatalogMasterItem[] = [];
   marcas: CatalogMasterItem[] = [];
@@ -116,8 +119,17 @@ export class GestionProductosPage implements OnInit {
     ];
   }
 
+  get activeFilterLabel(): string {
+    return this.categoryFilters.find(filter => filter.value === this.activeFilter)?.label || this.allFilterLabel;
+  }
+
   setFilter(filter: string) {
     this.activeFilter = filter;
+    this.mobileFiltersOpen = false;
+  }
+
+  toggleMobileFilters() {
+    this.mobileFiltersOpen = !this.mobileFiltersOpen;
   }
 
   cargarProductos() {
@@ -301,44 +313,20 @@ export class GestionProductosPage implements OnInit {
     image.src = this.fallbackImage;
   }
 
+  abrirVistaPrevia(product: CatalogProductView) {
+    void this.productPreviewService.open({
+      name: product.nombre,
+      imageUrl: product.resolvedImageUrl,
+      category: product.displayCategory,
+      brand: product.displayBrand,
+      presentation: product.presentacion,
+      price: product.precio,
+      fallbackImage: this.fallbackImage
+    });
+  }
+
   isActive(product: Product): boolean {
     return product.estado !== 'INACTIVO';
-  }
-
-  getCategoryEmoji(product: Product): string {
-    const category = `${product.categoria || product.nombre}`.toLowerCase();
-
-    if (category.includes('pollo') || category.includes('ave')) {
-      return '🐓';
-    }
-
-    if (category.includes('porc')) {
-      return '🐷';
-    }
-
-    if (category.includes('acui') || category.includes('pez') || category.includes('mojarra')) {
-      return '🐟';
-    }
-
-    return '🐄';
-  }
-
-  getCategoryTone(product: Product): string {
-    const category = `${product.categoria || product.nombre}`.toLowerCase();
-
-    if (category.includes('pollo') || category.includes('ave')) {
-      return 'yellow';
-    }
-
-    if (category.includes('porc')) {
-      return 'pink';
-    }
-
-    if (category.includes('acui') || category.includes('pez') || category.includes('mojarra')) {
-      return 'blue';
-    }
-
-    return 'orange';
   }
 
   private async loadCurrentUser() {

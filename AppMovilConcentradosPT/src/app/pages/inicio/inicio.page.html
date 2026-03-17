@@ -12,7 +12,7 @@
           </p>
         </div>
 
-        <button class="admin-login-btn" routerLink="/login-operativo" title="Acceso Admin">
+        <button class="admin-login-btn" type="button" (click)="irALoginAdmin()" title="Acceso Admin">
           <span class="material-icons-outlined">account_circle</span>
           <span class="admin-text">Admin</span>
         </button>
@@ -68,7 +68,7 @@
         <p class="promo-desc">Precios especiales por bulto y cantidad.</p>
       </div>
 
-      <button class="promo-btn" routerLink="/mayoristas">
+      <button class="promo-btn" type="button" (click)="irAMayoristas()">
         Cotizar Ahora
         <span class="material-icons-outlined promo-btn-icon">arrow_forward</span>
       </button>
@@ -76,7 +76,7 @@
 
 
     <section class="quick-actions">
-      <button class="quick-btn" routerLink="/catalogo">
+      <button class="quick-btn" type="button" (click)="irACatalogo()">
         <span>Ver Catálogo</span>
         <span class="material-icons-outlined">menu_book</span>
       </button>
@@ -90,7 +90,7 @@
     <section class="categories-section">
       <div class="section-header">
         <h2 class="section-title">Categorías</h2>
-        <a routerLink="/catalogo" class="section-link">Ver todo</a>
+        <button class="section-link" type="button" (click)="irACatalogo()">Ver todo</button>
       </div>
 
       <div class="categories-scroll-wrap">
@@ -130,12 +130,12 @@
       </div>
 
       <div class="help-buttons">
-        <button class="help-btn whatsapp" routerLink="/atencion-cliente">
+        <button class="help-btn whatsapp" type="button" routerLink="/atencion-cliente">
           <span class="material-icons-outlined">chat</span>
           WhatsApp
         </button>
 
-        <button class="help-btn call" routerLink="/atencion-cliente">
+        <button class="help-btn call" type="button" routerLink="/atencion-cliente">
           <span class="material-icons-outlined">call</span>
           Llamar
         </button>

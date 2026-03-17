@@ -50,8 +50,22 @@ export class InicioPage implements OnInit {
     this.cargarCategorias();
   }
 
+  irALoginAdmin() {
+    void this.router.navigate(['/login-operativo']);
+  }
+
+  irAMayoristas() {
+    void this.router.navigate(['/mayoristas']);
+  }
+
+  irACatalogo() {
+    this.isSearchFocused = false;
+    void this.router.navigate(['/catalogo']);
+  }
+
   buscarProductos() {
     const term = this.searchTerm.trim();
+    this.isSearchFocused = false;
 
     void this.router.navigate(['/catalogo'], {
       queryParams: term ? { q: term } : {}
@@ -91,8 +105,9 @@ export class InicioPage implements OnInit {
   }
 
   verCategoria(category: InicioCategoryCard) {
+    this.isSearchFocused = false;
     void this.router.navigate(['/catalogo'], {
-      queryParams: { q: category.nombre }
+      queryParams: { categoria: category.nombre }
     });
   }
 
@@ -143,6 +158,7 @@ export class InicioPage implements OnInit {
 
   irAHacerPedido() {
     const route = this.cart.totalItems > 0 ? '/mi-pedido' : '/catalogo';
+    this.isSearchFocused = false;
     void this.router.navigate([route]);
   }
 

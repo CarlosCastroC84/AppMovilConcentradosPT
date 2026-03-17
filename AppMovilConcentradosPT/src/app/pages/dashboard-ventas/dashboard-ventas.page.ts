@@ -1,11 +1,17 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IonicModule, AlertController, ToastController } from '@ionic/angular';
+import { IonicModule, ToastController } from '@ionic/angular';
 import { RouterModule } from '@angular/router';
-import { Order, OrderStatus } from '../../models/order.model';
+import { Order, OrderStatus, UpdateOrderRequest } from '../../models/order.model';
 import { OrderService } from '../../services/order.service';
 import { AuthService } from '../../services/auth.service';
+import { OrderDetailsModalService } from '../../services/order-details-modal.service';
+import {
+  getOrderDisplayName,
+  getOrderDisplayPhone,
+  getOrderLocation
+} from '../../utils/order-contact.util';
 
 @Component({
   selector: 'app-dashboard-ventas',
@@ -17,8 +23,8 @@ import { AuthService } from '../../services/auth.service';
 export class DashboardVentasPage implements OnInit {
   private orderService = inject(OrderService);
   private authService = inject(AuthService);
+  private orderDetailsModalService = inject(OrderDetailsModalService);
   private toastController = inject(ToastController);
-  private alertController = inject(AlertController);
 
   currentUser = 'Operaciones';
   currentUserInitials = 'PT';
@@ -27,6 +33,7 @@ export class DashboardVentasPage implements OnInit {
   loading = true;
   error: string | null = null;
   updatingOrderId: string | null = null;
+  private currentActor: string | null = null;
 
   async ngOnInit(): Promise<void> {
     await this.loadCurrentUser();
@@ -99,25 +106,8 @@ export class DashboardVentasPage implements OnInit {
     });
   }
 
-  async viewOrderDetails(order: Order): Promise<void> {
-    const items = order.items.map(item =>
-      `${item.quantity} x ${this.escapeHtml(item.name)} (${this.escapeHtml(item.presentation)})`
-    ).join('<br/>');
-
-    const alert = await this.alertController.create({
-      header: `Pedido ${order.id}`,
-      subHeader: this.getCustomerDisplayName(order),
-      message: [
-        `<strong>Estado:</strong> ${this.escapeHtml(this.getStatusLabel(order.status))}`,
-        `<strong>Total:</strong> ${this.escapeHtml(this.formatPrice(order.total || 0))}`,
-        `<strong>Teléfono:</strong> ${this.escapeHtml(this.getCustomerPhone(order) || 'No registrado')}`,
-        `<strong>Ubicación:</strong> ${this.escapeHtml(this.getCustomerLocation(order) || 'No registrada')}`,
-        `<strong>Items:</strong><br/>${items || 'Sin items'}`
-      ].join('<br/><br/>'),
-      buttons: ['Cerrar']
-    });
-
-    await alert.present();
+  viewOrderDetails(order: Order): void {
+    void this.orderDetailsModalService.open(order);
   }
 
   confirmOrder(order: Order): void {
@@ -127,16 +117,23 @@ export class DashboardVentasPage implements OnInit {
     }
 
     this.updatingOrderId = order.id;
+    const updatedAt = new Date().toISOString();
+    const request: UpdateOrderRequest = {
+      id: order.id,
+      status: 'PROCESSING',
+      updatedAt,
+      updatedBy: this.currentActor || undefined
+    };
 
     const updatedOrder: Order = {
       ...order,
       status: 'PROCESSING',
-      updatedAt: new Date().toISOString()
+      updatedAt
     };
 
-    this.orderService.updateOrder(updatedOrder).subscribe({
+    this.orderService.updateOrder(request).subscribe({
       next: savedOrder => {
-        this.upsertOrder(savedOrder);
+        this.upsertOrder(savedOrder ? { ...order, ...savedOrder } : updatedOrder);
         this.updatingOrderId = null;
         void this.showToast(`Pedido ${order.id} confirmado.`, 'success');
       },
@@ -178,29 +175,15 @@ export class DashboardVentasPage implements OnInit {
   }
 
   getCustomerDisplayName(order: Order): string {
-    if (order.customerName?.trim()) {
-      return this.parseLegacyCustomerName(order.customerName).name;
-    }
-
-    return 'Cliente sin nombre';
+    return getOrderDisplayName(order);
   }
 
   getCustomerPhone(order: Order): string | null {
-    const rawPhone = order.customerPhone || this.parseLegacyCustomerName(order.customerName).phone;
-    if (!rawPhone) {
-      return null;
-    }
-
-    const digits = rawPhone.replace(/\D/g, '');
-    if (!digits) {
-      return null;
-    }
-
-    return digits.length === 10 ? `57${digits}` : digits;
+    return getOrderDisplayPhone(order);
   }
 
   getCustomerLocation(order: Order): string | null {
-    return order.customerLocation || this.parseLegacyCustomerName(order.customerName).location || null;
+    return getOrderLocation(order);
   }
 
   getItemSummary(order: Order): string {
@@ -260,27 +243,12 @@ export class DashboardVentasPage implements OnInit {
 
     this.currentUser = user.name || user.username;
     this.currentUserInitials = this.buildInitials(this.currentUser);
+    this.currentActor = user.name || user.email || user.username;
   }
 
   private isSameDay(dateValue: string, referenceDate: Date): boolean {
     const date = new Date(dateValue);
     return date.toDateString() === referenceDate.toDateString();
-  }
-
-  private parseLegacyCustomerName(customerName: string): { name: string; phone?: string; location?: string } {
-    const trimmedName = customerName.trim();
-    const legacyMatch = /^(.*?)\s*-\s*([+\d\s-]+?)(?:\s*\((.*?)\))?$/.exec(trimmedName);
-
-    if (!legacyMatch) {
-      return { name: trimmedName };
-    }
-
-    const [, name, phone, location] = legacyMatch;
-    return {
-      name: name.trim(),
-      phone: phone?.trim(),
-      location: location?.trim()
-    };
   }
 
   private upsertOrder(order: Order): void {
@@ -305,15 +273,6 @@ export class DashboardVentasPage implements OnInit {
     }
 
     return parts.slice(0, 2).map(part => part[0]?.toUpperCase() ?? '').join('');
-  }
-
-  private escapeHtml(value: string): string {
-    return value
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;')
-      .replace(/'/g, '&#039;');
   }
 
   private async showToast(message: string, color: string): Promise<void> {

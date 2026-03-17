@@ -14,5 +14,21 @@ export interface Order {
   observations?: string;   // Notas adicionales
   createdAt: string;       // Timestamp formato ISO
   updatedAt?: string;
+  deletedAt?: string;
+  deletedBy?: string;
   items: CartItem[];       // Array con los productos de este pedido
+}
+
+export interface UpdateOrderRequest {
+  id: string;
+  status: OrderStatus;
+  updatedAt: string;
+  updatedBy?: string;
+}
+
+export interface DeleteOrderRequest {
+  id: string;
+  deletedAt: string;
+  updatedAt: string;
+  deletedBy?: string;
 }

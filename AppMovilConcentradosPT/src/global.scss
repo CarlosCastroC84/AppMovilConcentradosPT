@@ -35,3 +35,47 @@
 /* @import "@ionic/angular/css/palettes/dark.always.css"; */
 /* @import "@ionic/angular/css/palettes/dark.class.css"; */
 @import '@ionic/angular/css/palettes/dark.system.css';
+
+ion-modal.product-preview-modal {
+  --width: min(92vw, 380px);
+  --height: auto;
+  --max-height: 90vh;
+  --background: transparent;
+  --box-shadow: none;
+  --backdrop-opacity: 0.58;
+  align-items: center;
+}
+
+ion-modal.product-preview-modal::part(content) {
+  background: transparent;
+  box-shadow: none;
+  overflow: visible;
+}
+
+@media (max-width: 480px) {
+  ion-modal.product-preview-modal {
+    --width: min(92vw, 340px);
+  }
+}
+
+ion-modal.order-details-modal {
+  --width: min(94vw, 560px);
+  --height: auto;
+  --max-height: 90vh;
+  --background: transparent;
+  --box-shadow: none;
+  --backdrop-opacity: 0.58;
+  align-items: center;
+}
+
+ion-modal.order-details-modal::part(content) {
+  background: transparent;
+  box-shadow: none;
+  overflow: visible;
+}
+
+@media (max-width: 480px) {
+  ion-modal.order-details-modal {
+    --width: min(94vw, 360px);
+  }
+}

@@ -1,14 +1,14 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IonicModule, ToastController } from '@ionic/angular';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { ProductService } from '../../services/product.service';
 import { CartService } from '../../services/cart.service';
 import { CatalogProductView, enrichCatalogProduct } from '../../utils/catalog-product.util';
 import { Product } from '../../models/product.model';
-import { Capacitor } from '@capacitor/core';
-import { Toast } from '@capacitor/toast';
+import { IonicModule } from '@ionic/angular';
+import { AppToastService } from '../../services/app-toast.service';
+
 
 
 @Component({
@@ -24,7 +24,7 @@ export class DetalleProductoPage implements OnInit {
   private route = inject(ActivatedRoute);
   private productService = inject(ProductService);
   public cart = inject(CartService);
-  private toastController = inject(ToastController);
+  private appToastService = inject(AppToastService);
 
   product: CatalogProductView | null = null;
   cargando = true;
@@ -74,32 +74,8 @@ export class DetalleProductoPage implements OnInit {
       imageUrl: this.product.resolvedImageUrl
     }, this.quantity);
 
-    await this.mostrarToastAgregado(
-      `${this.quantity} ${this.quantity === 1 ? 'unidad agregada' : 'unidades agregadas'} de ${this.product.nombre}`
-    );
-
+    await this.appToastService.showCartAdded(this.product.nombre, this.quantity);
   }
-
-  private async mostrarToastAgregado(message: string): Promise<void> {
-    if (Capacitor.getPlatform() !== 'web') {
-      await Toast.show({
-        text: message,
-        duration: 'short',
-        position: 'top'
-      });
-      return;
-    }
-
-    const toast = await this.toastController.create({
-      message,
-      duration: 2000,
-      position: 'bottom',
-      color: 'success'
-    });
-
-    await toast.present();
-  }
-
 
   onProductImageError(event: Event) {
     const image = event.target as HTMLImageElement | null;

@@ -15,30 +15,69 @@
         <span class="cart-badge" *ngIf="cart.totalItems > 0">{{ cart.totalItems }}</span>
       </button>
     </div>
-
-    <div class="search-wrapper">
-      <span class="material-icons-round search-icon">search</span>
-      <input type="text" class="search-input" placeholder="Buscar productos, marcas..." [(ngModel)]="searchTerm" />
-    </div>
-
-    <div class="chip-scroll categories-scroll">
-      <button type="button" class="filter-chip" *ngFor="let category of categoryOptions"
-        [class.active]="selectedCategory === category" (click)="setCategory(category)">
-        {{ category }}
-      </button>
-    </div>
-
-    <div class="chip-scroll brands-scroll" *ngIf="brandOptions.length > 1">
-      <button type="button" class="filter-chip secondary" *ngFor="let brand of brandOptions"
-        [class.active]="selectedBrand === brand" (click)="setBrand(brand)">
-        {{ brand }}
-      </button>
-    </div>
   </ion-toolbar>
 </ion-header>
 
 <ion-content class="catalog-content">
   <main class="catalog-main">
+    <section class="filters-card">
+      <div class="section-head compact">
+        <div>
+          <p class="section-kicker">Catálogo</p>
+          <h2 class="section-title">Buscar y filtrar</h2>
+        </div>
+
+        <span class="results-pill">{{ filteredProducts.length }} productos</span>
+      </div>
+
+      <div class="filters-toolbar">
+        <div class="search-wrap">
+          <span class="material-icons-round search-icon">search</span>
+          <input type="text" class="search-input" placeholder="Buscar productos, marcas..." [(ngModel)]="searchTerm" />
+        </div>
+
+        <button class="filters-toggle" type="button" (click)="toggleMobileFilters()"
+          [class.active]="mobileFiltersOpen || selectedCategory !== allCategoriesLabel || selectedBrand !== allBrandsLabel"
+          [attr.aria-expanded]="mobileFiltersOpen">
+          <span class="material-icons-round">tune</span>
+          {{ activeFilterLabel }}
+        </button>
+      </div>
+
+      <div class="filter-drawer desktop-filter-drawer">
+        <div class="filter-group">
+          <div class="filter-drawer-head">
+            <span class="filter-drawer-label">Categorías</span>
+            <button class="filter-reset" type="button"
+              *ngIf="selectedCategory !== allCategoriesLabel || selectedBrand !== allBrandsLabel"
+              (click)="clearFilters()">
+              Limpiar
+            </button>
+          </div>
+
+          <div class="filter-chips">
+            <button type="button" class="chip" *ngFor="let category of categoryOptions"
+              [class.active]="selectedCategory === category" (click)="setCategory(category)">
+              {{ category }}
+            </button>
+          </div>
+        </div>
+
+        <div class="filter-group" *ngIf="brandOptions.length > 1">
+          <div class="filter-drawer-head">
+            <span class="filter-drawer-label">Marcas</span>
+          </div>
+
+          <div class="filter-chips">
+            <button type="button" class="chip secondary" *ngFor="let brand of brandOptions"
+              [class.active]="selectedBrand === brand" (click)="setBrand(brand)">
+              {{ brand }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <div *ngIf="cargando" class="catalog-state">
       <ion-spinner name="crescent"></ion-spinner>
       <p>Cargando productos...</p>
@@ -98,22 +137,39 @@
   </main>
 </ion-content>
 
-<div class="preview-overlay" *ngIf="previewProduct" (click)="cerrarVistaPrevia()">
-  <div class="preview-card" (click)="$event.stopPropagation()">
-    <button class="preview-close" type="button" (click)="cerrarVistaPrevia()">
-      <span class="material-icons-round">close</span>
-    </button>
+<div class="filters-sheet-overlay" *ngIf="mobileFiltersOpen" (click)="toggleMobileFilters()">
+  <div class="filters-sheet" (click)="$event.stopPropagation()">
+    <div class="filters-sheet-handle"></div>
 
-    <div class="preview-image-shell">
-      <img [src]="previewProduct.resolvedImageUrl" [alt]="previewProduct.nombre" class="preview-image"
-        (error)="onProductImageError($event)" />
+    <div class="filter-group">
+      <div class="filter-drawer-head">
+        <span class="filter-drawer-label">Categorías</span>
+        <button class="filter-reset" type="button"
+          *ngIf="selectedCategory !== allCategoriesLabel || selectedBrand !== allBrandsLabel"
+          (click)="clearFilters()">
+          Limpiar
+        </button>
+      </div>
+
+      <div class="filter-chips">
+        <button type="button" class="chip" *ngFor="let category of categoryOptions"
+          [class.active]="selectedCategory === category" (click)="setCategory(category)">
+          {{ category }}
+        </button>
+      </div>
     </div>
 
-    <div class="preview-content">
-      <h3 class="preview-title">{{ previewProduct.nombre }}</h3>
-      <p class="preview-category">{{ previewProduct.displayCategory }}</p>
-      <p class="preview-brand">Marca: {{ previewProduct.displayBrand }}</p>
-      <p class="preview-price">{{ previewProduct.precio | currency:'COP':'symbol-narrow':'1.0-0' }}</p>
+    <div class="filter-group" *ngIf="brandOptions.length > 1">
+      <div class="filter-drawer-head">
+        <span class="filter-drawer-label">Marcas</span>
+      </div>
+
+      <div class="filter-chips">
+        <button type="button" class="chip secondary" *ngFor="let brand of brandOptions"
+          [class.active]="selectedBrand === brand" (click)="setBrand(brand)">
+          {{ brand }}
+        </button>
+      </div>
     </div>
   </div>
 </div>

@@ -147,17 +147,36 @@
         <span class="results-pill">{{ filteredProducts.length }} productos</span>
       </div>
 
-      <div class="search-wrap">
-        <span class="material-icons-round search-icon">search</span>
-        <input type="text" class="search-input" [(ngModel)]="searchTerm"
-          placeholder="Buscar por nombre, categoría, marca o presentación..." />
+      <div class="filters-toolbar">
+        <div class="search-wrap">
+          <span class="material-icons-round search-icon">search</span>
+          <input type="text" class="search-input" [(ngModel)]="searchTerm"
+            placeholder="Buscar por nombre, categoría, marca o presentación..." />
+        </div>
+
+        <button class="filters-toggle" type="button" (click)="toggleMobileFilters()"
+          [class.active]="mobileFiltersOpen || activeFilter !== allFilterValue"
+          [attr.aria-expanded]="mobileFiltersOpen">
+          <span class="material-icons-round">tune</span>
+          {{ activeFilterLabel }}
+        </button>
       </div>
 
-      <div class="filter-chips">
-        <button class="chip" *ngFor="let filter of categoryFilters" [class.active]="activeFilter === filter.value"
-          (click)="setFilter(filter.value)" type="button">
-          {{ filter.label }}
-        </button>
+      <div class="filter-drawer desktop-filter-drawer">
+        <div class="filter-drawer-head">
+          <span class="filter-drawer-label">Filtrar por categoría</span>
+          <button class="filter-reset" type="button" *ngIf="activeFilter !== allFilterValue"
+            (click)="setFilter(allFilterValue)">
+            Limpiar
+          </button>
+        </div>
+
+        <div class="filter-chips">
+          <button class="chip" *ngFor="let filter of categoryFilters" [class.active]="activeFilter === filter.value"
+            (click)="setFilter(filter.value)" type="button">
+            {{ filter.label }}
+          </button>
+        </div>
       </div>
     </section>
 
@@ -181,27 +200,20 @@
       <article class="product-card" *ngFor="let product of filteredProducts; trackBy: trackByProduct"
         [class.inactive]="!isActive(product)">
         <div class="product-main">
-          <div class="product-media">
+          <button class="product-media preview-trigger" type="button" (click)="abrirVistaPrevia(product)"
+            [attr.aria-label]="'Vista previa de ' + product.nombre">
             <img [src]="product.resolvedImageUrl" [alt]="product.nombre" class="product-image"
               (error)="onProductImageError($event)" />
-          </div>
+          </button>
 
           <div class="product-copy">
             <div class="product-top">
-              <div>
-                <div class="product-identity">
-                  <span class="emoji-badge" [ngClass]="'tone-' + getCategoryTone(product)">
-                    {{ getCategoryEmoji(product) }}
-                  </span>
-
-                  <div>
-                    <h3 class="product-name" [class.dimmed]="!isActive(product)">{{ product.nombre }}</h3>
-                    <p class="product-meta">
-                      {{ product.categoria || 'Sin categoría' }} · {{ product.marca || 'Sin marca' }} · {{
-                      product.presentacion }}
-                    </p>
-                  </div>
-                </div>
+              <div class="product-heading">
+                <h3 class="product-name" [class.dimmed]="!isActive(product)">{{ product.nombre }}</h3>
+                <p class="product-meta">
+                  {{ product.categoria || 'Sin categoría' }} · {{ product.marca || 'Sin marca' }} · {{
+                  product.presentacion }}
+                </p>
               </div>
 
               <label class="toggle">
@@ -221,26 +233,46 @@
             </div>
 
             <p class="inactive-label" *ngIf="!isActive(product)">Producto inactivo</p>
+
+            <div class="product-actions">
+              <button class="mini-action muted" type="button" (click)="showHistory(product)">
+                <span class="material-icons-round">history</span>
+                Historial
+              </button>
+
+              <button class="mini-action primary" type="button" (click)="startEdit(product)">
+                <span class="material-icons-round">edit</span>
+                Editar
+              </button>
+
+              <button class="mini-action danger" type="button" (click)="confirmDelete(product)">
+                <span class="material-icons-round">delete</span>
+                Eliminar
+              </button>
+            </div>
           </div>
-        </div>
-
-        <div class="product-actions">
-          <button class="mini-action muted" type="button" (click)="showHistory(product)">
-            <span class="material-icons-round">history</span>
-            Historial
-          </button>
-
-          <button class="mini-action primary" type="button" (click)="startEdit(product)">
-            <span class="material-icons-round">edit</span>
-            Editar
-          </button>
-
-          <button class="mini-action danger" type="button" (click)="confirmDelete(product)">
-            <span class="material-icons-round">delete</span>
-            Eliminar
-          </button>
         </div>
       </article>
     </section>
   </main>
 </ion-content>
+
+<div class="filters-sheet-overlay" *ngIf="mobileFiltersOpen" (click)="toggleMobileFilters()">
+  <div class="filters-sheet" (click)="$event.stopPropagation()">
+    <div class="filters-sheet-handle"></div>
+
+    <div class="filter-drawer-head">
+      <span class="filter-drawer-label">Filtrar por categoría</span>
+      <button class="filter-reset" type="button" *ngIf="activeFilter !== allFilterValue" (click)="setFilter(allFilterValue)">
+        Limpiar
+      </button>
+    </div>
+
+    <div class="filter-chips">
+      <button class="chip" *ngFor="let filter of categoryFilters" [class.active]="activeFilter === filter.value"
+        (click)="setFilter(filter.value)" type="button">
+        {{ filter.label }}
+      </button>
+    </div>
+  </div>
+</div>
