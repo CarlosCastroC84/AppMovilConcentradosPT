@@ -35,14 +35,37 @@
       </article>
 
       <article class="kpi-card">
+        <div class="kpi-icon blue">
+          <span class="material-icons-round">sync_alt</span>
+        </div>
+        <p class="kpi-label">En proceso</p>
+        <h3 class="kpi-value">{{ processingOrders }}</h3>
+      </article>
+
+      <article class="kpi-card">
         <div class="kpi-icon green">
+          <span class="material-icons-round">task_alt</span>
+        </div>
+        <p class="kpi-label">Completados</p>
+        <h3 class="kpi-value">{{ completedOrders }}</h3>
+      </article>
+
+      <article class="kpi-card">
+        <div class="kpi-icon gray">
+          <span class="material-icons-round">cancel</span>
+        </div>
+        <p class="kpi-label">Cancelados</p>
+        <h3 class="kpi-value">{{ cancelledOrders }}</h3>
+      </article>
+
+      <article class="kpi-card wide">
+        <div class="kpi-icon emerald">
           <span class="material-icons-round">payments</span>
         </div>
         <p class="kpi-label">Ventas hoy</p>
         <h3 class="kpi-value">{{ formatPrice(salesToday) }}</h3>
       </article>
     </section>
-
     <section class="filters-card">
       <div class="section-head compact">
         <div>

@@ -67,11 +67,24 @@ export class GestionPedidosPage implements OnInit {
     return this.orders.filter(order => order.status === 'PENDING').length;
   }
 
+  get processingOrders(): number {
+    return this.orders.filter(order => order.status === 'PROCESSING').length;
+  }
+
+  get completedOrders(): number {
+    return this.orders.filter(order => order.status === 'COMPLETED').length;
+  }
+
+  get cancelledOrders(): number {
+    return this.orders.filter(order => order.status === 'CANCELLED').length;
+  }
+
   get salesToday(): number {
     return this.orders
       .filter(order => this.isSameDay(order.createdAt, new Date()))
       .reduce((total, order) => total + (order.total || 0), 0);
   }
+
 
   cargarPedidos() {
     this.loading = true;
@@ -241,6 +254,7 @@ export class GestionPedidosPage implements OnInit {
   private deleteOrder(order: Order) {
     this.deletingOrderId = order.id;
     const timestamp = new Date().toISOString();
+
     const request: DeleteOrderRequest = {
       id: order.id,
       deletedAt: timestamp,
@@ -250,13 +264,13 @@ export class GestionPedidosPage implements OnInit {
 
     this.orderService.deleteOrder(request).subscribe({
       next: () => {
-        this.orders = this.orders.filter(item => item.id !== order.id);
         this.deletingOrderId = null;
-        this.showToast(`Pedido ${order.id} eliminado.`, 'success');
+        void this.showToast(`Pedido ${order.id} eliminado.`, 'success');
+        this.cargarPedidos();
       },
       error: (error: Error) => {
         this.deletingOrderId = null;
-        this.showToast(error.message || 'No fue posible eliminar el pedido.', 'danger');
+        void this.showToast(error.message || 'No fue posible eliminar el pedido.', 'danger');
       }
     });
   }
