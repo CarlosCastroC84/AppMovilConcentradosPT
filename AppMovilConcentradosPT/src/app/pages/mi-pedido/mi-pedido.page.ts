@@ -4,12 +4,14 @@ import { FormsModule } from '@angular/forms';
 import { IonicModule, ToastController } from '@ionic/angular';
 import { Router, RouterModule } from '@angular/router';
 import { CartService } from '../../services/cart.service';
-import { OrderService } from '../../services/order.service';
 import { AuthService } from '../../services/auth.service';
 import { StorageService } from '../../services/storage.service';
-import { Order } from '../../models/order.model';
 import { ProductService } from '../../services/product.service';
 import { enrichCatalogProduct } from '../../utils/catalog-product.util';
+import { firstValueFrom } from 'rxjs';
+import { CustomerProfileService } from '../../services/customer-profile.service';
+import { CustomerOrdersService } from '../../services/customer-orders.service';
+import { CustomerCreateOrderRequest } from '../../models/customer-order.model';
 
 
 interface CheckoutDraft {
@@ -30,18 +32,15 @@ const CHECKOUT_DRAFT_KEY = 'checkout_draft';
 })
 export class MiPedidoPage implements OnInit {
   public cart = inject(CartService);
-  private orderService = inject(OrderService);
+  private customerOrdersService = inject(CustomerOrdersService);
   private authService = inject(AuthService);
+  private customerProfileService = inject(CustomerProfileService);
   private storageService = inject(StorageService);
   private toastController = inject(ToastController);
   private router = inject(Router);
   readonly fallbackImage = 'assets/Logos_dpt.png';
   private productService = inject(ProductService);
   productImages: Record<string, string> = {};
-
-
-
-
 
   // Variables del formulario
   customerName = '';
@@ -51,9 +50,9 @@ export class MiPedidoPage implements OnInit {
 
   async ngOnInit(): Promise<void> {
     await this.loadDraft();
+    await this.prefillProfileData();
     this.loadProductImages();
   }
-
 
   formatPrice(value: number): string {
     return '$' + value.toLocaleString('es-CO');
@@ -82,8 +81,6 @@ export class MiPedidoPage implements OnInit {
       }
     });
   }
-
-
 
   onCartImageError(event: Event): void {
     const image = event.target as HTMLImageElement | null;
@@ -134,26 +131,49 @@ export class MiPedidoPage implements OnInit {
     }
 
     try {
-      const currentUser = await this.authService.getCurrentUser();
+      if (!(await this.authService.isAuthenticated())) {
+        await this.mostrarMensaje('Inicia sesión para confirmar tu pedido.', 'warning');
+        this.persistDraft();
+        await this.router.navigate(['/cuenta'], {
+          queryParams: {
+            mode: 'login',
+            redirectTo: '/mi-pedido'
+          }
+        });
+        return;
+      }
 
-      const newOrder: Partial<Order> = {
-        id: `ORD-${Date.now()}`,
-        userId: currentUser?.userId || 'GUEST',
-        customerName,
-        customerPhone,
-        customerLocation,
-        customerEmail: currentUser?.email,
-        total: this.cart.subtotal,
-        status: 'PENDING',
+      const profile = await firstValueFrom(this.customerProfileService.bootstrapProfile());
+      if (!this.customerProfileService.isProfileComplete(profile)) {
+        await this.mostrarMensaje('Completa tu perfil antes de confirmar el pedido.', 'warning');
+        this.persistDraft();
+        await this.router.navigate(['/perfil'], {
+          queryParams: {
+            complete: 1,
+            redirectTo: '/mi-pedido'
+          }
+        });
+        return;
+      }
+
+      const request: CustomerCreateOrderRequest = {
         observations,
-        createdAt: new Date().toISOString(),
-        items: this.cart.cartItems.map(item => ({ ...item }))
+        deliverySnapshot: {
+          fullName: customerName,
+          phone: customerPhone,
+          municipality: customerLocation,
+          addressReference: profile.addressReference
+        },
+        items: this.cart.cartItems.map(item => ({
+          productId: item.id,
+          presentation: item.presentation,
+          quantity: item.quantity
+        }))
       };
 
-      this.orderService.createOrder(newOrder).subscribe({
-        next: async () => {
-          const pedidoId = newOrder.id || `ORD-${Date.now()}`;
-          const total = this.cart.subtotal;
+      this.customerOrdersService.createOrder(request, this.cart.cartItems).subscribe({
+        next: async order => {
+          const total = order.total || this.cart.subtotal;
 
           this.cart.clearCart();
           await this.clearDraft();
@@ -166,22 +186,16 @@ export class MiPedidoPage implements OnInit {
           await this.router.navigate(['/confirmacion-pedido-cliente'], {
             replaceUrl: true,
             queryParams: {
-              pedidoId,
+              pedidoId: order.id,
               customerName,
               customerLocation,
               total
             }
           });
         },
-        error: async (err: any) => {
-          const status = err?.status;
-          const message =
-            err?.error?.message ||
-            err?.message ||
-            'Hubo un error al guardar tu pedido.';
-
+        error: async (error: Error) => {
           await this.mostrarMensaje(
-            status ? `Error (${status}): ${message}` : `Error: ${message}`,
+            error.message || 'Hubo un error al guardar tu pedido.',
             'danger'
           );
         }
@@ -193,8 +207,6 @@ export class MiPedidoPage implements OnInit {
       );
     }
   }
-
-
 
   private async loadDraft(): Promise<void> {
     const draft = await this.storageService.getJson<CheckoutDraft>(CHECKOUT_DRAFT_KEY);
@@ -208,14 +220,38 @@ export class MiPedidoPage implements OnInit {
     this.observations = draft.observations ?? '';
   }
 
+  private async prefillProfileData(): Promise<void> {
+    if (!(await this.authService.isAuthenticated())) {
+      return;
+    }
+
+    try {
+      const profile = await firstValueFrom(this.customerProfileService.bootstrapProfile());
+
+      if (!this.customerName.trim()) {
+        this.customerName = profile.fullName;
+      }
+
+      if (!this.customerPhone.trim()) {
+        this.customerPhone = profile.phone;
+      }
+
+      if (!this.customerLocation.trim()) {
+        this.customerLocation = profile.municipality;
+      }
+    } catch (error) {
+      console.warn('No fue posible precargar el perfil del cliente en checkout.', error);
+    }
+  }
+
   private async clearDraft(): Promise<void> {
     await this.storageService.remove(CHECKOUT_DRAFT_KEY);
   }
+
   private isValidPhone(phone: string): boolean {
     const digitsOnly = phone.replace(/\D/g, '');
     return digitsOnly.length >= 10;
   }
-
 
   async mostrarMensaje(msg: string, color: string) {
     const toast = await this.toastController.create({

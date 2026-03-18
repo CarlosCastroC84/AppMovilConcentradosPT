@@ -211,6 +211,8 @@ export class GestionUsuariosAdminPage implements OnInit {
         switch (role) {
             case 'ADMIN':
                 return 'Administradores';
+            case 'GERENTE':
+                return 'Gerencia';
             case 'VENTAS':
                 return 'Ventas';
             case 'BODEGA':
@@ -224,6 +226,8 @@ export class GestionUsuariosAdminPage implements OnInit {
         switch (role) {
             case 'ADMIN':
                 return 'badge-admin';
+            case 'GERENTE':
+                return 'badge-manager';
             case 'VENTAS':
                 return 'badge-sales';
             case 'BODEGA':
@@ -237,6 +241,8 @@ export class GestionUsuariosAdminPage implements OnInit {
         switch (role) {
             case 'ADMIN':
                 return 'border-admin';
+            case 'GERENTE':
+                return 'border-manager';
             case 'VENTAS':
                 return 'border-sales';
             case 'BODEGA':
@@ -250,6 +256,8 @@ export class GestionUsuariosAdminPage implements OnInit {
         switch (role) {
             case 'ADMIN':
                 return 'admin-border';
+            case 'GERENTE':
+                return 'manager-border';
             case 'VENTAS':
                 return 'sales-border';
             case 'BODEGA':
@@ -263,6 +271,8 @@ export class GestionUsuariosAdminPage implements OnInit {
         switch (role) {
             case 'ADMIN':
                 return 'bg-admin';
+            case 'GERENTE':
+                return 'bg-manager';
             case 'VENTAS':
                 return 'bg-sales';
             case 'BODEGA':

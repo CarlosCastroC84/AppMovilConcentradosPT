@@ -7,7 +7,7 @@ import { AuthService } from '../../services/auth.service';
 import { OrderService } from '../../services/order.service';
 import { ProductService } from '../../services/product.service';
 import { SessionProfileService } from '../../services/session-profile.service';
-import { SessionModule } from '../../models/session-profile.model';
+import { SessionModule, STAFF_PERMISSIONS } from '../../models/session-profile.model';
 import { Product } from '../../models/product.model';
 import { CatalogProductView, enrichCatalogProduct } from '../../utils/catalog-product.util';
 import { ProductPreviewService } from '../../services/product-preview.service';
@@ -34,10 +34,9 @@ export class PanelAdminPage implements OnInit {
   private zone = inject(NgZone);
   private navController = inject(NavController);
 
-
-  currentRole: string = 'ADMIN';
   availableModules: SessionModule[] = [];
   currentUser: string = 'Administrador';
+  currentRoleLabel = 'OPERATIVO';
   pedidos: any[] = [];
   productos: CatalogProductView[] = [];
   loadingPedidos = true;
@@ -57,15 +56,41 @@ export class PanelAdminPage implements OnInit {
   }
 
   get canViewSales(): boolean {
-    return this.sessionProfileService.hasPermission('sales.view');
+    return this.sessionProfileService.hasPermission(STAFF_PERMISSIONS.salesView);
   }
 
   get canViewOrders(): boolean {
-    return this.sessionProfileService.hasPermission('orders.view');
+    return this.sessionProfileService.hasPermission(STAFF_PERMISSIONS.ordersView);
   }
 
   get canManageProducts(): boolean {
-    return this.sessionProfileService.hasPermission('products.manage');
+    return this.sessionProfileService.hasPermission(STAFF_PERMISSIONS.productsManage);
+  }
+
+  get panelTitle(): string {
+    if (this.sessionProfileService.hasPermission(STAFF_PERMISSIONS.usersManage)) {
+      return 'Panel Admin';
+    }
+
+    if (this.sessionProfileService.hasAnyPermission([
+      STAFF_PERMISSIONS.ordersCancel,
+      STAFF_PERMISSIONS.ordersReturn,
+      STAFF_PERMISSIONS.settingsManage
+    ])) {
+      return 'Portal Gerencia';
+    }
+
+    return 'Portal Operativo';
+  }
+
+  private filterQuickAccessModules(modules: SessionModule[]): SessionModule[] {
+    return modules.filter((module) => {
+      const route = module.route?.startsWith('/') ? module.route : `/${module.route ?? ''}`;
+
+      return route !== '/panel-admin'
+        && module.key !== 'panel-admin'
+        && module.title !== 'Panel Admin';
+    });
   }
 
   async ngOnInit() {
@@ -80,10 +105,11 @@ export class PanelAdminPage implements OnInit {
         this.sessionProfileService.profile ||
         await firstValueFrom(this.sessionProfileService.loadProfile());
 
-      this.currentRole = profile.role;
-      this.availableModules = profile.modules || [];
+      this.currentRoleLabel = this.resolveRoleLabel(profile.role);
+      this.availableModules = this.filterQuickAccessModules(profile.modules || []);
     } catch (error) {
       console.error('No fue posible cargar el perfil del panel:', error);
+      this.currentRoleLabel = 'OPERATIVO';
       this.availableModules = [];
     }
 
@@ -233,5 +259,20 @@ export class PanelAdminPage implements OnInit {
         animated: false
       });
     });
+  }
+
+  private resolveRoleLabel(role: string | null | undefined): string {
+    switch (String(role || '').trim().toUpperCase()) {
+      case 'ADMIN':
+        return 'ADMIN';
+      case 'GERENTE':
+        return 'GERENTE';
+      case 'VENTAS':
+        return 'VENTAS';
+      case 'BODEGA':
+        return 'BODEGA';
+      default:
+        return 'OPERATIVO';
+    }
   }
 }

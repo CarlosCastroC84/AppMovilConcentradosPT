@@ -1,0 +1,21 @@
+:host {
+  --customer-nav-height: 92px;
+  display: block;
+  min-height: 100%;
+}
+
+.customer-shell {
+  min-height: 100%;
+}
+
+@media (min-width: 768px) {
+  :host {
+    --customer-nav-height: 132px;
+  }
+}
+
+@media (min-width: 1024px) {
+  :host {
+    --customer-nav-height: 138px;
+  }
+}

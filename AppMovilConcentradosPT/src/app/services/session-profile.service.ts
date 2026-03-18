@@ -2,7 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { environment } from '../../environments/environment';
-import { SessionUserProfile } from '../models/session-profile.model';
+import { SessionUserProfile, StaffPermission } from '../models/session-profile.model';
 
 @Injectable({
     providedIn: 'root'
@@ -28,8 +28,13 @@ export class SessionProfileService {
         this.profileSubject.next(null);
     }
 
-    hasPermission(permission: string): boolean {
+    hasPermission(permission: StaffPermission): boolean {
         return this.profile?.permissions.includes(permission) ?? false;
+    }
+
+    hasAnyPermission(permissions: readonly StaffPermission[]): boolean {
+        const profilePermissions = this.profile?.permissions ?? [];
+        return permissions.some(permission => profilePermissions.includes(permission));
     }
 
     getDefaultRoute(): string {

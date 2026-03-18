@@ -6,7 +6,9 @@ import { RouterModule } from '@angular/router';
 import { DeleteOrderRequest, Order, OrderStatus, UpdateOrderRequest } from '../../models/order.model';
 import { OrderService } from '../../services/order.service';
 import { AuthService } from '../../services/auth.service';
-import { OrderDetailsModalService } from '../../services/order-details-modal.service';
+import { SessionProfileService } from '../../services/session-profile.service';
+import { OrderDetailsModalComponent } from '../../components/order-details-modal/order-details-modal.component';
+import { STAFF_PERMISSIONS } from '../../models/session-profile.model';
 import {
   getOrderDisplayName,
   getOrderDisplayPhone,
@@ -21,12 +23,12 @@ type DateFilter = 'TODOS' | 'HOY' | 'SEMANA' | 'MES';
   templateUrl: './gestion-pedidos.page.html',
   styleUrls: ['./gestion-pedidos.page.scss'],
   standalone: true,
-  imports: [IonicModule, CommonModule, FormsModule, RouterModule]
+  imports: [IonicModule, CommonModule, FormsModule, RouterModule, OrderDetailsModalComponent]
 })
 export class GestionPedidosPage implements OnInit {
   private orderService = inject(OrderService);
   private authService = inject(AuthService);
-  private orderDetailsModalService = inject(OrderDetailsModalService);
+  private sessionProfileService = inject(SessionProfileService);
   private toastController = inject(ToastController);
   private alertController = inject(AlertController);
 
@@ -46,6 +48,8 @@ export class GestionPedidosPage implements OnInit {
   dateFilter: DateFilter = 'TODOS';
   updatingOrderId: string | null = null;
   deletingOrderId: string | null = null;
+  selectedOrder: Order | null = null;
+  isDetailsModalOpen = false;
   private currentActor: string | null = null;
 
   async ngOnInit() {
@@ -140,8 +144,89 @@ export class GestionPedidosPage implements OnInit {
     });
   }
 
-  viewOrderDetails(order: Order) {
-    void this.orderDetailsModalService.open(order);
+  openOrderDetails(order: Order): void {
+    this.selectedOrder = order;
+    this.isDetailsModalOpen = true;
+  }
+
+  closeOrderDetails(): void {
+    this.isDetailsModalOpen = false;
+    this.selectedOrder = null;
+  }
+
+  get canCancelOrders(): boolean {
+    return this.sessionProfileService.hasAnyPermission([
+      STAFF_PERMISSIONS.ordersCancel,
+      STAFF_PERMISSIONS.ordersManage
+    ]);
+  }
+
+  get canReturnOrders(): boolean {
+    return this.sessionProfileService.hasAnyPermission([
+      STAFF_PERMISSIONS.ordersReturn,
+      STAFF_PERMISSIONS.ordersManage
+    ]);
+  }
+
+  get canCancelSelectedOrder(): boolean {
+    return this.canCancelOrders
+      && !!this.selectedOrder
+      && (this.selectedOrder.status === 'PENDING' || this.selectedOrder.status === 'PROCESSING');
+  }
+
+  get canReturnSelectedOrderToSales(): boolean {
+    return this.canReturnOrders
+      && !!this.selectedOrder
+      && this.selectedOrder.status === 'PROCESSING';
+  }
+
+  async confirmCancelSelectedOrder(): Promise<void> {
+    if (!this.selectedOrder || !this.canCancelSelectedOrder) {
+      return;
+    }
+
+    const order = this.selectedOrder;
+    const alert = await this.alertController.create({
+      header: 'Cancelar venta',
+      message: `Se cancelará el pedido ${order.id}. Esta acción lo sacará del flujo de ventas y bodega.`,
+      buttons: [
+        {
+          text: 'Volver',
+          role: 'cancel'
+        },
+        {
+          text: 'Cancelar venta',
+          role: 'destructive',
+          handler: () => this.applyOperationalStatusChange(order, 'CANCELLED', `Pedido ${order.id} cancelado.`)
+        }
+      ]
+    });
+
+    await alert.present();
+  }
+
+  async confirmReturnSelectedOrderToSales(): Promise<void> {
+    if (!this.selectedOrder || !this.canReturnSelectedOrderToSales) {
+      return;
+    }
+
+    const order = this.selectedOrder;
+    const alert = await this.alertController.create({
+      header: 'Devolver a ventas',
+      message: `El pedido ${order.id} volverá a estado pendiente para que ventas lo retome.`,
+      buttons: [
+        {
+          text: 'Volver',
+          role: 'cancel'
+        },
+        {
+          text: 'Devolver',
+          handler: () => this.applyOperationalStatusChange(order, 'PENDING', `Pedido ${order.id} devuelto a ventas.`)
+        }
+      ]
+    });
+
+    await alert.present();
   }
 
   async confirmDelete(order: Order) {
@@ -237,6 +322,23 @@ export class GestionPedidosPage implements OnInit {
 
   formatPrice(value: number): string {
     return `$${value.toLocaleString('es-CO')}`;
+  }
+
+  formatOrderDate(value: string): string {
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) {
+      return 'Sin fecha';
+    }
+
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear();
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const isPm = date.getHours() >= 12;
+    const hour = date.getHours() % 12 || 12;
+    const meridiem = isPm ? 'p.m.' : 'a.m.';
+
+    return `${day}/${month}/${year} ${hour}:${minutes} ${meridiem}`;
   }
 
   trackByOrder(_index: number, order: Order): string {
@@ -358,5 +460,40 @@ export class GestionPedidosPage implements OnInit {
     });
 
     await toast.present();
+  }
+
+  private applyOperationalStatusChange(order: Order, nextStatus: OrderStatus, successMessage: string): void {
+    this.updatingOrderId = order.id;
+    const updatedAt = new Date().toISOString();
+    const request: UpdateOrderRequest = {
+      id: order.id,
+      status: nextStatus,
+      updatedAt,
+      updatedBy: this.currentActor || undefined
+    };
+
+    const updatedOrder: Order = {
+      ...order,
+      status: nextStatus,
+      updatedAt
+    };
+
+    this.orderService.updateOrder(request).subscribe({
+      next: savedOrder => {
+        const resolvedOrder = savedOrder ? { ...order, ...savedOrder } : updatedOrder;
+        this.upsertOrder(resolvedOrder);
+        this.updatingOrderId = null;
+
+        if (this.selectedOrder?.id === order.id) {
+          this.closeOrderDetails();
+        }
+
+        void this.showToast(successMessage, 'success');
+      },
+      error: (error: Error) => {
+        this.updatingOrderId = null;
+        void this.showToast(error.message || 'No fue posible actualizar el pedido.', 'danger');
+      }
+    });
   }
 }

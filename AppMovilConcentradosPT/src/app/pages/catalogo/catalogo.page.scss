@@ -96,7 +96,7 @@ ion-content.catalog-content::part(scroll) {
 }
 
 .catalog-main {
-  padding: 18px 14px 110px;
+  padding: 18px 14px calc(var(--customer-nav-height, 92px) + 24px);
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -573,7 +573,7 @@ ion-content.catalog-content::part(scroll) {
   }
 
   .catalog-main {
-    padding: 16px 12px 110px;
+    padding: 16px 12px calc(var(--customer-nav-height, 92px) + 22px);
     gap: 14px;
   }
 

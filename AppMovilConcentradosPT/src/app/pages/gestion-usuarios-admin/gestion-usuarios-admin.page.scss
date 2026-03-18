@@ -10,6 +10,7 @@
   --shadow-card: 0 8px 18px rgba(17, 24, 39, 0.08);
 
   --c-admin: #ff6a2f;
+  --c-manager: #0f766e;
   --c-sales: #3b82f6;
   --c-wh: #9ca3af;
 
@@ -278,6 +279,10 @@ ion-content {
   background-color: var(--c-admin);
 }
 
+.border-manager {
+  background-color: var(--c-manager);
+}
+
 .border-sales {
   background-color: var(--c-sales);
 }
@@ -288,6 +293,10 @@ ion-content {
 
 .admin-border {
   border-color: rgba(255, 106, 47, 0.16);
+}
+
+.manager-border {
+  border-color: rgba(15, 118, 110, 0.18);
 }
 
 .sales-border {
@@ -370,6 +379,11 @@ ion-content {
   color: #c2410c;
 }
 
+.badge-manager {
+  background: #d1fae5;
+  color: #0f766e;
+}
+
 .badge-sales {
   background: #dbeafe;
   color: #1e40af;
@@ -447,6 +461,10 @@ ion-content {
 
 input:checked+.slider.bg-admin {
   background-color: var(--primary);
+}
+
+input:checked+.slider.bg-manager {
+  background-color: var(--c-manager);
 }
 
 input:checked+.slider.bg-sales {

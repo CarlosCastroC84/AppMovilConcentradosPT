@@ -3,8 +3,9 @@ import { CanActivateFn, Router } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
 import { AuthService } from '../services/auth.service';
 import { SessionProfileService } from '../services/session-profile.service';
+import { StaffPermission } from '../models/session-profile.model';
 
-export const permissionGuard = (permission: string): CanActivateFn => {
+export const permissionGuard = (permission: StaffPermission): CanActivateFn => {
     return async (_route, state) => {
         const authService = inject(AuthService);
         const sessionProfileService = inject(SessionProfileService);

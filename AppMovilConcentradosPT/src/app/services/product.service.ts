@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
-import { map, switchMap } from 'rxjs/operators';
+import { map, switchMap, timeout } from 'rxjs/operators';
 import { Product } from '../models/product.model';
 import { environment } from '../../environments/environment';
 import { unwrapApiArray, unwrapApiEntity, unwrapApiResponse } from '../utils/api-response.util';
@@ -10,6 +10,7 @@ import { unwrapApiArray, unwrapApiEntity, unwrapApiResponse } from '../utils/api
   providedIn: 'root',
 })
 export class ProductService {
+  private static readonly requestTimeoutMs = 12000;
   private http = inject(HttpClient);
   private apiUrl = `${environment.awsConfig.apiUrl}/productos`;
 
@@ -20,18 +21,21 @@ export class ProductService {
    */
   getProducts(): Observable<Product[]> {
     return this.http.get<unknown>(this.apiUrl).pipe(
+      timeout(ProductService.requestTimeoutMs),
       map(response => unwrapApiArray<Product>(response))
     );
   }
 
   createProduct(productData: Product): Observable<Product> {
     return this.http.post<unknown>(this.apiUrl, productData).pipe(
+      timeout(ProductService.requestTimeoutMs),
       switchMap(response => this.resolveMutationProduct(response, productData))
     );
   }
 
   updateProduct(productData: Product): Observable<Product> {
     return this.http.put<unknown>(this.apiUrl, productData).pipe(
+      timeout(ProductService.requestTimeoutMs),
       switchMap(response => this.resolveMutationProduct(response, productData))
     );
   }
@@ -40,6 +44,7 @@ export class ProductService {
     return this.http.delete<unknown>(this.apiUrl, {
       body: { id }
     }).pipe(
+      timeout(ProductService.requestTimeoutMs),
       map(response => {
         unwrapApiResponse(response);
         return void 0;

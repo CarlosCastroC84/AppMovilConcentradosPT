@@ -1,0 +1,107 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar>
+    <div class="orders-topbar">
+      <div>
+        <p class="topbar-kicker">Historial</p>
+        <h1 class="topbar-title">Mis Pedidos</h1>
+      </div>
+
+      <button class="refresh-btn" type="button" (click)="loadOrders()">
+        <span class="material-icons-round">refresh</span>
+      </button>
+    </div>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="orders-content">
+  <main class="orders-shell">
+    <section class="filters-card">
+      <label class="filter-field">
+        <span class="filter-label">Año</span>
+        <select class="filter-input" [(ngModel)]="yearFilter">
+          <option *ngFor="let year of yearOptions" [value]="year">{{ year === 'TODOS' ? 'Todos' : year }}</option>
+        </select>
+      </label>
+
+      <label class="filter-field">
+        <span class="filter-label">Estado</span>
+        <select class="filter-input" [(ngModel)]="statusFilter">
+          <option value="TODOS">Todos</option>
+          <option value="PENDING">Recibido</option>
+          <option value="PROCESSING">En camino</option>
+          <option value="COMPLETED">Entregado</option>
+          <option value="CANCELLED">Cancelado</option>
+        </select>
+      </label>
+    </section>
+
+    <section class="state-card" *ngIf="loading">
+      <ion-spinner name="crescent"></ion-spinner>
+      <p>Cargando tu historial de pedidos...</p>
+    </section>
+
+    <section class="state-card error" *ngIf="!loading && error">
+      <span class="material-icons-round">error</span>
+      <p>{{ error }}</p>
+      <button class="outline-btn" type="button" (click)="loadOrders()">Reintentar</button>
+    </section>
+
+    <section class="state-card" *ngIf="!loading && !error && filteredOrders.length === 0">
+      <span class="material-icons-round">receipt_long</span>
+      <p>Todavía no tienes pedidos en tu historial.</p>
+      <button class="outline-btn" type="button" routerLink="/catalogo">Explorar productos</button>
+    </section>
+
+    <section class="orders-list" *ngIf="!loading && !error && filteredOrders.length > 0">
+      <article class="order-card" *ngFor="let order of filteredOrders; trackBy: trackByOrder">
+        <div class="order-head">
+          <div>
+            <p class="order-date">{{ order.createdAt | date:'dd MMM, y' }}</p>
+            <h2 class="order-id">#{{ order.id }}</h2>
+          </div>
+
+          <span class="status-pill" [ngClass]="getStatusClass(order.status)">
+            {{ getStatusLabel(order.status) }}
+          </span>
+        </div>
+
+        <div class="order-body">
+          <div class="product-thumb">
+            <img [src]="order.leadProductImageUrl || 'assets/Logos_dpt.png'" [alt]="order.leadProductName" />
+          </div>
+
+          <div class="order-copy">
+            <h3 class="product-name">{{ order.leadProductName }}</h3>
+            <p class="product-meta">{{ order.itemCount }} items · {{ order.total | currency:'COP':'symbol-narrow':'1.0-0' }}</p>
+            <p class="product-location">{{ order.deliverySnapshot.municipality || 'Ubicación por confirmar' }}</p>
+          </div>
+        </div>
+
+        <div class="order-actions">
+          <button class="action-btn primary" type="button" (click)="reorder(order)">
+            <span class="material-icons-round">shopping_cart</span>
+            Volver a comprar
+          </button>
+
+          <button class="action-btn secondary" type="button" (click)="viewDetails(order)">
+            Ver detalle
+          </button>
+        </div>
+      </article>
+    </section>
+  </main>
+</ion-content>
+
+<ion-modal
+  [isOpen]="isDetailsModalOpen"
+  cssClass="order-details-modal"
+  [backdropDismiss]="true"
+  (didDismiss)="closeDetails()">
+  <ng-template>
+    <app-order-details-modal
+      *ngIf="selectedOrder"
+      [order]="selectedOrder"
+      (closeRequested)="closeDetails()">
+    </app-order-details-modal>
+  </ng-template>
+</ion-modal>

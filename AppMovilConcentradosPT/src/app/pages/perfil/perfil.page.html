@@ -1,0 +1,173 @@
+<ion-header class="ion-no-border profile-header">
+  <ion-toolbar>
+    <p class="profile-page-title">Mi Perfil de Usuario</p>
+
+    <div class="profile-topbar">
+      <div class="hero-copy">
+        <h1 class="topbar-title">{{ greetingLine }}</h1>
+      </div>
+
+      <div class="avatar-ring">
+        <img *ngIf="avatarUrl; else avatarFallback" [src]="avatarUrl" [alt]="greetingName || 'Foto de perfil'" />
+        <ng-template #avatarFallback>
+          <span class="material-icons-round">person</span>
+        </ng-template>
+      </div>
+    </div>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="profile-content">
+  <main class="profile-shell">
+    <section class="notice-card" *ngIf="requiresCompletion">
+      <span class="material-icons-round">priority_high</span>
+      <div>
+        <h2>Completa tu perfil</h2>
+        <p>Necesitamos nombre, celular y municipio/vereda para habilitar el seguimiento y confirmar tu pedido.</p>
+      </div>
+    </section>
+
+    <section class="latest-order-card" *ngIf="latestOrder; else emptyLastOrder">
+      <div class="latest-order-head">
+        <div class="latest-order-copy">
+          <h2 class="latest-order-title">Último pedido</h2>
+          <p class="latest-order-subtitle">{{ latestOrderSummary }}</p>
+        </div>
+
+        <div class="latest-order-icon">
+          <span class="material-icons-round">receipt_long</span>
+        </div>
+      </div>
+
+      <div class="progress-copy">
+        <span class="status-text" [ngClass]="statusClass">{{ statusLabel }}</span>
+        <span class="material-icons-round delivery-icon" [ngClass]="statusClass">local_shipping</span>
+      </div>
+
+      <div class="progress-track" [class.is-cancelled]="latestOrder.status === 'CANCELLED'">
+        <span class="progress-value" [ngClass]="statusClass" [style.width]="progressWidth"></span>
+      </div>
+    </section>
+
+    <ng-template #emptyLastOrder>
+      <section class="latest-order-card muted">
+        <div class="latest-order-head">
+          <div class="latest-order-copy">
+            <h2 class="latest-order-title">Aún no tienes pedidos</h2>
+            <p class="latest-order-subtitle">Cuando confirmes tu primera compra, aparecerá aquí.</p>
+          </div>
+
+          <div class="latest-order-icon is-empty">
+            <span class="material-icons-round">inventory_2</span>
+          </div>
+        </div>
+      </section>
+    </ng-template>
+
+    <section class="menu-card">
+      <button class="menu-item" type="button" (click)="openOrders()">
+        <span class="material-icons-round icon soft-blue">history</span>
+        <span class="menu-text">Mis Pedidos</span>
+        <span class="material-icons-round arrow">chevron_right</span>
+      </button>
+
+      <button class="menu-item" type="button" (click)="scrollToProfileForm()">
+        <span class="material-icons-round icon soft-orange">badge</span>
+        <span class="menu-text">Mis Datos</span>
+        <span class="material-icons-round arrow">chevron_right</span>
+      </button>
+
+      <button class="menu-item" type="button" (click)="openSecurity()">
+        <span class="material-icons-round icon soft-gray">lock</span>
+        <span class="menu-text">Seguridad</span>
+        <span class="material-icons-round arrow">chevron_right</span>
+      </button>
+
+      <button class="menu-item" type="button" (click)="openHelp()">
+        <span class="material-icons-round icon soft-red">help</span>
+        <span class="menu-text">Ayuda</span>
+        <span class="material-icons-round arrow">chevron_right</span>
+      </button>
+    </section>
+
+    <section class="form-card" *ngIf="!loading" id="profile-form-card" [class.is-readonly]="!isEditingProfile">
+      <div class="section-head">
+        <div>
+          <p class="card-kicker">Perfil</p>
+          <h2 class="section-title">Datos para tus pedidos</h2>
+        </div>
+
+        <div class="section-actions">
+          <span class="provider-pill">{{ providerLabel }}</span>
+          <button
+            *ngIf="canToggleEditProfile && !isEditingProfile"
+            class="edit-toggle-btn"
+            type="button"
+            (click)="enableProfileEdit()">
+            <span class="material-icons-round">edit</span>
+            Editar
+          </button>
+          <button
+            *ngIf="isEditingProfile && canToggleEditProfile"
+            class="edit-toggle-btn is-secondary"
+            type="button"
+            (click)="cancelProfileEdit()">
+            Cancelar
+          </button>
+        </div>
+      </div>
+
+      <div class="field-grid">
+        <label class="field field-full">
+          <span class="field-label">Nombre completo</span>
+          <input class="field-input" type="text" name="fullName" [(ngModel)]="fullName" [readonly]="!isEditingProfile" [attr.tabindex]="isEditingProfile ? 0 : -1" />
+        </label>
+
+        <label class="field field-full">
+          <span class="field-label">Correo electrónico</span>
+          <input class="field-input" type="email" [value]="email" readonly tabindex="-1" />
+        </label>
+
+        <label class="field">
+          <span class="field-label">Celular</span>
+          <input class="field-input" type="tel" name="phone" [(ngModel)]="phone" [readonly]="!isEditingProfile" [attr.tabindex]="isEditingProfile ? 0 : -1" />
+        </label>
+
+        <label class="field">
+          <span class="field-label">Municipio / Vereda</span>
+          <input class="field-input" type="text" name="municipality" [(ngModel)]="municipality" [readonly]="!isEditingProfile" [attr.tabindex]="isEditingProfile ? 0 : -1" />
+        </label>
+
+        <label class="field field-full">
+          <span class="field-label">Referencia de entrega</span>
+          <textarea class="field-textarea" name="addressReference" [(ngModel)]="addressReference"
+            placeholder="Ej: finca El Paraíso, portón verde, llamar antes de llegar"
+            [readonly]="!isEditingProfile"
+            [attr.tabindex]="isEditingProfile ? 0 : -1"></textarea>
+        </label>
+      </div>
+
+      <div class="security-note" *ngIf="authProvider === 'GOOGLE'">
+        Este perfil inició sesión con Google. La contraseña se administra desde esa cuenta.
+      </div>
+
+      <button class="primary-btn" *ngIf="isEditingProfile" type="button" [disabled]="saving" (click)="saveProfile()">
+        {{ saving ? 'Guardando...' : 'Guardar cambios' }}
+      </button>
+    </section>
+
+    <section class="account-actions-card">
+      <button class="logout-inline-btn" type="button" (click)="logout()">
+        Cerrar Sesión
+      </button>
+    </section>
+  </main>
+</ion-content>
+
+<ion-footer class="ion-no-border profile-footer">
+  <div class="footer-actions">
+    <button class="logout-btn" type="button" (click)="logout()">
+      Cerrar Sesión
+    </button>
+  </div>
+</ion-footer>

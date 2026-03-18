@@ -1,6 +1,8 @@
 import { Routes } from '@angular/router';
-import { authGuard } from './guards/auth.guard';
+import { adminGuard } from './guards/admin.guard';
+import { customerAuthGuard } from './guards/customer-auth.guard';
 import { permissionGuard } from './guards/permission.guard';
+import { STAFF_PERMISSIONS } from './models/session-profile.model';
 
 
 export const routes: Routes = [
@@ -13,20 +15,16 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/login-operativo/login-operativo.page').then((m) => m.LoginOperativoPage),
   },
   {
-    path: 'inicio',
-    loadComponent: () => import('./pages/inicio/inicio.page').then((m) => m.InicioPage),
+    path: 'cuenta',
+    loadComponent: () => import('./pages/cuenta/cuenta.page').then((m) => m.CuentaPage),
   },
   {
-    path: 'catalogo',
-    loadComponent: () => import('./pages/catalogo/catalogo.page').then((m) => m.CatalogoPage),
+    path: 'auth/callback',
+    loadComponent: () => import('./pages/auth-callback/auth-callback.page').then((m) => m.AuthCallbackPage),
   },
   {
     path: 'detalle-producto',
     loadComponent: () => import('./pages/detalle-producto/detalle-producto.page').then((m) => m.DetalleProductoPage),
-  },
-  {
-    path: 'mi-pedido',
-    loadComponent: () => import('./pages/mi-pedido/mi-pedido.page').then((m) => m.MiPedidoPage),
   },
   {
     path: 'atencion-cliente',
@@ -34,17 +32,17 @@ export const routes: Routes = [
   },
   {
     path: 'panel-admin',
-    canActivate: [authGuard],
+    canActivate: [adminGuard],
     loadComponent: () => import('./pages/panel-admin/panel-admin.page').then((m) => m.PanelAdminPage),
   },
   {
     path: 'gestion-productos',
-    canActivate: [authGuard, permissionGuard('products.manage')],
+    canActivate: [adminGuard, permissionGuard(STAFF_PERMISSIONS.productsManage)],
     loadComponent: () => import('./pages/gestion-productos/gestion-productos.page').then((m) => m.GestionProductosPage),
   },
   {
     path: 'gestion-pedidos',
-    canActivate: [authGuard, permissionGuard('orders.manage')],
+    canActivate: [adminGuard, permissionGuard(STAFF_PERMISSIONS.ordersManage)],
     loadComponent: () => import('./pages/gestion-pedidos/gestion-pedidos.page').then((m) => m.GestionPedidosPage),
   },
   {
@@ -53,42 +51,42 @@ export const routes: Routes = [
   },
   {
     path: 'configuracion-general',
-    canActivate: [authGuard],
+    canActivate: [adminGuard],
     loadComponent: () => import('./pages/configuracion-general/configuracion-general.page').then((m) => m.ConfiguracionGeneralPage),
   },
   {
     path: 'dashboard-ventas',
-    canActivate: [authGuard, permissionGuard('sales.view')],
+    canActivate: [adminGuard, permissionGuard(STAFF_PERMISSIONS.salesView)],
     loadComponent: () => import('./pages/dashboard-ventas/dashboard-ventas.page').then((m) => m.DashboardVentasPage),
   },
   {
     path: 'gestion-pedido-ventas',
-    canActivate: [authGuard, permissionGuard('orders.view')],
+    canActivate: [adminGuard, permissionGuard(STAFF_PERMISSIONS.ordersView)],
     loadComponent: () => import('./pages/gestion-pedido-ventas/gestion-pedido-ventas.page').then((m) => m.GestionPedidoVentasPage),
   },
   {
     path: 'bandeja-alistamiento',
-    canActivate: [authGuard, permissionGuard('warehouse.pick')],
+    canActivate: [adminGuard, permissionGuard(STAFF_PERMISSIONS.warehousePick)],
     loadComponent: () => import('./pages/bandeja-alistamiento/bandeja-alistamiento.page').then((m) => m.BandejaAlistamientoPage),
   },
   {
     path: 'checklist-alistamiento',
-    canActivate: [authGuard, permissionGuard('warehouse.pick')],
+    canActivate: [adminGuard, permissionGuard(STAFF_PERMISSIONS.warehousePick)],
     loadComponent: () => import('./pages/checklist-alistamiento/checklist-alistamiento.page').then((m) => m.ChecklistAlistamientoPage),
   },
   {
     path: 'despacho-pedidos-bodega',
-    canActivate: [authGuard, permissionGuard('warehouse.dispatch')],
+    canActivate: [adminGuard, permissionGuard(STAFF_PERMISSIONS.warehouseDispatch)],
     loadComponent: () => import('./pages/despacho-pedidos-bodega/despacho-pedidos-bodega.page').then((m) => m.DespachoPedidosBodegaPage),
   },
   {
     path: 'gestion-usuarios-admin',
-    canActivate: [authGuard, permissionGuard('users.manage')],
+    canActivate: [adminGuard, permissionGuard(STAFF_PERMISSIONS.usersManage)],
     loadComponent: () => import('./pages/gestion-usuarios-admin/gestion-usuarios-admin.page').then((m) => m.GestionUsuariosAdminPage),
   },
   {
     path: 'configuracion-negocio-admin',
-    canActivate: [authGuard, permissionGuard('settings.manage')],
+    canActivate: [adminGuard, permissionGuard(STAFF_PERMISSIONS.settingsManage)],
     loadComponent: () => import('./pages/configuracion-negocio-admin/configuracion-negocio-admin.page').then((m) => m.ConfiguracionNegocioAdminPage),
   },
   {
@@ -97,12 +95,40 @@ export const routes: Routes = [
   },
   {
     path: 'perfil-auditoria-staff',
-    canActivate: [authGuard],
+    canActivate: [adminGuard],
     loadComponent: () => import('./pages/perfil-auditoria-staff/perfil-auditoria-staff.page').then((m) => m.PerfilAuditoriaStaffPage),
   },
   {
     path: '',
-    redirectTo: 'inicio',
-    pathMatch: 'full',
+    loadComponent: () => import('./layout/customer-shell/customer-shell.component').then((m) => m.CustomerShellComponent),
+    children: [
+      {
+        path: '',
+        redirectTo: 'inicio',
+        pathMatch: 'full',
+      },
+      {
+        path: 'inicio',
+        loadComponent: () => import('./pages/inicio/inicio.page').then((m) => m.InicioPage),
+      },
+      {
+        path: 'catalogo',
+        loadComponent: () => import('./pages/catalogo/catalogo.page').then((m) => m.CatalogoPage),
+      },
+      {
+        path: 'mi-pedido',
+        loadComponent: () => import('./pages/mi-pedido/mi-pedido.page').then((m) => m.MiPedidoPage),
+      },
+      {
+        path: 'mis-pedidos',
+        canActivate: [customerAuthGuard],
+        loadComponent: () => import('./pages/mis-pedidos/mis-pedidos.page').then((m) => m.MisPedidosPage),
+      },
+      {
+        path: 'perfil',
+        canActivate: [customerAuthGuard],
+        loadComponent: () => import('./pages/perfil/perfil.page').then((m) => m.PerfilPage),
+      }
+    ]
   },
 ];

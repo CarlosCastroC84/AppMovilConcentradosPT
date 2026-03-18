@@ -122,6 +122,10 @@ export class AdminUsersService {
             return 'ADMIN';
         }
 
+        if (normalized.includes('GERENT')) {
+            return 'GERENTE';
+        }
+
         if (normalized.includes('VENTA')) {
             return 'VENTAS';
         }

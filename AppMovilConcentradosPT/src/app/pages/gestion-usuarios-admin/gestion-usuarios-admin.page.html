@@ -28,6 +28,10 @@
       <button class="filter-chip" type="button" [class.active]="activeFilter === 'ADMIN'" (click)="setFilter('ADMIN')">
         Administradores
       </button>
+      <button class="filter-chip" type="button" [class.active]="activeFilter === 'GERENTE'"
+        (click)="setFilter('GERENTE')">
+        Gerencia
+      </button>
       <button class="filter-chip" type="button" [class.active]="activeFilter === 'VENTAS'"
         (click)="setFilter('VENTAS')">
         Ventas
@@ -92,6 +96,11 @@
           Ventas
         </button>
 
+        <button class="filter-chip" type="button" [class.active]="newUserForm.role === 'GERENTE'"
+          (click)="newUserForm.role = 'GERENTE'">
+          Gerente
+        </button>
+
         <button class="filter-chip" type="button" [class.active]="newUserForm.role === 'BODEGA'"
           (click)="newUserForm.role = 'BODEGA'">
           Bodega
@@ -153,6 +162,8 @@
                 [style.background]="
                   user.role === 'ADMIN'
                     ? 'linear-gradient(135deg, #ff6a2f 0%, #f05822 100%)'
+                    : user.role === 'GERENTE'
+                      ? 'linear-gradient(135deg, #0f766e 0%, #0d9488 100%)'
                     : user.role === 'VENTAS'
                       ? 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)'
                       : 'linear-gradient(135deg, #9ca3af 0%, #6b7280 100%)'

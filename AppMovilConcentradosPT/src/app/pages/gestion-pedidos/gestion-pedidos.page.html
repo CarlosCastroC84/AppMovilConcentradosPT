@@ -26,7 +26,15 @@
 <ion-content>
   <main class="pedidos-main">
     <section class="kpis-grid">
-      <article class="kpi-card">
+      <article class="kpi-card wide sales-card">
+        <div class="kpi-icon emerald">
+          <span class="material-icons-round">payments</span>
+        </div>
+        <p class="kpi-label">Ventas hoy</p>
+        <h3 class="kpi-value">{{ formatPrice(salesToday) }}</h3>
+      </article>
+
+      <article class="kpi-card compact">
         <div class="kpi-icon yellow">
           <span class="material-icons-round">pending_actions</span>
         </div>
@@ -34,7 +42,7 @@
         <h3 class="kpi-value">{{ pendingOrders }}</h3>
       </article>
 
-      <article class="kpi-card">
+      <article class="kpi-card compact">
         <div class="kpi-icon blue">
           <span class="material-icons-round">sync_alt</span>
         </div>
@@ -42,7 +50,7 @@
         <h3 class="kpi-value">{{ processingOrders }}</h3>
       </article>
 
-      <article class="kpi-card">
+      <article class="kpi-card compact">
         <div class="kpi-icon green">
           <span class="material-icons-round">task_alt</span>
         </div>
@@ -50,20 +58,12 @@
         <h3 class="kpi-value">{{ completedOrders }}</h3>
       </article>
 
-      <article class="kpi-card">
+      <article class="kpi-card compact">
         <div class="kpi-icon gray">
           <span class="material-icons-round">cancel</span>
         </div>
         <p class="kpi-label">Cancelados</p>
         <h3 class="kpi-value">{{ cancelledOrders }}</h3>
-      </article>
-
-      <article class="kpi-card wide">
-        <div class="kpi-icon emerald">
-          <span class="material-icons-round">payments</span>
-        </div>
-        <p class="kpi-label">Ventas hoy</p>
-        <h3 class="kpi-value">{{ formatPrice(salesToday) }}</h3>
       </article>
     </section>
     <section class="filters-card">
@@ -167,7 +167,7 @@
 
           <div class="summary-col right">
             <span class="summary-label">Fecha</span>
-            <span class="summary-value small">{{ order.createdAt | date:'short' }}</span>
+            <span class="summary-value small">{{ formatOrderDate(order.createdAt) }}</span>
           </div>
         </div>
 
@@ -178,7 +178,7 @@
             WhatsApp
           </button>
 
-          <button class="order-btn detail" type="button" (click)="viewOrderDetails(order)">
+          <button class="order-btn detail" type="button" (click)="openOrderDetails(order)">
             <span class="material-icons-round">visibility</span>
             Detalle
           </button>
@@ -191,5 +191,17 @@
         </div>
       </article>
     </section>
+
+    <ion-modal [isOpen]="isDetailsModalOpen" cssClass="order-details-modal" (didDismiss)="closeOrderDetails()">
+      <ng-template>
+        <app-order-details-modal *ngIf="selectedOrder" [order]="selectedOrder" context="operations"
+          [showCancelAction]="canCancelSelectedOrder"
+          [cancelActionDisabled]="!canCancelSelectedOrder || updatingOrderId === selectedOrder.id"
+          [showReturnToSalesAction]="canReturnSelectedOrderToSales"
+          [returnToSalesDisabled]="!canReturnSelectedOrderToSales || updatingOrderId === selectedOrder.id"
+          (closeRequested)="closeOrderDetails()" (cancelAction)="confirmCancelSelectedOrder()"
+          (returnToSalesAction)="confirmReturnSelectedOrderToSales()"></app-order-details-modal>
+      </ng-template>
+    </ion-modal>
   </main>
 </ion-content>

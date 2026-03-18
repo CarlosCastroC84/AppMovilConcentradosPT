@@ -27,7 +27,10 @@ ion-content {
 
 ion-footer {
   --background: transparent;
-  position: relative;
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: var(--customer-nav-height, 92px);
   z-index: 20;
 }
 
@@ -94,7 +97,7 @@ ion-footer {
 }
 
 .pedido-main {
-  padding: 16px 14px 120px;
+  padding: 16px 14px calc(var(--customer-nav-height, 92px) + 140px);
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -486,7 +489,7 @@ ion-footer {
   }
 
   .pedido-main {
-    padding: 14px 12px 118px;
+    padding: 14px 12px calc(var(--customer-nav-height, 92px) + 132px);
     gap: 14px;
   }
 

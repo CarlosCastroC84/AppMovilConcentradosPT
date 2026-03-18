@@ -5,7 +5,7 @@
         <div class="brand-chip">PT</div>
         <div class="brand-copy">
           <p class="brand-kicker">Operación interna</p>
-          <h1 class="brand-title">{{ currentRole === 'ADMIN' ? 'Panel Admin' : 'Portal Operativo' }}</h1>
+          <h1 class="brand-title">{{ panelTitle }}</h1>
         </div>
       </div>
 
@@ -22,6 +22,7 @@
       <div class="welcome-copy">
         <p class="welcome-kicker">Resumen diario</p>
         <h2 class="welcome-title">Hola, {{ currentUser }}</h2>
+        <p class="welcome-role">{{ currentRoleLabel }}</p>
         <p class="welcome-text">Accede a los módulos habilitados para tu perfil operativo.</p>
       </div>
 

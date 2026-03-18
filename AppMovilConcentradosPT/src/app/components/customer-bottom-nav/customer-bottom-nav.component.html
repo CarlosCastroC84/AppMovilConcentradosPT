@@ -1,0 +1,50 @@
+<nav class="customer-nav">
+  <a
+    class="nav-item"
+    routerLink="/inicio"
+    routerLinkActive="active"
+    [routerLinkActiveOptions]="{ exact: true }">
+    <span class="material-icons-round">home</span>
+    <span class="nav-label">Inicio</span>
+  </a>
+
+  <a
+    class="nav-item"
+    routerLink="/catalogo"
+    routerLinkActive="active"
+    [routerLinkActiveOptions]="{ exact: true }">
+    <span class="material-icons-round">storefront</span>
+    <span class="nav-label">Productos</span>
+  </a>
+
+  <a
+    class="nav-item nav-item-cart"
+    routerLink="/mi-pedido"
+    routerLinkActive="active"
+    [routerLinkActiveOptions]="{ exact: true }"
+    aria-label="Ir al carrito">
+    <div class="cart-bubble">
+      <span class="material-icons-round">shopping_cart</span>
+      <span class="cart-badge" *ngIf="cart.totalItems > 0">{{ cart.totalItems }}</span>
+    </div>
+    <span class="nav-label nav-label-cart">Carrito</span>
+  </a>
+
+  <a
+    class="nav-item"
+    routerLink="/mis-pedidos"
+    routerLinkActive="active"
+    [routerLinkActiveOptions]="{ exact: true }">
+    <span class="material-icons-round">receipt_long</span>
+    <span class="nav-label">Pedidos</span>
+  </a>
+
+  <a
+    class="nav-item"
+    routerLink="/perfil"
+    routerLinkActive="active"
+    [routerLinkActiveOptions]="{ exact: true }">
+    <span class="material-icons-round">person</span>
+    <span class="nav-label">Perfil</span>
+  </a>
+</nav>

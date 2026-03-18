@@ -1,0 +1,178 @@
+<ion-header class="ion-no-border account-header">
+  <ion-toolbar>
+    <div class="account-topbar">
+      <button class="icon-btn" routerLink="/inicio" type="button" aria-label="Volver al inicio">
+        <span class="material-icons-round">arrow_back</span>
+      </button>
+      <span class="topbar-copy">Acceso de clientes</span>
+    </div>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="account-content">
+  <main class="account-shell">
+    <section class="brand-hero">
+      <div class="hero-logo-wrap">
+        <img src="assets/Logos_dpt.png" alt="Puente Tierra" class="hero-logo" />
+      </div>
+
+      <h1 class="hero-title">Puente Tierra</h1>
+      <p class="hero-subtitle">Ingresa para seguir tus pedidos, guardar tu perfil y volver a comprar en segundos.</p>
+    </section>
+
+    <section class="account-card">
+      <div class="mode-switch">
+        <button type="button" class="mode-btn" [class.active]="mode === 'login'" (click)="setMode('login')">
+          Iniciar sesión
+        </button>
+        <button type="button" class="mode-btn" [class.active]="mode === 'register'" (click)="setMode('register')">
+          Crear cuenta
+        </button>
+      </div>
+
+      <form class="account-form" *ngIf="mode === 'login'">
+        <label class="field">
+          <span class="field-label">Correo electrónico</span>
+          <input class="field-input" type="email" name="loginEmail" [(ngModel)]="email" autocomplete="username"
+            placeholder="tu@email.com" />
+        </label>
+
+        <label class="field">
+          <span class="field-label">Contraseña</span>
+          <div class="password-wrap">
+            <input class="field-input with-action" [type]="showPassword ? 'text' : 'password'" name="loginPassword"
+              [(ngModel)]="password" autocomplete="current-password" placeholder="••••••••" />
+            <button type="button" class="field-action" (click)="togglePassword()">
+              <span class="material-icons-round">{{ showPassword ? 'visibility_off' : 'visibility' }}</span>
+            </button>
+          </div>
+        </label>
+
+        <button type="button" class="primary-btn" [disabled]="loading" (click)="onLogin()">
+          {{ loading ? 'Ingresando...' : 'Iniciar sesión' }}
+        </button>
+
+        <button type="button" class="link-btn" (click)="setMode('forgot')">
+          Olvidé mi contraseña
+        </button>
+      </form>
+
+      <form class="account-form" *ngIf="mode === 'register'">
+        <label class="field">
+          <span class="field-label">Nombre completo</span>
+          <input class="field-input" type="text" name="fullName" [(ngModel)]="fullName" autocomplete="name"
+            placeholder="Juan Pérez" />
+        </label>
+
+        <label class="field">
+          <span class="field-label">Correo electrónico</span>
+          <input class="field-input" type="email" name="registerEmail" [(ngModel)]="email" autocomplete="email"
+            placeholder="tu@email.com" />
+        </label>
+
+        <label class="field">
+          <span class="field-label">Contraseña</span>
+          <div class="password-wrap">
+            <input class="field-input with-action" [type]="showPassword ? 'text' : 'password'" name="registerPassword"
+              [(ngModel)]="password" autocomplete="new-password" placeholder="Mínimo 8 caracteres" />
+            <button type="button" class="field-action" (click)="togglePassword()">
+              <span class="material-icons-round">{{ showPassword ? 'visibility_off' : 'visibility' }}</span>
+            </button>
+          </div>
+        </label>
+
+        <label class="field">
+          <span class="field-label">Confirmar contraseña</span>
+          <div class="password-wrap">
+            <input class="field-input with-action" [type]="showConfirmPassword ? 'text' : 'password'"
+              name="confirmPassword" [(ngModel)]="confirmPassword" autocomplete="new-password"
+              placeholder="Repite tu contraseña" />
+            <button type="button" class="field-action" (click)="toggleConfirmPassword()">
+              <span class="material-icons-round">{{ showConfirmPassword ? 'visibility_off' : 'visibility' }}</span>
+            </button>
+          </div>
+        </label>
+
+        <button type="button" class="primary-btn" [disabled]="loading" (click)="onRegister()">
+          {{ loading ? 'Creando cuenta...' : 'Crear cuenta' }}
+        </button>
+      </form>
+
+      <form class="account-form" *ngIf="mode === 'confirm'">
+        <div class="message-box">
+          Confirma tu cuenta con el código enviado al correo registrado.
+        </div>
+
+        <label class="field">
+          <span class="field-label">Correo electrónico</span>
+          <input class="field-input" type="email" name="confirmEmail" [(ngModel)]="email" placeholder="tu@email.com" />
+        </label>
+
+        <label class="field">
+          <span class="field-label">Código</span>
+          <input class="field-input" type="text" name="confirmationCode" [(ngModel)]="confirmationCode"
+            placeholder="123456" />
+        </label>
+
+        <button type="button" class="primary-btn" [disabled]="loading" (click)="onConfirmSignUp()">
+          {{ loading ? 'Confirmando...' : 'Confirmar cuenta' }}
+        </button>
+
+        <button type="button" class="secondary-btn" (click)="resendCode()">
+          Reenviar código
+        </button>
+      </form>
+
+      <form class="account-form" *ngIf="mode === 'forgot'">
+        <div class="message-box">
+          {{ resetCodeSent
+            ? 'Ingresa el código recibido y define una nueva contraseña.'
+            : 'Te enviaremos un código para restablecer tu contraseña.' }}
+        </div>
+
+        <label class="field">
+          <span class="field-label">Correo electrónico</span>
+          <input class="field-input" type="email" name="forgotEmail" [(ngModel)]="email" placeholder="tu@email.com" />
+        </label>
+
+        <ng-container *ngIf="resetCodeSent">
+          <label class="field">
+            <span class="field-label">Código</span>
+            <input class="field-input" type="text" name="resetCode" [(ngModel)]="resetCode" placeholder="123456" />
+          </label>
+
+          <label class="field">
+            <span class="field-label">Nueva contraseña</span>
+            <div class="password-wrap">
+              <input class="field-input with-action" [type]="showNewPassword ? 'text' : 'password'" name="newPassword"
+                [(ngModel)]="newPassword" placeholder="Nueva contraseña" />
+              <button type="button" class="field-action" (click)="toggleNewPassword()">
+                <span class="material-icons-round">{{ showNewPassword ? 'visibility_off' : 'visibility' }}</span>
+              </button>
+            </div>
+          </label>
+        </ng-container>
+
+        <button type="button" class="primary-btn" [disabled]="loading"
+          (click)="resetCodeSent ? onConfirmPasswordReset() : onRequestPasswordReset()">
+          {{ loading
+            ? 'Procesando...'
+            : (resetCodeSent ? 'Actualizar contraseña' : 'Enviar código') }}
+        </button>
+
+        <button type="button" class="link-btn" (click)="setMode('login')">
+          Volver al login
+        </button>
+      </form>
+
+      <div class="social-block" *ngIf="canUseGoogle">
+        <div class="divider">o continúa con</div>
+
+        <button type="button" class="google-btn" [disabled]="loading || !canUseGoogle" (click)="continueWithGoogle()">
+          <span class="material-icons-round">mail</span>
+          Ingresar con Google
+        </button>
+      </div>
+    </section>
+  </main>
+</ion-content>

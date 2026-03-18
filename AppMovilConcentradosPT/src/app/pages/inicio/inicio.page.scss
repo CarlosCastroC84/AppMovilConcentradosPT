@@ -18,7 +18,7 @@ ion-content {
 }
 
 .inicio-shell {
-  padding: calc(env(safe-area-inset-top, 0px) + 34px) 16px 28px;
+  padding: calc(env(safe-area-inset-top, 0px) + 34px) 16px calc(var(--customer-nav-height, 92px) + 20px);
   display: flex;
   flex-direction: column;
   gap: 18px;
@@ -77,26 +77,21 @@ ion-content {
   top: 0;
   right: 0;
   border: none;
-  background: transparent;
+  background: rgba(255, 255, 255, 0.92);
+  width: 44px;
+  height: 44px;
+  border-radius: 16px;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 2px;
-  min-width: 54px;
   color: var(--text-muted);
   cursor: pointer;
-  padding: 2px 0 0;
+  padding: 0;
+  box-shadow: 0 10px 20px rgba(17, 24, 39, 0.06);
 }
 
 .admin-login-btn .material-icons-outlined {
-  font-size: 34px;
-}
-
-.admin-text {
-  font-size: 12px;
-  font-weight: 500;
-  color: var(--text-dark);
+  font-size: 24px;
 }
 
 .search-wrapper {
@@ -551,7 +546,7 @@ ion-content {
 
 @media (max-width: 480px) {
   .inicio-shell {
-    padding: calc(env(safe-area-inset-top, 0px) + 24px) 14px 18px;
+    padding: calc(env(safe-area-inset-top, 0px) + 24px) 14px calc(var(--customer-nav-height, 92px) + 18px);
     gap: 12px;
   }
 
@@ -583,15 +578,8 @@ ion-content {
   }
 
   .admin-login-btn {
-    min-width: 50px;
-  }
-
-  .admin-login-btn .material-icons-outlined {
-    font-size: 30px;
-  }
-
-  .admin-text {
-    font-size: 11px;
+    width: 40px;
+    height: 40px;
   }
 
   .search-input {

@@ -1,4 +1,4 @@
-export type AdminUserRole = 'ADMIN' | 'VENTAS' | 'BODEGA';
+export type AdminUserRole = 'ADMIN' | 'GERENTE' | 'VENTAS' | 'BODEGA';
 
 export type CognitoAdminUserStatus =
     | 'CONFIRMED'

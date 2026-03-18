@@ -155,37 +155,23 @@
           </div>
 
           <div class="order-actions">
-            <button class="action-btn-secondary" type="button" (click)="viewOrderDetails(order)">
+            <button class="action-btn-secondary full-width" type="button" (click)="openOrderDetails(order)">
               <span class="material-symbols-outlined">visibility</span>
               Detalles
-            </button>
-
-            <button class="action-btn-primary" type="button" (click)="confirmOrder(order)"
-              [disabled]="order.status !== 'PENDING' || updatingOrderId === order.id">
-              <span class="material-symbols-outlined">
-                {{
-                updatingOrderId === order.id
-                ? 'hourglass_top'
-                : order.status === 'PENDING'
-                ? 'check_circle'
-                : order.status === 'PROCESSING'
-                ? 'inventory_2'
-                : order.status === 'COMPLETED'
-                ? 'task_alt'
-                : 'block'
-                }}
-              </span>
-              {{
-              updatingOrderId === order.id
-              ? 'Guardando...'
-              : order.status === 'PENDING'
-              ? 'Confirmar'
-              : getStatusLabel(order.status)
-              }}
             </button>
           </div>
         </div>
       </article>
     </section>
+
+    <ion-modal [isOpen]="isDetailsModalOpen" cssClass="order-details-modal" (didDismiss)="closeOrderDetails()">
+      <ng-template>
+        <app-order-details-modal *ngIf="selectedOrder" [order]="selectedOrder" context="sales"
+          [showPrimaryAction]="canConfirmSelectedOrder" [primaryActionLabel]="'Confirmar pago y enviar a bodega'"
+          [primaryActionDisabled]="!canConfirmSelectedOrder || updatingOrderId === selectedOrder.id"
+          [primaryActionLoading]="updatingOrderId === selectedOrder.id" (closeRequested)="closeOrderDetails()"
+          (primaryAction)="confirmSelectedOrder()"></app-order-details-modal>
+      </ng-template>
+    </ion-modal>
   </main>
 </ion-content>

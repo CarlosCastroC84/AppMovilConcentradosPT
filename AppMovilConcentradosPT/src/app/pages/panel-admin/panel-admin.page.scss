@@ -138,6 +138,15 @@ ion-content {
   line-height: 1.5;
 }
 
+.welcome-role {
+  margin: 6px 0 0;
+  color: var(--primary-dark);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
 .welcome-alert {
   align-self: flex-start;
   min-height: 34px;

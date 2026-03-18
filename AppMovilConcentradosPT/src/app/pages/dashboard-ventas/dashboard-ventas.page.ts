@@ -6,11 +6,13 @@ import { RouterModule } from '@angular/router';
 import { Order, OrderStatus, UpdateOrderRequest } from '../../models/order.model';
 import { OrderService } from '../../services/order.service';
 import { AuthService } from '../../services/auth.service';
-import { OrderDetailsModalService } from '../../services/order-details-modal.service';
+import { BusinessConfigService } from '../../services/business-config.service';
+import { OrderDetailsModalComponent } from '../../components/order-details-modal/order-details-modal.component';
 import {
   getOrderDisplayName,
   getOrderDisplayPhone,
-  getOrderLocation
+  getOrderLocation,
+  getOrderWhatsAppPhone
 } from '../../utils/order-contact.util';
 
 @Component({
@@ -18,12 +20,12 @@ import {
   templateUrl: './dashboard-ventas.page.html',
   styleUrls: ['./dashboard-ventas.page.scss'],
   standalone: true,
-  imports: [IonicModule, CommonModule, FormsModule, RouterModule]
+  imports: [IonicModule, CommonModule, FormsModule, RouterModule, OrderDetailsModalComponent]
 })
 export class DashboardVentasPage implements OnInit {
   private orderService = inject(OrderService);
   private authService = inject(AuthService);
-  private orderDetailsModalService = inject(OrderDetailsModalService);
+  private businessConfigService = inject(BusinessConfigService);
   private toastController = inject(ToastController);
 
   currentUser = 'Operaciones';
@@ -33,6 +35,8 @@ export class DashboardVentasPage implements OnInit {
   loading = true;
   error: string | null = null;
   updatingOrderId: string | null = null;
+  selectedOrder: Order | null = null;
+  isDetailsModalOpen = false;
   private currentActor: string | null = null;
 
   async ngOnInit(): Promise<void> {
@@ -42,6 +46,7 @@ export class DashboardVentasPage implements OnInit {
 
   get recentOrders(): Order[] {
     return [...this.orders]
+      .filter(order => order.status === 'PENDING')
       .sort((left, right) => new Date(right.createdAt).getTime() - new Date(left.createdAt).getTime())
       .slice(0, 5);
   }
@@ -106,8 +111,22 @@ export class DashboardVentasPage implements OnInit {
     });
   }
 
-  viewOrderDetails(order: Order): void {
-    void this.orderDetailsModalService.open(order);
+  openOrderDetails(order: Order): void {
+    this.selectedOrder = order;
+    this.isDetailsModalOpen = true;
+  }
+
+  closeOrderDetails(): void {
+    this.isDetailsModalOpen = false;
+    this.selectedOrder = null;
+  }
+
+  confirmSelectedOrder(): void {
+    if (!this.selectedOrder) {
+      return;
+    }
+
+    this.confirmOrder(this.selectedOrder);
   }
 
   confirmOrder(order: Order): void {
@@ -132,10 +151,22 @@ export class DashboardVentasPage implements OnInit {
     };
 
     this.orderService.updateOrder(request).subscribe({
-      next: savedOrder => {
-        this.upsertOrder(savedOrder ? { ...order, ...savedOrder } : updatedOrder);
+      next: async savedOrder => {
+        const resolvedOrder = savedOrder ? { ...order, ...savedOrder } : updatedOrder;
+        this.upsertOrder(resolvedOrder);
         this.updatingOrderId = null;
-        void this.showToast(`Pedido ${order.id} confirmado.`, 'success');
+
+        if (this.selectedOrder?.id === order.id) {
+          this.closeOrderDetails();
+        }
+
+        const whatsappOpened = await this.openConfirmationWhatsApp(resolvedOrder);
+        void this.showToast(
+          whatsappOpened
+            ? `Pedido ${order.id} confirmado y enviado a bodega.`
+            : `Pedido ${order.id} enviado a bodega. No fue posible generar WhatsApp.`,
+          whatsappOpened ? 'success' : 'warning'
+        );
       },
       error: (error: Error) => {
         this.updatingOrderId = null;
@@ -235,6 +266,10 @@ export class DashboardVentasPage implements OnInit {
     return order.id;
   }
 
+  get canConfirmSelectedOrder(): boolean {
+    return !!this.selectedOrder && this.selectedOrder.status === 'PENDING';
+  }
+
   private async loadCurrentUser(): Promise<void> {
     const user = await this.authService.getCurrentUser();
     if (!user) {
@@ -284,5 +319,35 @@ export class DashboardVentasPage implements OnInit {
     });
 
     await toast.present();
+  }
+
+  private async openConfirmationWhatsApp(order: Order): Promise<boolean> {
+    const phone = getOrderWhatsAppPhone(order);
+    if (!phone) {
+      return false;
+    }
+
+    const config = await this.businessConfigService.loadConfig();
+    const template = config.confirmationTemplate || this.businessConfigService.getDefaultConfig().confirmationTemplate;
+    const firstProduct = order.items[0]?.name || 'tu pedido';
+    const replacements: Record<string, string> = {
+      '[CLIENTE]': this.getCustomerDisplayName(order),
+      '[PEDIDO]': order.id,
+      '[VALOR]': this.formatPrice(order.total || 0),
+      '[MUNICIPIO]': this.getCustomerLocation(order) || 'tu ubicación',
+      '[PRODUCTO]': firstProduct
+    };
+
+    const message = Object.entries(replacements).reduce(
+      (currentMessage, [token, value]) => currentMessage.split(token).join(value),
+      template
+    );
+
+    if (typeof window !== 'undefined') {
+      window.open(`https://wa.me/${phone}?text=${encodeURIComponent(message)}`, '_blank', 'noopener');
+      return true;
+    }
+
+    return false;
   }
 }

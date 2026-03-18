@@ -138,6 +138,16 @@ ion-content {
   &.wide {
     grid-column: 1 / -1;
   }
+
+  &.compact {
+    padding: 13px 14px;
+    gap: 8px;
+    min-height: 112px;
+  }
+}
+
+.sales-card {
+  min-height: 104px;
 }
 
 .kpi-icon {
@@ -175,6 +185,15 @@ ion-content {
   &.emerald {
     background: #e8fbf3;
     color: #059669;
+  }
+}
+
+.kpi-card.compact .kpi-icon {
+  width: 40px;
+  height: 40px;
+
+  .material-icons-round {
+    font-size: 20px;
   }
 }
 
@@ -303,6 +322,7 @@ ion-content {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 12px;
+  align-items: end;
 }
 
 .field-group {
@@ -377,8 +397,8 @@ ion-content {
   background: #fbfcfd;
   border: 1px solid #eef1f4;
   border-radius: 18px;
-  padding: 16px;
-  margin-bottom: 12px;
+  padding: 13px 14px;
+  margin-bottom: 10px;
   border-left: 4px solid transparent;
 
   &.border-yellow {
@@ -406,8 +426,8 @@ ion-content {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  gap: 12px;
-  margin-bottom: 12px;
+  gap: 10px;
+  margin-bottom: 10px;
 }
 
 .order-copy {
@@ -417,17 +437,18 @@ ion-content {
 .order-client {
   margin: 0;
   color: var(--text-dark);
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 700;
+  line-height: 1.2;
 }
 
 .order-meta {
-  margin: 4px 0 0;
+  margin: 3px 0 0;
   color: var(--text-muted);
-  font-size: 12px;
+  font-size: 11px;
 
   &.secondary {
-    margin-top: 6px;
+    margin-top: 4px;
   }
 }
 
@@ -463,12 +484,12 @@ ion-content {
 
 .status-select {
   appearance: none;
-  min-height: 32px;
-  padding: 0 24px 0 10px;
+  min-height: 30px;
+  padding: 0 22px 0 9px;
   border: none;
-  border-radius: 10px;
+  border-radius: 9px;
   font-family: inherit;
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 700;
   cursor: pointer;
   outline: none;
@@ -497,17 +518,17 @@ ion-content {
 .order-summary {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 10px;
-  padding: 12px 0;
+  gap: 8px;
+  padding: 9px 0;
   border-top: 1px solid #eef1f4;
   border-bottom: 1px solid #eef1f4;
-  margin-bottom: 12px;
+  margin-bottom: 10px;
 }
 
 .summary-col {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 2px;
 
   &.right {
     align-items: flex-end;
@@ -517,42 +538,42 @@ ion-content {
 
 .summary-label {
   color: var(--text-muted);
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 600;
 }
 
 .summary-value {
   color: var(--text-dark);
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 700;
 
   &.small {
-    font-size: 12px;
+    font-size: 11px;
   }
 }
 
 .order-actions {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
 }
 
 .order-btn {
-  flex: 1;
-  min-height: 42px;
-  border-radius: 14px;
+  min-height: 38px;
+  border-radius: 12px;
   font-family: inherit;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 700;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
+  gap: 5px;
   cursor: pointer;
   border: none;
+  padding: 0 10px;
 
   .material-icons-round {
-    font-size: 18px;
+    font-size: 16px;
   }
 
   &:disabled {
@@ -584,10 +605,6 @@ ion-content {
 }
 
 @media (max-width: 640px) {
-  .filters-row {
-    grid-template-columns: 1fr;
-  }
-
   .kpis-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 10px;
@@ -598,6 +615,11 @@ ion-content {
     padding: 14px;
   }
 
+  .kpi-card.compact {
+    padding: 12px;
+    min-height: 104px;
+  }
+
   .kpi-card.wide {
     grid-column: 1 / -1;
   }
@@ -606,8 +628,12 @@ ion-content {
     font-size: 20px;
   }
 
+  .order-card {
+    padding: 12px;
+  }
+
   .order-actions {
-    flex-direction: column;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
@@ -621,6 +647,10 @@ ion-content {
 
   .kpi-card {
     padding: 12px;
+  }
+
+  .kpi-card.compact {
+    min-height: 98px;
   }
 
   .kpi-icon {
@@ -665,9 +695,18 @@ ion-content {
     padding: 16px;
   }
 
+  .filters-row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+
   .order-top {
     flex-direction: column;
     align-items: flex-start;
+  }
+
+  .order-actions {
+    grid-template-columns: 1fr;
   }
 
   .order-summary {
