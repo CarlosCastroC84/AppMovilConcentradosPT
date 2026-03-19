@@ -18,7 +18,7 @@ Se cubren los siguientes bloques:
 - gestion de productos
 - gestion de pedidos
 - build web y empaquetado Android
-- limitacion tecnica de iOS por falta de Mac/Xcode
+- montaje del paquete iOS y limitacion tecnica de compilacion por falta de Mac/Xcode
 
 ## 3. Ambientes de prueba
 
@@ -27,7 +27,7 @@ Se cubren los siguientes bloques:
 | Navegador en Windows | Validacion funcional rapida | Equipo | Parcial |
 | Emulador Android | Validacion hibrida base | Equipo | Pendiente |
 | Dispositivo Android fisico | Evidencia para entrega | Equipo | Hecho |
-| iOS con Xcode | No disponible en el entorno actual | No aplica | Bloqueado |
+| iOS con Xcode | Proyecto iOS montado, pero compilacion no disponible en este entorno | No aplica | Bloqueado |
 
 ## 4. Precondiciones generales
 
@@ -76,7 +76,8 @@ Cada prueba debe registrar:
 | BLD-02 | Build | Sync Android | Ejecutar `npx cap sync android` | La sincronizacion finaliza sin errores | Consola | Captura del comando exitoso | Hecho |
 | BLD-03 | Android | APK debug | Ejecutar `:app:assembleDebug` y validar salida | Se genera `app-debug.apk` instalable | Consola / Explorador | Captura del archivo generado | Hecho |
 | BLD-04 | Android | AAB release | Ejecutar `:app:bundleRelease` | Se genera `app-release.aab` | Consola / Explorador | Captura del archivo generado | Hecho |
-| IOS-01 | iOS | Limitacion documentada | Revisar estado del entorno y documentar restriccion | Queda documentado que no hay Mac/Xcode ni proyecto iOS generado | Documento | Captura o referencia al documento iOS | Hecho |
+| IOS-01 | iOS | Plataforma montada | Instalar `@capacitor/ios` y ejecutar `npx cap add ios` | El repositorio queda con carpeta `ios/` y configuracion base de Capacitor para iOS | Consola / Explorador | Captura de la carpeta `ios/` y dependencias instaladas | Hecho |
+| IOS-02 | iOS | Limitacion documentada | Revisar estado del entorno y documentar restriccion | Queda documentado que la plataforma iOS existe en el repositorio, pero no puede compilarse ni probarse por falta de Mac/Xcode | Documento | Captura o referencia al documento iOS | Hecho |
 
 ## 7. Criterio de cierre
 
